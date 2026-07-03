@@ -1,0 +1,1200 @@
+/**
+ * App.css — Premium Dark Theme Stylesheet
+ * 
+ * Design System for Visual Judge — Intelligent Online Judge
+ * 
+ * Color Palette:
+ * - Background:  #0a0a0f (deep dark), #12121a (slightly lighter)
+ * - Cards:       rgba(26, 26, 46, 0.8) — semi-transparent dark
+ * - Primary:     #6366f1 → #8b5cf6 (blue-purple gradient)
+ * - Easy:        #10b981 (emerald green)
+ * - Medium:      #f59e0b (amber)
+ * - Hard:        #ef4444 (rose red)
+ * - Text:        #ffffff (primary), #94a3b8 (muted)
+ * 
+ * Typography: Google Font "Inter"
+ * Effects: Glassmorphism, smooth transitions, keyframe animations
+ */
+
+/* ============================================================
+   CSS CUSTOM PROPERTIES (Design Tokens)
+   Central place to manage all colors, spacing, and effects
+   ============================================================ */
+:root {
+  /* Background colors */
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-card: rgba(26, 26, 46, 0.8);
+  --bg-card-hover: rgba(30, 30, 55, 0.9);
+  --bg-input: rgba(15, 15, 25, 0.8);
+
+  /* Border colors */
+  --border-color: rgba(99, 102, 241, 0.15);
+  --border-hover: rgba(99, 102, 241, 0.4);
+
+  /* Accent / Primary gradient */
+  --primary: #6366f1;
+  --primary-light: #818cf8;
+  --secondary: #8b5cf6;
+  --gradient-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
+
+  /* Difficulty colors */
+  --color-easy: #10b981;
+  --color-medium: #f59e0b;
+  --color-hard: #ef4444;
+
+  /* Text colors */
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  /* Status colors */
+  --color-error: #ef4444;
+  --color-success: #10b981;
+
+  /* Spacing scale */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+
+  /* Border radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* Glassmorphism effect values */
+  --glass-blur: blur(20px);
+  --glass-bg: rgba(26, 26, 46, 0.6);
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  /* Navbar height (used for main content offset) */
+  --navbar-height: 70px;
+}
+
+/* ============================================================
+   KEYFRAME ANIMATIONS
+   Reusable animations for page transitions and UI feedback
+   ============================================================ */
+
+/* Fade in from transparent — used for page transitions */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide up from below — used for cards appearing in grids */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pulsing animation — used for loading skeletons */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Spinning animation — used for loading spinners */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Subtle shimmer for skeleton loading */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Animation utility classes */
+.fadeIn {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+.slideUp {
+  animation: slideUp 0.5s ease forwards;
+  opacity: 0; /* Start invisible, animation fills forward */
+}
+
+/* ============================================================
+   GLOBAL RESET & BASE STYLES
+   Normalize browser defaults and set up the dark theme
+   ============================================================ */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Subtle radial gradient overlay for depth */
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+a {
+  color: var(--primary-light);
+  text-decoration: none;
+  transition: color var(--transition-base);
+}
+
+a:hover {
+  color: var(--secondary);
+}
+
+/* Scrollbar styling for webkit browsers */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.3);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.5);
+}
+
+/* ============================================================
+   MAIN CONTENT AREA
+   Pushed down to account for the fixed navbar
+   ============================================================ */
+.main-content {
+  padding-top: var(--navbar-height);
+  min-height: 100vh;
+}
+
+/* ============================================================
+   NAVBAR — Fixed Glassmorphism Navigation Bar
+   ============================================================ */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--navbar-height);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-xl);
+  /* Glassmorphism effect: semi-transparent bg + backdrop blur */
+  background: rgba(10, 10, 15, 0.75);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  /* Subtle bottom border with primary color glow */
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Left section: logo + nav links */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+/* Brand logo link */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 1.25rem;
+  transition: all var(--transition-base);
+}
+
+.navbar-brand:hover {
+  color: var(--primary-light);
+}
+
+/* Emoji icon in the logo */
+.navbar-icon {
+  font-size: 1.5rem;
+}
+
+/* Navigation links in the navbar */
+.navbar-link {
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-base);
+}
+
+.navbar-link:hover {
+  color: var(--text-primary);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+/* Right section: user info or auth buttons */
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+/* Logged-in user section */
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+/* User avatar circle with initial letter */
+.navbar-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: white;
+}
+
+.navbar-username {
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/* Auth buttons container (login/register) */
+.navbar-auth {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+/* ============================================================
+   BUTTONS — Multiple variants with gradient and hover effects
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: 0.625rem 1.25rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+/* Primary button — gradient background */
+.btn-primary {
+  background: var(--gradient-primary);
+  color: white;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 25px rgba(99, 102, 241, 0.5);
+  transform: translateY(-1px);
+  color: white;
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Outline button — transparent bg with border */
+.btn-outline {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-outline:hover {
+  border-color: var(--primary);
+  color: var(--primary-light);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+/* Ghost button — no border, subtle hover effect */
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-ghost:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Small button variant */
+.btn-sm {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.8rem;
+}
+
+/* Full-width button */
+.btn-full {
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.95rem;
+}
+
+/* Loading state inside button */
+.btn-loading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+/* ============================================================
+   FILTER BUTTONS — Difficulty filter with color coding
+   ============================================================ */
+.filter-group {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.btn-filter {
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.btn-filter:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-card-hover);
+}
+
+/* Active filter state — each difficulty gets its own highlight color */
+.btn-filter.filter-all.active {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: var(--primary);
+  color: var(--primary-light);
+}
+
+.btn-filter.filter-easy.active {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: var(--color-easy);
+  color: var(--color-easy);
+}
+
+.btn-filter.filter-medium.active {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: var(--color-medium);
+  color: var(--color-medium);
+}
+
+.btn-filter.filter-hard.active {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: var(--color-hard);
+  color: var(--color-hard);
+}
+
+/* Count badge inside filter buttons */
+.filter-count {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ============================================================
+   BADGES — Difficulty and tag indicators
+   ============================================================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+/* Larger badge variant for detail pages */
+.badge-lg {
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8rem;
+}
+
+/* Difficulty color variants */
+.badge.difficulty-easy,
+.difficulty-easy > .badge {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--color-easy);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge.difficulty-medium,
+.difficulty-medium > .badge {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--color-medium);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge.difficulty-hard,
+.difficulty-hard > .badge {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--color-hard);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Tag badges — neutral color */
+.badge-tag {
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--text-secondary);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  font-size: 0.7rem;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* ============================================================
+   CARDS — Glassmorphism card component
+   ============================================================ */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  transition: all var(--transition-base);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* ============================================================
+   PROBLEM CARD — Specific styling for problem grid cards
+   ============================================================ */
+.problem-card {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  height: 100%;
+}
+
+/* Hover effect: lift + difficulty-colored glow */
+.problem-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-hover);
+}
+
+.problem-card.difficulty-easy:hover {
+  box-shadow: 0 8px 30px rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.problem-card.difficulty-medium:hover {
+  box-shadow: 0 8px 30px rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.problem-card.difficulty-hard:hover {
+  box-shadow: 0 8px 30px rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* Card header: title + difficulty badge */
+.problem-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.problem-card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+  flex: 1;
+}
+
+/* Tags area within the card */
+.problem-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+/* Card footer with the "Solve Challenge" link */
+.problem-card-footer {
+  margin-top: auto;
+  padding-top: var(--space-md);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.problem-card-link {
+  color: var(--primary-light);
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: color var(--transition-base);
+}
+
+.problem-card:hover .problem-card-link {
+  color: var(--secondary);
+}
+
+/* ============================================================
+   PROBLEMS GRID — Responsive CSS Grid layout
+   ============================================================ */
+.problems-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-lg);
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 768px) {
+  .problems-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop: 3 columns */
+@media (min-width: 1024px) {
+  .problems-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ============================================================
+   AUTH PAGES — Centered form layout for login/register
+   ============================================================ */
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--navbar-height));
+  padding: var(--space-xl);
+}
+
+/* Glassmorphism form container */
+.form-container {
+  width: 100%;
+  max-width: 420px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2xl);
+  box-shadow: var(--shadow-lg), var(--shadow-glow);
+}
+
+/* Form header section */
+.form-header {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.form-icon {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-md);
+}
+
+.form-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.form-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Form element spacing */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.form-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Form footer with link to alternate auth page */
+.form-footer {
+  text-align: center;
+  margin-top: var(--space-lg);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.form-link {
+  color: var(--primary-light);
+  font-weight: 600;
+  transition: color var(--transition-base);
+}
+
+.form-link:hover {
+  color: var(--secondary);
+}
+
+/* ============================================================
+   INPUTS — Dark-themed inputs with focus glow
+   ============================================================ */
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: all var(--transition-base);
+}
+
+.input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Focus state: glowing border effect */
+.input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), 0 0 15px rgba(99, 102, 241, 0.1);
+}
+
+/* ============================================================
+   ALERTS — Error and success message boxes
+   ============================================================ */
+.alert {
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.alert-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.alert-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   LOADING STATES
+   ============================================================ */
+
+/* Centered loading container */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--navbar-height));
+  gap: var(--space-lg);
+}
+
+/* CSS-only spinning loader */
+.loading-spinner {
+  width: 44px;
+  height: 44px;
+  border: 3px solid rgba(99, 102, 241, 0.2);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Small spinner variant for buttons */
+.loading-spinner-sm {
+  width: 18px;
+  height: 18px;
+  border-width: 2px;
+}
+
+.loading-text {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* ============================================================
+   SKELETON LOADING — Animated placeholder cards
+   ============================================================ */
+.skeleton-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-height: 160px;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(99, 102, 241, 0.05) 25%,
+    rgba(99, 102, 241, 0.12) 50%,
+    rgba(99, 102, 241, 0.05) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-title {
+  height: 24px;
+  width: 75%;
+}
+
+.skeleton-badge {
+  height: 28px;
+  width: 80px;
+}
+
+.skeleton-tags {
+  height: 20px;
+  width: 60%;
+}
+
+/* ============================================================
+   EMPTY STATE — Shown when no data is available
+   ============================================================ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-2xl);
+  min-height: 300px;
+}
+
+.empty-icon {
+  font-size: 3.5rem;
+  margin-bottom: var(--space-lg);
+}
+
+.empty-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.empty-text {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  max-width: 400px;
+  margin-bottom: var(--space-lg);
+}
+
+/* ============================================================
+   DASHBOARD PAGE — Problem set page layout
+   ============================================================ */
+.dashboard-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--space-xl);
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: var(--space-2xl);
+  flex-wrap: wrap;
+  gap: var(--space-lg);
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.title-icon {
+  font-size: 1.75rem;
+}
+
+.page-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-top: var(--space-xs);
+}
+
+/* ============================================================
+   PROBLEM DETAIL PAGE — Full problem view layout
+   ============================================================ */
+.problem-detail-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--space-xl);
+}
+
+/* Back button positioning */
+.back-btn {
+  margin-bottom: var(--space-xl);
+  font-size: 0.9rem;
+}
+
+/* Problem header section */
+.problem-header {
+  margin-bottom: var(--space-2xl);
+}
+
+.problem-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.problem-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Tags row on the detail page */
+.problem-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+/* Constraint badges (time limit, memory limit) */
+.problem-constraints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.constraint-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.constraint-icon {
+  font-size: 1rem;
+}
+
+/* Problem sections (description, test cases, etc.) */
+.problem-section {
+  margin-bottom: var(--space-2xl);
+}
+
+.section-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Problem description text */
+.problem-description {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
+.problem-description p {
+  margin-bottom: var(--space-md);
+}
+
+.problem-description p:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================================
+   TEST CASES — Sample input/output display
+   ============================================================ */
+.test-cases {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.test-case-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.test-case-header {
+  padding: var(--space-sm) var(--space-lg);
+  background: rgba(99, 102, 241, 0.08);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.test-case-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary-light);
+}
+
+.test-case-body {
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.test-case-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.test-case-section-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+/* Code block for test case input/output */
+.test-case-code {
+  background: rgba(0, 0, 0, 0.4);
+  padding: var(--space-md);
+  border-radius: var(--radius-sm);
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.85rem;
+  color: var(--color-easy);
+  white-space: pre-wrap;
+  word-break: break-all;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.test-case-explanation {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   CODE EDITOR PLACEHOLDER
+   A dashed-border box indicating where the editor will go
+   ============================================================ */
+.code-editor-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-2xl);
+  border: 2px dashed rgba(99, 102, 241, 0.3);
+  border-radius: var(--radius-lg);
+  background: rgba(99, 102, 241, 0.03);
+  min-height: 200px;
+}
+
+.placeholder-icon {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-md);
+}
+
+.placeholder-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-sm);
+}
+
+.placeholder-text {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  max-width: 450px;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   ERROR PAGE
+   ============================================================ */
+.error-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--navbar-height));
+}
+
+/* ============================================================
+   RESPONSIVE DESIGN — Mobile-first breakpoints
+   ============================================================ */
+
+/* Small screens (phones) */
+@media (max-width: 767px) {
+  .navbar {
+    padding: 0 var(--space-md);
+  }
+
+  .navbar-title {
+    display: none; /* Hide brand text on small screens, keep icon */
+  }
+
+  .navbar-link {
+    font-size: 0.8rem;
+  }
+
+  .navbar-username {
+    display: none; /* Hide username on mobile */
+  }
+
+  .dashboard-page {
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .form-container {
+    padding: var(--space-xl);
+  }
+
+  .problem-detail-page {
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .problem-title {
+    font-size: 1.35rem;
+  }
+
+  .problem-title-row {
+    flex-direction: column;
+  }
+}
+
+/* Medium screens (tablets) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .dashboard-page {
+    padding: var(--space-xl);
+  }
+}
+
+/* ============================================================
+   UTILITY CLASSES
+   ============================================================ */
+
+/* Screen reader only — visually hidden but accessible */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
