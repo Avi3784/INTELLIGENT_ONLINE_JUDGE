@@ -7,10 +7,13 @@ const connectDB = require('./config/db');
 
 const authRoutes = require('./routes/auth');
 const problemRoutes = require('./routes/problems');
+const submissionRoutes = require('./routes/submissions');
+const aiRoutes = require('./routes/ai');
+const userRoutes = require('./routes/users');
 
 const app = express();
 
-app.use(express.json());
+app.use(express.json({ limit: '5mb' }));
 
 app.use(
   cors({
@@ -25,6 +28,9 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/problems', problemRoutes);
+app.use('/api/submissions', submissionRoutes);
+app.use('/api/ai', aiRoutes);
+app.use('/api/users', userRoutes);
 
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err.stack);

@@ -8,10 +8,16 @@
     "dev": "npx nodemon server.js || node server.js",
     "seed": "node seed/seedProblems.js"
   },
-  "keywords": ["online-judge", "mern", "express", "mongodb"],
+  "keywords": [
+    "online-judge",
+    "mern",
+    "express",
+    "mongodb"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

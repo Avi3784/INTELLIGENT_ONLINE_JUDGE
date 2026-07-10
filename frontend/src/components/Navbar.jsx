@@ -21,6 +21,12 @@ function Navbar() {
         <Link to="/dashboard" className="navbar-link">
           Dashboard
         </Link>
+
+        {user && (
+          <Link to="/profile" className="navbar-link">
+            Profile
+          </Link>
+        )}
       </div>
 
       <div className="navbar-right">

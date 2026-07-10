@@ -25,4 +25,11 @@ export const getMe = () => API.get('/auth/me')
 export const getProblems = (params) => API.get('/problems', { params })
 export const getProblemById = (id) => API.get(`/problems/${id}`)
 
+export const submitCode = (data) => API.post('/submissions', data)
+export const runCode = (data) => API.post('/submissions/run', data)
+export const getSubmissions = (params) => API.get('/submissions', { params })
+export const getSubmissionById = (id) => API.get(`/submissions/${id}`)
+export const getAIFeedback = (data) => API.post('/ai/feedback', data)
+export const getUserProfile = () => API.get('/users/profile')
+
 export default API

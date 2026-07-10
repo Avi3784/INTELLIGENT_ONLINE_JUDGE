@@ -41,6 +41,19 @@ const submissionSchema = new mongoose.Schema(
     memoryUsed: {
       type: Number,
     },
+
+    testResults: [{
+      passed: { type: Boolean, required: true },
+      input: String,
+      expectedOutput: String,
+      actualOutput: String,
+      executionTime: Number,
+      error: String,
+      isHidden: { type: Boolean, default: false },
+    }],
+
+    totalTestCases: { type: Number },
+    passedTestCases: { type: Number },
   },
   {
     timestamps: true,
