@@ -66,4 +66,28 @@ router.get('/profile', protect, async (req, res) => {
   }
 });
 
+// GET /leaderboard — Get top users sorted by solved problems
+router.get('/leaderboard', async (req, res) => {
+  try {
+    const users = await User.find({})
+      .select('username solvedProblems createdAt')
+      .lean();
+      
+    // Calculate solved count and sort
+    const leaderboard = users.map(u => ({
+      _id: u._id,
+      username: u.username,
+      solvedCount: u.solvedProblems ? u.solvedProblems.length : 0,
+      joinedAt: u.createdAt
+    }))
+    .sort((a, b) => b.solvedCount - a.solvedCount || new Date(a.joinedAt) - new Date(b.joinedAt))
+    .slice(0, 50); // Top 50
+
+    res.json({ success: true, data: leaderboard });
+  } catch (err) {
+    console.error('Leaderboard error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
 module.exports = router;

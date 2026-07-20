@@ -29,7 +29,14 @@ export const submitCode = (data) => API.post('/submissions', data)
 export const runCode = (data) => API.post('/submissions/run', data)
 export const getSubmissions = (params) => API.get('/submissions', { params })
 export const getSubmissionById = (id) => API.get(`/submissions/${id}`)
+
 export const getAIFeedback = (data) => API.post('/ai/feedback', data)
+
 export const getUserProfile = () => API.get('/users/profile')
+export const getLeaderboard = () => API.get('/users/leaderboard')
+
+export const getSolutions = (problemId) => API.get(`/solutions/problem/${problemId}`)
+export const postSolution = (data) => API.post('/solutions', data)
+export const upvoteSolution = (id) => API.put(`/solutions/${id}/upvote`)
 
 export default API

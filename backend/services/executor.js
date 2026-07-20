@@ -86,7 +86,7 @@ async function compileCode(dir, language, filepath) {
   return null;
 }
 
-async function executeCode(code, language, testCases, timeLimit = 2000) {
+async function executeCode(code, language, testCases, timeLimit = 2000, methodName = null, driverCode = null) {
   const config = LANG_CONFIG[language];
   if (!config) {
     throw new Error(`Unsupported language: ${language}`);
@@ -96,20 +96,57 @@ async function executeCode(code, language, testCases, timeLimit = 2000) {
   await fs.mkdir(tmpDir, { recursive: true });
 
   try {
+    let finalCode = code;
+
+    if (methodName) {
+      if (language === 'javascript') {
+        finalCode = `
+${code}
+const fs = require('fs');
+const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split('\\n');
+if (input.length > 0 && input[0] !== '') {
+  const parsedInput = input.map(line => JSON.parse(line));
+  const sol = new Solution();
+  const res = sol.${methodName}(...parsedInput);
+  console.log(JSON.stringify(res));
+}
+`;
+      } else if (language === 'python') {
+        finalCode = `
+import sys
+import json
+${code}
+
+if __name__ == '__main__':
+    input_data = sys.stdin.read().strip().split('\\n')
+    if input_data and input_data[0] != '':
+        parsed_input = [json.loads(line) for line in input_data]
+        sol = Solution()
+        res = getattr(sol, '${methodName}')(*parsed_input)
+        print(json.dumps(res, separators=(',', ':')).replace(' ', ''))
+`;
+      } else if ((language === 'cpp' || language === 'java') && driverCode && driverCode[language]) {
+        finalCode = `
+${code}
+${driverCode[language]}
+`;
+      }
+    }
+
     // For Java, filename must be Solution.java
     let filename;
     if (language === 'java') {
       filename = 'Solution.java';
-      // Wrap code in a class if it doesn't contain one
-      if (!code.includes('class ')) {
-        code = `public class Solution {\n${code}\n}`;
+      // Wrap code in a class if it doesn't contain one and there's no custom driver wrapping it
+      if (!finalCode.includes('class ') && !driverCode) {
+        finalCode = `public class Solution {\n${finalCode}\n}`;
       }
     } else {
       filename = `solution${config.ext}`;
     }
 
     const filepath = path.join(tmpDir, filename);
-    await fs.writeFile(filepath, code);
+    await fs.writeFile(filepath, finalCode);
 
     // Compile if needed
     const compileError = await compileCode(tmpDir, language, filepath);

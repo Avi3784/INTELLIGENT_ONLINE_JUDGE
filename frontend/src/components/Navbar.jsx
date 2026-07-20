@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { Scale } from 'lucide-react'
 
 function Navbar() {
   const { user, logout } = useAuth()
@@ -14,14 +15,20 @@ function Navbar() {
     <nav className="navbar">
       <div className="navbar-left">
         <Link to="/dashboard" className="navbar-brand">
-          <span className="navbar-icon">⚖️</span>
+          <span className="navbar-icon"><Scale size={24} /></span>
           <span className="navbar-title">Visual Judge</span>
         </Link>
-
-        <Link to="/dashboard" className="navbar-link">
-          Dashboard
-        </Link>
-
+        <div className="navbar-links">
+          <Link to="/dashboard" className="navbar-link">
+            Dashboard
+          </Link>
+          <Link to="/visualizer" className="navbar-link">
+            Visualizer
+          </Link>
+          <Link to="/leaderboard" className="navbar-link">
+            Leaderboard
+          </Link>
+        </div>
         {user && (
           <Link to="/profile" className="navbar-link">
             Profile

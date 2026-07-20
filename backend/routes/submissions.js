@@ -66,7 +66,7 @@ router.post('/', protect, async (req, res) => {
     });
 
     // Execute code
-    const results = await executeCode(code, language, allTestCases, problem.timeLimit);
+    const results = await executeCode(code, language, allTestCases, problem.timeLimit, problem.methodName, problem.driverCode);
     const verdict = determineVerdict(results);
     const totalExecTime = results.reduce((sum, r) => sum + (r.executionTime || 0), 0);
     const passedCount = results.filter((r) => r.passed).length;
@@ -97,10 +97,10 @@ router.post('/', protect, async (req, res) => {
   }
 });
 
-// POST /run — Run against sample tests only
+// POST /run — Run against sample tests or custom test cases
 router.post('/run', protect, async (req, res) => {
   try {
-    const { problemId, language, code } = req.body;
+    const { problemId, language, code, customTestCases } = req.body;
 
     if (!problemId || !language || !code) {
       return res.status(400).json({ message: 'problemId, language, and code are required' });
@@ -111,13 +111,25 @@ router.post('/run', protect, async (req, res) => {
       return res.status(404).json({ message: 'Problem not found' });
     }
 
-    const sampleTests = problem.sampleTestCases.map((tc) => ({
-      input: tc.input,
-      expectedOutput: tc.expectedOutput,
-      isHidden: false,
-    }));
+    let testsToRun = [];
 
-    const results = await executeCode(code, language, sampleTests, problem.timeLimit);
+    // If user provided their own test cases in the console, use them
+    if (customTestCases && customTestCases.length > 0) {
+      testsToRun = customTestCases.map((tc) => ({
+        input: tc.input || '',
+        expectedOutput: tc.expectedOutput || '',
+        isHidden: false,
+      }));
+    } else {
+      // Otherwise default to the sample test cases from the database
+      testsToRun = problem.sampleTestCases.map((tc) => ({
+        input: tc.input,
+        expectedOutput: tc.expectedOutput,
+        isHidden: false,
+      }));
+    }
+
+    const results = await executeCode(code, language, testsToRun, problem.timeLimit, problem.methodName, problem.driverCode);
     const verdict = determineVerdict(results);
 
     res.json({ results, verdict });

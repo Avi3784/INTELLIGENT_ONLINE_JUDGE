@@ -33,14 +33,33 @@ const problemSchema = new mongoose.Schema(
 
     timeLimit: {
       type: Number,
-      default: 2000, // 2 seconds
+      default: 2000,
     },
-
     memoryLimit: {
       type: Number,
-      default: 256, // 256 MB
+      default: 256,
     },
-
+    hints: [String],
+    methodName: String,
+    defaultCode: {
+      python: String,
+      javascript: String,
+      cpp: String,
+      java: String
+    },
+    driverCode: {
+      cpp: String,
+      java: String
+    },
+    officialSolution: {
+      explanation: String,
+      code: {
+        python: String,
+        javascript: String,
+        cpp: String,
+        java: String
+      }
+    },
     sampleTestCases: {
       type: [testCaseSchema],
       default: [],

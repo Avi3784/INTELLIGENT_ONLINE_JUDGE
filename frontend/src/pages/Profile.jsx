@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getUserProfile } from '../services/api'
+import { AlertTriangle, Calendar, FileText } from 'lucide-react'
 
 function Profile() {
   const navigate = useNavigate()
@@ -89,7 +90,7 @@ function Profile() {
     return (
       <div className="error-page fadeIn">
         <div className="empty-state">
-          <div className="empty-icon">😕</div>
+          <div className="empty-icon"><AlertTriangle size={48} /></div>
           <h2 className="empty-title">Something went wrong</h2>
           <p className="empty-text">{error}</p>
           <button onClick={() => window.location.reload()} className="btn btn-primary">
@@ -123,7 +124,7 @@ function Profile() {
           <h1>{profile.username || 'User'}</h1>
           <p className="profile-email">{profile.email || ''}</p>
           <p className="profile-joined">
-            📅 Member since {formatDate(profile.createdAt || profile.joinedAt)}
+            <Calendar size={16} style={{ display: 'inline', verticalAlign: 'text-bottom', marginRight: '4px' }} /> Member since {formatDate(profile.createdAt || profile.joinedAt)}
           </p>
         </div>
       </div>
@@ -159,7 +160,7 @@ function Profile() {
 
         {recentSubmissions.length === 0 ? (
           <div className="empty-state" style={{ minHeight: '150px' }}>
-            <div className="empty-icon">📝</div>
+            <div className="empty-icon"><FileText size={48} /></div>
             <p className="empty-text">No submissions yet. Start solving problems!</p>
             <button onClick={() => navigate('/dashboard')} className="btn btn-primary">
               Browse Challenges

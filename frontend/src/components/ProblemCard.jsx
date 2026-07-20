@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { ArrowRight } from 'lucide-react'
 
 function ProblemCard({ problem }) {
   const navigate = useNavigate()
@@ -42,8 +43,8 @@ function ProblemCard({ problem }) {
       )}
 
       <div className="problem-card-footer">
-        <span className="problem-card-link">
-          Solve Challenge →
+        <span className="problem-card-link" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          Solve Challenge <ArrowRight size={16} />
         </span>
       </div>
     </div>

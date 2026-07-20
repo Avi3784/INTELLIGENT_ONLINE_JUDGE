@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { Lock, AlertTriangle } from 'lucide-react'
 
 function Login() {
   const [email, setEmail] = useState('')
@@ -40,14 +41,14 @@ function Login() {
     <div className="auth-page fadeIn">
       <div className="form-container">
         <div className="form-header">
-          <div className="form-icon">🔐</div>
+          <div className="form-icon"><Lock size={32} /></div>
           <h1 className="form-title">Welcome Back</h1>
           <p className="form-subtitle">Sign in to your account</p>
         </div>
 
         {error && (
           <div className="alert alert-error">
-            <span className="alert-icon">⚠️</span>
+            <span className="alert-icon"><AlertTriangle size={16} /></span>
             {error}
           </div>
         )}

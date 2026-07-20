@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getProblemById, runCode, submitCode, getAIFeedback } from '../services/api'
 import Editor from '@monaco-editor/react'
+import { CheckCircle, XCircle, Clock, Database, Search, Play, Send, Zap, Bot, ArrowLeft, MessageSquare, BookOpen, Lightbulb } from 'lucide-react'
+import SolutionsTab from '../components/SolutionsTab'
 
 const STARTER_CODE = {
   python: '# Write your solution here\n\n',
@@ -23,25 +25,17 @@ function renderMarkdown(text) {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-  // Code blocks
   html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
-  // Inline code
   html = html.replace(/`([^`]+)`/g, '<code>$1</code>')
-  // Bold
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-  // Italic
   html = html.replace(/\*(.+?)\*/g, '<em>$1</em>')
-  // Headings
   html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>')
   html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>')
   html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>')
-  // Lists
   html = html.replace(/^- (.+)$/gm, '<li>$1</li>')
   html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
-  // Line breaks (only for lines not already wrapped in tags)
   html = html.replace(/\n{2,}/g, '</p><p>')
   html = '<p>' + html + '</p>'
-  // Clean up empty paragraphs
   html = html.replace(/<p>\s*<\/p>/g, '')
   html = html.replace(/<p>(<h[123]>)/g, '$1')
   html = html.replace(/(<\/h[123]>)<\/p>/g, '$1')
@@ -62,12 +56,20 @@ function ProblemDetail() {
 
   const [language, setLanguage] = useState('python')
   const [code, setCode] = useState(STARTER_CODE['python'])
+  
+  // Console state
+  const [consoleTab, setConsoleTab] = useState('testcases')
+  const [customInput, setCustomInput] = useState('')
   const [results, setResults] = useState(null)
   const [verdict, setVerdict] = useState(null)
+  
   const [isRunning, setIsRunning] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [aiLoading, setAiLoading] = useState(false)
   const [aiFeedback, setAiFeedback] = useState(null)
+  
+  const [leftTab, setLeftTab] = useState('description') // 'description' or 'solutions'
+  const [showHints, setShowHints] = useState(false)
 
   const hasSubmitted = useRef(false)
 
@@ -79,6 +81,14 @@ function ProblemDetail() {
         const response = await getProblemById(id)
         const data = response.data.data || response.data.problem || response.data
         setProblem(data)
+        if (data.sampleTestCases && data.sampleTestCases.length > 0) {
+          setCustomInput(data.sampleTestCases[0].input || '')
+        }
+        if (data.defaultCode && data.defaultCode[language]) {
+          setCode(data.defaultCode[language])
+        } else {
+          setCode(STARTER_CODE[language])
+        }
       } catch (err) {
         console.error('Failed to fetch problem:', err)
         if (err.response?.status === 404) {
@@ -90,22 +100,28 @@ function ProblemDetail() {
         setLoading(false)
       }
     }
-
     fetchProblem()
   }, [id])
 
   const handleLanguageChange = (e) => {
     const newLang = e.target.value
     setLanguage(newLang)
-    setCode(STARTER_CODE[newLang])
+    if (problem && problem.defaultCode && problem.defaultCode[newLang]) {
+      setCode(problem.defaultCode[newLang])
+    } else {
+      setCode(STARTER_CODE[newLang])
+    }
   }
 
   const handleRun = async () => {
     setIsRunning(true)
     setResults(null)
     setVerdict(null)
+    setConsoleTab('result')
     try {
-      const response = await runCode({ problemId: id, language, code })
+      // If custom input is not empty, use it. Otherwise rely on backend defaults.
+      const customTestCases = customInput.trim() ? [{ input: customInput, expectedOutput: '' }] : []
+      const response = await runCode({ problemId: id, language, code, customTestCases })
       const data = response.data.data || response.data
       setResults(data.testResults || data.results || [])
     } catch (err) {
@@ -122,6 +138,7 @@ function ProblemDetail() {
     setResults(null)
     setVerdict(null)
     setAiFeedback(null)
+    setConsoleTab('result')
     try {
       const response = await submitCode({ problemId: id, language, code })
       const data = response.data.data || response.data
@@ -171,10 +188,10 @@ function ProblemDetail() {
   const getVerdictLabel = (v) => {
     if (!v) return 'Pending'
     const upper = v.toUpperCase()
-    if (upper === 'AC' || upper === 'ACCEPTED') return '✅ Accepted'
-    if (upper === 'WA' || upper === 'WRONG ANSWER' || upper === 'WRONG_ANSWER') return '❌ Wrong Answer'
-    if (upper === 'TLE' || upper === 'TIME LIMIT EXCEEDED' || upper === 'TIME_LIMIT_EXCEEDED') return '⏱️ Time Limit Exceeded'
-    if (upper === 'RTE' || upper === 'RUNTIME ERROR' || upper === 'RUNTIME_ERROR' || upper === 'RE') return '💥 Runtime Error'
+    if (upper === 'AC' || upper === 'ACCEPTED') return <><CheckCircle size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> Accepted</>
+    if (upper === 'WA' || upper === 'WRONG ANSWER' || upper === 'WRONG_ANSWER') return <><XCircle size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> Wrong Answer</>
+    if (upper === 'TLE' || upper === 'TIME LIMIT EXCEEDED' || upper === 'TIME_LIMIT_EXCEEDED') return <><Clock size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> Time Limit Exceeded</>
+    if (upper === 'RTE' || upper === 'RUNTIME ERROR' || upper === 'RUNTIME_ERROR' || upper === 'RE') return <><Zap size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> Runtime Error</>
     return v
   }
 
@@ -200,13 +217,13 @@ function ProblemDetail() {
     return (
       <div className="error-page fadeIn">
         <div className="empty-state">
-          <div className="empty-icon">🔍</div>
+          <div className="empty-icon"><Search size={48} /></div>
           <h2 className="empty-title">{error}</h2>
           <p className="empty-text">
             The problem you're looking for might have been removed or doesn't exist.
           </p>
-          <button onClick={() => navigate('/dashboard')} className="btn btn-primary">
-            ← Back to Challenges
+          <button onClick={() => navigate('/dashboard')} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <ArrowLeft size={16} /> Back to Challenges
           </button>
         </div>
       </div>
@@ -214,269 +231,309 @@ function ProblemDetail() {
   }
 
   return (
-    <div className="fadeIn">
+    <div className="fadeIn leetcode-layout-wrapper">
       <div className="workspace-back-bar">
         <button
           onClick={() => navigate('/dashboard')}
           className="btn btn-ghost back-btn"
+          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
         >
-          ← Back to Challenges
+          <ArrowLeft size={16} /> Back to Challenges
         </button>
       </div>
 
-      <div className="problem-workspace">
-        {/* Left Panel — Problem Info */}
-        <div className="problem-info-panel">
-          <div className="problem-header">
-            <div className="problem-title-row">
-              <h1 className="problem-title">{problem.title}</h1>
-              <span className={`badge badge-lg ${getDifficultyClass(problem.difficulty)}`}>
-                {problem.difficulty}
-              </span>
-            </div>
-
-            {problem.tags && problem.tags.length > 0 && (
-              <div className="problem-tags">
-                {problem.tags.map((tag, index) => (
-                  <span key={index} className="badge badge-tag">
-                    {tag}
-                  </span>
-                ))}
+      <div className="leetcode-workspace">
+        {/* Left Pane: Problem Description */}
+        <div className="pane left-pane">
+          <div className="pane-content problem-info-panel">
+            <div className="problem-header">
+              <div className="problem-title-row">
+                <h1 className="problem-title">{problem.title}</h1>
+                <span className={`badge badge-lg ${getDifficultyClass(problem.difficulty)}`}>
+                  {problem.difficulty}
+                </span>
               </div>
-            )}
 
-            <div className="problem-constraints">
-              {problem.timeLimit && (
-                <div className="constraint-badge">
-                  <span className="constraint-icon">⏱️</span>
-                  <span>{problem.timeLimit}ms</span>
+              {problem.tags && problem.tags.length > 0 && (
+                <div className="problem-tags">
+                  {problem.tags.map((tag, index) => (
+                    <span key={index} className="badge badge-tag">{tag}</span>
+                  ))}
                 </div>
               )}
-              {problem.memoryLimit && (
-                <div className="constraint-badge">
-                  <span className="constraint-icon">💾</span>
-                  <span>{problem.memoryLimit}MB</span>
-                </div>
-              )}
-            </div>
-          </div>
 
-          <div className="problem-section">
-            <h2 className="section-title">Description</h2>
-            <div className="problem-description">
-              {problem.description?.split('\n').map((paragraph, index) => (
-                <p key={index}>{paragraph}</p>
-              ))}
-            </div>
-          </div>
-
-          {problem.inputFormat && (
-            <div className="problem-section">
-              <h2 className="section-title">Input Format</h2>
-              <div className="problem-description">
-                <p>{problem.inputFormat}</p>
-              </div>
-            </div>
-          )}
-
-          {problem.outputFormat && (
-            <div className="problem-section">
-              <h2 className="section-title">Output Format</h2>
-              <div className="problem-description">
-                <p>{problem.outputFormat}</p>
-              </div>
-            </div>
-          )}
-
-          {problem.sampleTestCases && problem.sampleTestCases.length > 0 && (
-            <div className="problem-section">
-              <h2 className="section-title">Sample Test Cases</h2>
-              <div className="test-cases">
-                {problem.sampleTestCases.map((tc, index) => (
-                  <div key={index} className="test-case-card">
-                    <div className="test-case-header">
-                      <span className="test-case-label">Example {index + 1}</span>
-                    </div>
-                    <div className="test-case-body">
-                      <div className="test-case-section">
-                        <span className="test-case-section-label">Input</span>
-                        <pre className="test-case-code">{tc.input}</pre>
-                      </div>
-                      <div className="test-case-section">
-                        <span className="test-case-section-label">Output</span>
-                        <pre className="test-case-code">{tc.expectedOutput}</pre>
-                      </div>
-                      {tc.explanation && (
-                        <div className="test-case-section">
-                          <span className="test-case-section-label">Explanation</span>
-                          <p className="test-case-explanation">{tc.explanation}</p>
-                        </div>
-                      )}
-                    </div>
+              <div className="problem-constraints">
+                {problem.timeLimit && (
+                  <div className="constraint-badge">
+                    <span className="constraint-icon"><Clock size={16} /></span>
+                    <span>{problem.timeLimit}ms</span>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Right Panel — Code Editor */}
-        <div className="code-editor-panel">
-          <div className="editor-toolbar">
-            <select
-              className="language-selector"
-              value={language}
-              onChange={handleLanguageChange}
-            >
-              <option value="python">Python</option>
-              <option value="javascript">JavaScript</option>
-              <option value="cpp">C++</option>
-              <option value="java">Java</option>
-            </select>
-          </div>
-
-          <div className="editor-wrapper">
-            <Editor
-              height="calc(100vh - 420px)"
-              theme="vs-dark"
-              language={LANGUAGE_MAP[language]}
-              value={code}
-              onChange={(value) => setCode(value || '')}
-              options={{
-                fontSize: 14,
-                minimap: { enabled: false },
-                automaticLayout: true,
-                scrollBeyondLastLine: false,
-                padding: { top: 16 },
-                fontFamily: "'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace",
-                lineNumbers: 'on',
-                renderLineHighlight: 'all',
-                smoothScrolling: true,
-                cursorBlinking: 'smooth',
-                cursorSmoothCaretAnimation: 'on',
-              }}
-            />
-          </div>
-
-          <div className="editor-actions">
-            <button
-              className="btn btn-run"
-              onClick={handleRun}
-              disabled={isRunning || isSubmitting}
-            >
-              {isRunning ? (
-                <span className="btn-loading">
-                  <span className="loading-spinner loading-spinner-sm"></span>
-                  Running...
-                </span>
-              ) : (
-                '▶ Run Code'
-              )}
-            </button>
-            <button
-              className="btn btn-submit"
-              onClick={handleSubmit}
-              disabled={isRunning || isSubmitting}
-            >
-              {isSubmitting ? (
-                <span className="btn-loading">
-                  <span className="loading-spinner loading-spinner-sm"></span>
-                  Submitting...
-                </span>
-              ) : (
-                '📤 Submit'
-              )}
-            </button>
-          </div>
-
-          {/* Results Panel */}
-          {results && (
-            <div className="results-panel fadeIn">
-              <div className="results-header">
-                <span className="results-title">
-                  {verdict ? 'Submission Results' : 'Run Results'}
-                </span>
-                {verdict && (
-                  <span className={`verdict-badge ${getVerdictClass(verdict)}`}>
-                    {getVerdictLabel(verdict)}
-                  </span>
+                )}
+                {problem.memoryLimit && (
+                  <div className="constraint-badge">
+                    <span className="constraint-icon"><Database size={16} /></span>
+                    <span>{problem.memoryLimit}MB</span>
+                  </div>
                 )}
               </div>
-              <div className="results-body">
-                {results.map((result, index) => (
-                  <div key={index}>
-                    <div className={`test-result-item ${result.passed ? 'passed' : 'failed'}`}>
-                      <span>
-                        {result.passed ? '✅' : '❌'}{' '}
-                        Test {result.testCase || index + 1}
-                        {result.isHidden ? ' (Hidden)' : ''}
+
+              <div style={{ display: 'flex', gap: '10px', marginTop: '20px', borderBottom: '1px solid var(--border-color)' }}>
+                <button 
+                  className={`btn btn-ghost ${leftTab === 'description' ? 'active-tab' : ''}`}
+                  onClick={() => setLeftTab('description')}
+                  style={{ borderBottom: leftTab === 'description' ? '2px solid var(--primary)' : 'none', borderRadius: '0' }}
+                >
+                  <BookOpen size={16} style={{marginRight: '6px'}}/> Description
+                </button>
+                <button 
+                  className={`btn btn-ghost ${leftTab === 'solutions' ? 'active-tab' : ''}`}
+                  onClick={() => setLeftTab('solutions')}
+                  style={{ borderBottom: leftTab === 'solutions' ? '2px solid var(--primary)' : 'none', borderRadius: '0' }}
+                >
+                  <MessageSquare size={16} style={{marginRight: '6px'}}/> Community Solutions
+                </button>
+                {problem.officialSolution && (
+                  <button 
+                    className={`btn btn-ghost ${leftTab === 'official' ? 'active-tab' : ''}`}
+                    onClick={() => setLeftTab('official')}
+                    style={{ borderBottom: leftTab === 'official' ? '2px solid var(--primary)' : 'none', borderRadius: '0', color: 'var(--color-easy)' }}
+                  >
+                    <CheckCircle size={16} style={{marginRight: '6px'}}/> Official Solution
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {leftTab === 'description' ? (
+              <>
+                <div className="problem-section">
+                  <div className="problem-description">
+                    {problem.description?.split('\n').map((paragraph, index) => (
+                      <p key={index}>{paragraph}</p>
+                    ))}
+                  </div>
+                </div>
+
+                {problem.hints && problem.hints.length > 0 && (
+                  <div className="problem-section hints-section">
+                    <button 
+                      className="btn btn-outline" 
+                      onClick={() => setShowHints(!showHints)}
+                      style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}
+                    >
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Lightbulb size={16} color="var(--color-medium)"/> 
+                        {showHints ? 'Hide Hints' : `Show Hints (${problem.hints.length})`}
                       </span>
-                      <span>
-                        {result.executionTime ? `${result.executionTime}ms` : ''}
-                      </span>
-                    </div>
-                    {!result.passed && !result.isHidden && (
-                      <div className="test-result-detail">
-                        {result.error ? (
-                          <div>
-                            <span style={{ color: 'var(--color-hard)' }}>Error: </span>
-                            {result.error}
+                    </button>
+                    {showHints && (
+                      <div className="hints-list" style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {problem.hints.map((hint, idx) => (
+                          <div key={idx} style={{ padding: '12px', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-sm)', borderLeft: '3px solid var(--color-medium)' }}>
+                            <strong>Hint {idx + 1}:</strong> {hint}
                           </div>
-                        ) : (
-                          <>
-                            {result.expectedOutput !== undefined && (
-                              <div>
-                                <span style={{ color: 'var(--text-muted)' }}>Expected: </span>
-                                <span style={{ color: 'var(--color-easy)' }}>{result.expectedOutput}</span>
-                              </div>
-                            )}
-                            {result.actualOutput !== undefined && (
-                              <div>
-                                <span style={{ color: 'var(--text-muted)' }}>Actual: </span>
-                                <span style={{ color: 'var(--color-hard)' }}>{result.actualOutput}</span>
-                              </div>
-                            )}
-                          </>
-                        )}
+                        ))}
                       </div>
                     )}
                   </div>
-                ))}
+                )}
+
+                {problem.sampleTestCases && problem.sampleTestCases.length > 0 && (
+              <div className="problem-section">
+                <h2 className="section-title">Sample Test Cases</h2>
+                <div className="test-cases">
+                  {problem.sampleTestCases.map((tc, index) => (
+                    <div key={index} className="test-case-card">
+                      <div className="test-case-header">
+                        <span className="test-case-label">Example {index + 1}</span>
+                      </div>
+                      <div className="test-case-body">
+                        <div className="test-case-section">
+                          <span className="test-case-section-label">Input</span>
+                          <pre className="test-case-code">{tc.input}</pre>
+                        </div>
+                        <div className="test-case-section">
+                          <span className="test-case-section-label">Output</span>
+                          <pre className="test-case-code">{tc.expectedOutput}</pre>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            </>
+            ) : leftTab === 'official' && problem.officialSolution ? (
+              <div className="problem-section" style={{ padding: 'var(--space-lg)' }}>
+                <h2 className="section-title text-xl font-bold mb-4" style={{ color: 'var(--color-easy)' }}>Official Solution</h2>
+                <div className="mb-6 p-4 rounded-xl" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', border: '1px solid var(--color-easy)' }}>
+                  <h3 className="font-semibold mb-2">Layman Explanation</h3>
+                  <p style={{ color: 'var(--text-secondary)' }}>{problem.officialSolution.explanation}</p>
+                </div>
+                
+                <h3 className="font-semibold mb-3">Solution Code ({language})</h3>
+                {problem.officialSolution.code && problem.officialSolution.code[language] ? (
+                  <pre className="p-4 rounded-xl overflow-x-auto" style={{ backgroundColor: '#000', border: '1px solid var(--border-color)', fontFamily: 'monospace' }}>
+                    <code>{problem.officialSolution.code[language]}</code>
+                  </pre>
+                ) : (
+                  <div className="p-4 text-center text-gray-500 italic">No official code available for {language}.</div>
+                )}
+              </div>
+            ) : (
+              <SolutionsTab problemId={id} />
+            )}
+          </div>
+        </div>
+
+        {/* Right Pane: Code Editor + Console */}
+        <div className="pane right-pane">
+          {/* Top Half: Editor */}
+          <div className="editor-container">
+            <div className="editor-toolbar">
+              <select
+                className="language-selector"
+                value={language}
+                onChange={handleLanguageChange}
+              >
+                <option value="python">Python</option>
+                <option value="javascript">JavaScript</option>
+                <option value="cpp">C++</option>
+                <option value="java">Java</option>
+              </select>
+              
+              <div className="editor-actions-top">
+                <button className="btn btn-outline btn-sm" onClick={handleRun} disabled={isRunning || isSubmitting}>
+                  {isRunning ? 'Running...' : <><Play size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }}/> Run</>}
+                </button>
+                <button className="btn btn-primary btn-sm" onClick={handleSubmit} disabled={isRunning || isSubmitting}>
+                  {isSubmitting ? 'Submitting...' : <><Send size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }}/> Submit</>}
+                </button>
               </div>
             </div>
-          )}
+            
+            <div className="editor-wrapper">
+              <Editor
+                height="100%"
+                theme="vs-dark"
+                language={LANGUAGE_MAP[language]}
+                value={code}
+                onChange={(value) => setCode(value || '')}
+                options={{
+                  fontSize: 14,
+                  minimap: { enabled: false },
+                  automaticLayout: true,
+                  padding: { top: 16 },
+                  fontFamily: "'JetBrains Mono', monospace",
+                  smoothScrolling: true,
+                }}
+              />
+            </div>
+          </div>
 
-          {/* AI Feedback Section */}
-          {hasSubmitted.current && (
-            <div className="ai-feedback-section fadeIn">
-              <button
-                className="btn btn-ai"
-                onClick={handleAIFeedback}
-                disabled={aiLoading}
+          {/* Bottom Half: Console */}
+          <div className="console-container">
+            <div className="console-header">
+              <button 
+                className={`console-tab ${consoleTab === 'testcases' ? 'active' : ''}`}
+                onClick={() => setConsoleTab('testcases')}
               >
-                {aiLoading ? (
-                  <span className="btn-loading">
-                    <span className="loading-spinner loading-spinner-sm"></span>
-                    Analyzing your code...
-                  </span>
-                ) : (
-                  '🤖 Get AI Feedback'
-                )}
+                Testcases
               </button>
-
-              {aiFeedback && (
-                <div className="ai-feedback-card fadeIn">
-                  <div className="ai-feedback-header">
-                    <span className="ai-feedback-title">🤖 AI Analysis</span>
-                  </div>
-                  <div
-                    className="ai-feedback-content"
-                    dangerouslySetInnerHTML={{ __html: renderMarkdown(typeof aiFeedback === 'string' ? aiFeedback : JSON.stringify(aiFeedback)) }}
+              <button 
+                className={`console-tab ${consoleTab === 'result' ? 'active' : ''}`}
+                onClick={() => setConsoleTab('result')}
+              >
+                Test Result
+              </button>
+            </div>
+            
+            <div className="console-body">
+              {consoleTab === 'testcases' && (
+                <div className="console-testcases">
+                  <p className="console-label">Custom Input (Provide input matching the problem format):</p>
+                  <textarea 
+                    className="custom-input-textarea"
+                    value={customInput}
+                    onChange={(e) => setCustomInput(e.target.value)}
+                    placeholder="e.g. [2,7,11,15]\n9"
                   />
                 </div>
               )}
+
+              {consoleTab === 'result' && (
+                <div className="console-result">
+                  {!results && !verdict && (
+                    <div className="console-empty">
+                      Run your code or submit to see results.
+                    </div>
+                  )}
+
+                  {verdict && (
+                    <div className="verdict-banner">
+                      <span className={`verdict-badge ${getVerdictClass(verdict)}`}>
+                        {getVerdictLabel(verdict)}
+                      </span>
+                    </div>
+                  )}
+
+                  {results && results.map((result, index) => (
+                    <div key={index} className="result-card" style={{ marginBottom: '16px' }}>
+                      <div className={`result-status ${result.passed ? 'passed' : 'failed'}`}>
+                        {result.passed ? <><CheckCircle size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> Test Case Passed</> : <><XCircle size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> Test Case Failed</>}
+                        {result.isHidden && ' (Hidden)'}
+                      </div>
+                      
+                      {!result.passed && !result.isHidden && (
+                        <div className="result-details">
+                          {result.error ? (
+                            <div className="result-block error-block">
+                              <strong>Runtime Error:</strong>
+                              <pre>{result.error}</pre>
+                            </div>
+                          ) : (
+                            <>
+                              <div className="result-block">
+                                <strong>Input:</strong>
+                                <pre>{result.input}</pre>
+                              </div>
+                              <div className="result-block">
+                                <strong>Your Output:</strong>
+                                <pre className="actual-output" style={{ color: 'var(--color-hard)' }}>{result.actualOutput}</pre>
+                              </div>
+                              <div className="result-block">
+                                <strong>Expected:</strong>
+                                <pre className="expected-output" style={{ color: 'var(--color-easy)' }}>{result.expectedOutput}</pre>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+
+                  {/* AI Feedback Box inside Results */}
+                  {hasSubmitted.current && (
+                    <div className="ai-feedback-section" style={{ marginTop: '24px' }}>
+                      <button className="btn btn-ai" onClick={handleAIFeedback} disabled={aiLoading}>
+                        {aiLoading ? 'Analyzing...' : <><Bot size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> Get AI Feedback</>}
+                      </button>
+                      
+                      {aiFeedback && (
+                        <div className="ai-feedback-card" style={{ marginTop: '16px' }}>
+                          <div className="ai-feedback-header" style={{ fontWeight: 'bold', marginBottom: '8px' }}><Bot size={20} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> AI Analysis</div>
+                          <div
+                            className="ai-feedback-content"
+                            dangerouslySetInnerHTML={{ __html: renderMarkdown(typeof aiFeedback === 'string' ? aiFeedback : JSON.stringify(aiFeedback)) }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

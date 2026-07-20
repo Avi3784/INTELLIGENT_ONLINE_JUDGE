@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getProblems } from '../services/api'
 import ProblemCard from '../components/ProblemCard'
+import { Lightbulb, AlertTriangle, Inbox } from 'lucide-react'
 
 function Dashboard() {
   const [problems, setProblems] = useState([])
@@ -44,7 +45,7 @@ function Dashboard() {
       <div className="dashboard-header">
         <div className="dashboard-header-text">
           <h1 className="page-title">
-            <span className="title-icon">💡</span>
+            <span className="title-icon"><Lightbulb size={32} /></span>
             Challenges
           </h1>
           <p className="page-subtitle">
@@ -88,7 +89,7 @@ function Dashboard() {
 
       {error && !loading && (
         <div className="empty-state">
-          <div className="empty-icon">⚠️</div>
+          <div className="empty-icon"><AlertTriangle size={48} /></div>
           <h2 className="empty-title">Something went wrong</h2>
           <p className="empty-text">{error}</p>
           <button onClick={fetchProblems} className="btn btn-primary">
@@ -99,7 +100,7 @@ function Dashboard() {
 
       {!loading && !error && filteredProblems.length === 0 && (
         <div className="empty-state">
-          <div className="empty-icon">📭</div>
+          <div className="empty-icon"><Inbox size={48} /></div>
           <h2 className="empty-title">No problems found</h2>
           <p className="empty-text">
             {filter === 'ALL'

@@ -10,6 +10,7 @@ const problemRoutes = require('./routes/problems');
 const submissionRoutes = require('./routes/submissions');
 const aiRoutes = require('./routes/ai');
 const userRoutes = require('./routes/users');
+const solutionRoutes = require('./routes/solutions');
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use('/api/problems', problemRoutes);
 app.use('/api/submissions', submissionRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/solutions', solutionRoutes);
 
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err.stack);

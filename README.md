@@ -1,117 +1,37 @@
-# The Intelligent Visual Judge ⚖️
+# Intelligent Visual Judge
 
-A full-stack online judge platform built with the MERN stack. Practice coding problems, get instant verdicts, and receive AI-powered feedback on your solutions.
+## What is this project?
+This is a website where you can write code, run it to see if it works, and learn how computer algorithms work by looking at pictures. 
 
-## Features
+It has three main parts:
+1. A place to write and test code.
+2. A place to see how sorting algorithms work using moving dots on a graph.
+3. A place to share your answers with other people and see what they wrote.
 
-- **JWT Authentication** — Secure register/login with token-based sessions
-- **Problem Dashboard** — Browse problems by difficulty (Easy/Medium/Hard) with tags
-- **Monaco Code Editor** — Full-featured in-browser editor with syntax highlighting
-- **Multi-Language Support** — Python, JavaScript, C++, Java
-- **Code Execution Engine** — Sandboxed execution with time/memory limits
-- **AI Feedback** — Gemini-powered code review with optimization suggestions
-- **User Profiles** — Track solved problems, submission history, and stats
-- **Premium Dark UI** — Glassmorphism design with smooth animations
+## How it works
 
-## Tech Stack
+### 1. Code Compiler
+When you write code on our website and click submit, the website sends your code to the backend server. The backend creates a safe, isolated space to run your code. It feeds test data into your code and checks if the output matches the correct answer. If your code is too slow or uses too much memory, it stops it. It supports four languages: C++, Java, Python, and JavaScript.
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 19 + Vite |
-| Editor | Monaco Editor |
-| Backend | Express.js + Node.js |
-| Database | MongoDB Atlas + Mongoose |
-| Auth | JWT + bcrypt |
-| AI | Google Gemini API |
-| Styling | Custom CSS (glassmorphism dark theme) |
+### 2. Algorithm Visualizer
+Sorting numbers is a common task in computer science. To help you understand how different sorting methods work, we built a visualizer. It shows numbers as dots on a graph. As the computer sorts the numbers, you can watch the dots move and swap places in real time. We included 15 different ways to sort numbers, so you can see which ones are fast and which ones are slow.
 
-## Getting Started
+### 3. Community Solutions
+When you solve a problem, you can share your code and explain how you did it. Other users can read your explanation and look at your code. If they think your answer is good, they can upvote it. This creates a helpful community where everyone can learn from each other.
 
-### Prerequisites
-- Node.js 18+
-- MongoDB Atlas account (or local MongoDB)
-- Python 3 / GCC / JDK (for code execution)
+### 4. AI Feedback
+If your code has an error, our system uses an AI to read your code. The AI will point out where the bug is, tell you how fast your code runs, and give you hints on how to fix it.
 
-### 1. Clone the repo
-```bash
-git clone https://github.com/Avi3784/INTELLIGENT_ONLINE_JUDGE.git
-cd INTELLIGENT_ONLINE_JUDGE
-```
+## Technology Stack
+- **React.js**: Used to build the screens you see and click on.
+- **Node.js and Express.js**: Used to run the backend server that processes data and runs your code.
+- **MongoDB**: A database used to store users, problems, and community solutions safely.
 
-### 2. Backend setup
-```bash
-cd backend
-npm install
-```
-
-Create a `.env` file in `/backend`:
-```env
-PORT=5000
-MONGO_URI=your_mongodb_atlas_connection_string
-JWT_SECRET=your_jwt_secret_key
-GEMINI_API_KEY=your_gemini_api_key
-```
-
-### 3. Seed the database
-```bash
-npm run seed
-```
-
-### 4. Frontend setup
-```bash
-cd ../frontend
-npm install
-```
-
-### 5. Run the app
-Start backend (from `/backend`):
-```bash
-npm start
-```
-
-Start frontend (from `/frontend`):
-```bash
-npm run dev
-```
-
-Open `http://localhost:5173` in your browser.
-
-## Project Structure
-
-```
-├── backend/
-│   ├── config/          # Database connection
-│   ├── middleware/       # JWT auth & admin guards
-│   ├── models/          # Mongoose schemas (User, Problem, Submission)
-│   ├── routes/          # API endpoints (auth, problems, submissions, ai, users)
-│   ├── services/        # Code execution engine
-│   ├── seed/            # Database seeder
-│   └── server.js        # Express entry point
-│
-├── frontend/
-│   └── src/
-│       ├── components/  # Navbar, ProblemCard, ProtectedRoute
-│       ├── context/     # AuthContext (global auth state)
-│       ├── pages/       # Dashboard, ProblemDetail, Profile, Login, Register
-│       ├── services/    # Axios API client
-│       └── App.css      # Premium dark theme stylesheet
-```
-
-## API Endpoints
-
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| POST | `/api/auth/register` | Register new user | — |
-| POST | `/api/auth/login` | Login | — |
-| GET | `/api/auth/me` | Get current user | ✅ |
-| GET | `/api/problems` | List problems | — |
-| GET | `/api/problems/:id` | Get problem detail | — |
-| POST | `/api/submissions` | Submit solution | ✅ |
-| POST | `/api/submissions/run` | Run against samples | ✅ |
-| GET | `/api/submissions` | Submission history | ✅ |
-| POST | `/api/ai/feedback` | Get AI feedback | ✅ |
-| GET | `/api/users/profile` | User profile + stats | ✅ |
-
-## License
-
-ISC
+## How to run it locally
+1. Open a terminal and go to the backend folder.
+2. Run `npm install` to download all the needed files.
+3. Run `npm run dev` to start the backend server.
+4. Open a second terminal and go to the frontend folder.
+5. Run `npm install` again for the frontend files.
+6. Run `npm run dev` to start the frontend website.
+7. Open the link it gives you in your web browser.
