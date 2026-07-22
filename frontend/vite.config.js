@@ -10,6 +10,10 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./tests/setup.js']
+  },
   server: {
     // Proxy API requests to the Express backend during development
     proxy: {

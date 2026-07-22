@@ -5,6 +5,8 @@ const Submission = require('../models/Submission');
 const Problem = require('../models/Problem');
 const User = require('../models/User');
 const { executeCode } = require('../services/executor');
+const { submissionQueue } = require('../queue');
+const mongoose = require('mongoose');
 
 // Strip hidden test case details from results
 function stripHiddenDetails(testResults) {
@@ -65,26 +67,18 @@ router.post('/', protect, async (req, res) => {
       verdict: 'PENDING',
     });
 
-    // Execute code
-    const results = await executeCode(code, language, allTestCases, problem.timeLimit, problem.methodName, problem.driverCode);
-    const verdict = determineVerdict(results);
-    const totalExecTime = results.reduce((sum, r) => sum + (r.executionTime || 0), 0);
-    const passedCount = results.filter((r) => r.passed).length;
-
-    // Update submission
-    submission.verdict = verdict;
-    submission.testResults = results;
-    submission.executionTime = totalExecTime;
-    submission.totalTestCases = results.length;
-    submission.passedTestCases = passedCount;
-    await submission.save();
-
-    // If AC, add to solved problems
-    if (verdict === 'AC') {
-      await User.findByIdAndUpdate(req.user._id, {
-        $addToSet: { solvedProblems: problemId },
-      });
-    }
+    // Queue the execution job
+    await submissionQueue.add('execute', {
+      submissionId: submission._id,
+      code,
+      language,
+      allTestCases,
+      timeLimit: problem.timeLimit,
+      methodName: problem.methodName,
+      driverCode: problem.driverCode,
+      userId: req.user._id,
+      problemId
+    });
 
     // Return with hidden details stripped
     const responseObj = submission.toObject();

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Square, RotateCcw, Activity, Settings2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import '../Visualizer.css';
 
 const ALGORITHMS = [
   { id: 'bubble', name: 'Bubble Sort', time: 'O(n²)' },
@@ -40,6 +41,12 @@ const AlgorithmVisualizer = () => {
   
   // Used to stop the animation midway if the user clicks stop
   const abortControllerRef = useRef(null);
+  
+  // Use a ref for speed so the sorting loop can read the latest value without closure traps
+  const speedRef = useRef(speed);
+  useEffect(() => {
+    speedRef.current = speed;
+  }, [speed]);
 
   // Generate a new array whenever the array size changes
   useEffect(() => {
@@ -64,13 +71,26 @@ const AlgorithmVisualizer = () => {
   // Helper function to pause execution for animations
   const sleep = (ms) => {
     return new Promise((resolve, reject) => {
-      const timeout = setTimeout(resolve, ms);
-      if (abortControllerRef.current) {
-        abortControllerRef.current.signal.addEventListener('abort', () => {
-          clearTimeout(timeout);
-          reject(new Error('Aborted'));
-        });
+      if (abortControllerRef.current?.signal.aborted) {
+        return reject(new Error('Aborted'));
       }
+      
+      let timeout;
+      const abortHandler = () => {
+        clearTimeout(timeout);
+        reject(new Error('Aborted'));
+      };
+      
+      if (abortControllerRef.current) {
+        abortControllerRef.current.signal.addEventListener('abort', abortHandler);
+      }
+      
+      timeout = setTimeout(() => {
+        if (abortControllerRef.current) {
+          abortControllerRef.current.signal.removeEventListener('abort', abortHandler);
+        }
+        resolve();
+      }, ms);
     });
   };
 
@@ -78,7 +98,7 @@ const AlgorithmVisualizer = () => {
   const updateState = async (newArr, active = []) => {
     setArray([...newArr]);
     setActiveIndices(active);
-    await sleep(210 - speed);
+    await sleep(210 - speedRef.current); // Use ref to get live speed updates
   };
 
   // --- Sorting Algorithms ---
@@ -306,8 +326,8 @@ const AlgorithmVisualizer = () => {
         if (arr[i].value < item.value) pos++;
       }
       if (pos === cycleStart) continue;
-      while (item.value === arr[pos].value) pos += 1;
-      if (pos !== cycleStart) {
+      while (pos < n && item.value === arr[pos].value) pos += 1;
+      if (pos < n && pos !== cycleStart) {
         let temp = item;
         item = arr[pos];
         arr[pos] = temp;
@@ -320,8 +340,8 @@ const AlgorithmVisualizer = () => {
           await updateState(arr, [i, pos]);
           if (arr[i].value < item.value) pos += 1;
         }
-        while (item.value === arr[pos].value) pos += 1;
-        if (item.value !== arr[pos].value) {
+        while (pos < n && item.value === arr[pos].value) pos += 1;
+        if (pos < n && item.value !== arr[pos].value) {
           let temp = item;
           item = arr[pos];
           arr[pos] = temp;
@@ -455,33 +475,43 @@ const AlgorithmVisualizer = () => {
         case 'counting': await countingSort(arrCopy); break;
         case 'oddeven': await oddEvenSort(arrCopy); break;
       }
+      
+      // Completion sweep
+      for (let i = 0; i < arrCopy.length; i++) {
+        if (abortControllerRef.current?.signal.aborted) break;
+        setActiveIndices([i]);
+        await new Promise(r => setTimeout(r, 10)); // Quick sweep
+      }
     } catch (err) {
-      console.log('Sorting aborted');
+      if (err.message !== 'Aborted') {
+        console.error('Sorting error:', err);
+      }
+    } finally {
+      setActiveIndices([]);
+      setIsSorting(false);
     }
-    setActiveIndices([]);
-    setIsSorting(false);
   };
 
   return (
-    <div className="min-h-screen py-8 px-4 max-w-7xl mx-auto">
+    <div className="vis-container fadeIn">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold flex items-center gap-3 text-white mb-2">
-          <Activity className="text-[var(--primary)]" size={32} /> Algorithm Visualizer
+      <div className="vis-header">
+        <h1 className="vis-title">
+          <Activity style={{ color: 'var(--primary)' }} size={32} /> Algorithm Visualizer
         </h1>
-        <p className="text-[var(--text-secondary)]">
-          Watch exactly how different sorting algorithms structure data over time via Scatter Plot visualization.
+        <p className="vis-subtitle">
+          Watch exactly how different sorting algorithms structure data over time via Histogram visualization.
         </p>
       </div>
 
       {/* Control Panel */}
-      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl p-6 mb-8 flex flex-col md:flex-row flex-wrap gap-6 items-center justify-between shadow-[0_0_20px_rgba(99,102,241,0.05)]">
-        <div className="flex flex-wrap items-center gap-6">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Algorithm</label>
+      <div className="vis-controls">
+        <div className="vis-control-group">
+          <div className="vis-control-item">
+            <label className="vis-label">Algorithm</label>
             <select 
               disabled={isSorting}
-              className="px-4 py-2.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] text-white focus:outline-none focus:border-[var(--primary)] transition-colors min-w-[200px]"
+              className="vis-select"
               value={algorithm}
               onChange={(e) => setAlgorithm(e.target.value)}
             >
@@ -489,74 +519,85 @@ const AlgorithmVisualizer = () => {
             </select>
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Array Size ({arraySize})</label>
+          <div className="vis-control-item">
+            <label className="vis-label">Array Size ({arraySize})</label>
             <input 
               type="range" 
               min="10" max="150" 
               disabled={isSorting}
               value={arraySize} 
               onChange={(e) => setArraySize(parseInt(e.target.value))}
-              className="w-32 accent-[var(--primary)]"
+              className="vis-range"
             />
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Speed</label>
+          <div className="vis-control-item">
+            <label className="vis-label">Speed</label>
             <input 
               type="range" 
               min="10" max="200" 
               value={speed} 
               onChange={(e) => setSpeed(parseInt(e.target.value))}
-              className="w-32 accent-[var(--primary)]"
+              className="vis-range"
             />
           </div>
         </div>
 
-        <div className="flex gap-4">
+        <div className="vis-actions">
           <button 
             onClick={isSorting ? stopSorting : resetArray} 
-            className="btn btn-outline flex items-center gap-2"
+            className="btn btn-outline"
+            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
           >
             {isSorting ? <><Square size={16} /> Stop</> : <><RotateCcw size={16} /> Randomize</>}
           </button>
           <button 
             disabled={isSorting}
             onClick={handleRun} 
-            className="btn btn-primary flex items-center gap-2 shadow-[0_0_15px_rgba(99,102,241,0.4)]"
+            className="btn btn-primary"
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 0 15px rgba(99,102,241,0.4)' }}
           >
             <Play size={16} fill="currentColor" /> Visualize
           </button>
         </div>
       </div>
 
-      {/* Visualization Canvas (Scatter Plot Graph) */}
-      <div className="bg-[#0a0a0f] border border-[var(--border-color)] rounded-2xl p-6 shadow-inner relative overflow-hidden" style={{ height: '60vh', minHeight: '500px' }}>
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] opacity-20" style={{ pointerEvents: 'none' }}></div>
+      {/* Visualization Canvas (Histogram Graph) */}
+      <div className="vis-canvas">
+        <div className="vis-grid"></div>
         
-        <div className="relative w-full h-full flex items-end justify-between px-2">
+        <div className="vis-stage" style={{ padding: 0 }}>
           {array.map((item, index) => {
             const isActive = activeIndices.includes(index);
-            // X position calculation (evenly spaced)
-            const leftPercent = (index / (array.length - 1 || 1)) * 100;
+            // Width and left position calculated based on array size
+            const widthPercent = 100 / array.length;
+            const leftPercent = index * widthPercent;
             
             return (
               <motion.div
                 key={item.id}
-                layout
-                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                className="absolute transform -translate-x-1/2"
+                animate={{
+                  left: `${leftPercent}%`,
+                  height: `${item.value}%`
+                }}
+                transition={speed > 160 ? { duration: 0 } : { type: 'spring', stiffness: 400, damping: 30 }}
                 style={{
-                  left: `calc(${leftPercent}% - ${leftPercent === 100 ? 10 : (leftPercent === 0 ? -10 : 0)}px)`, // Keep edges inside
-                  bottom: `${item.value}%`,
+                  position: 'absolute',
+                  bottom: 0,
+                  width: `${widthPercent}%`,
+                  padding: '0 1px', // Small gap between bars
                   zIndex: isActive ? 10 : 1
                 }}
               >
                 <div 
-                  className={`rounded-full transition-all duration-150 ${isActive ? 'bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.8)] scale-150 z-10' : 'bg-[var(--primary-light)] shadow-[0_0_8px_rgba(99,102,241,0.5)]'}`}
+                  className={`vis-bar ${isActive ? 'active' : 'inactive'}`}
                   style={{
-                    width: Math.max(6, Math.min(16, 800 / array.length)) + 'px',
-                    height: Math.max(6, Math.min(16, 800 / array.length)) + 'px',
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: isActive ? (isSorting ? '#ef4444' : '#10b981') : 'var(--primary-light)',
+                    borderRadius: '4px 4px 0 0',
+                    boxShadow: isActive ? (isSorting ? '0 0 12px rgba(239, 68, 68, 0.8)' : '0 0 12px rgba(16, 185, 129, 0.8)') : 'none',
+                    transition: 'background-color 0.15s ease'
                   }}
                 />
               </motion.div>

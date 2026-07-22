@@ -34,6 +34,11 @@ function Navbar() {
             Profile
           </Link>
         )}
+        {user?.isAdmin && (
+          <Link to="/admin" className="navbar-link text-primary font-bold">
+            Admin Panel
+          </Link>
+        )}
       </div>
 
       <div className="navbar-right">

@@ -105,9 +105,9 @@ function Profile() {
 
   const solvedCount = profile.solvedCount || profile.totalSolved || 0
   const totalSubmissions = profile.totalSubmissions || profile.submissionCount || 0
-  const easySolved = profile.easySolved || profile.easy || 0
-  const mediumSolved = profile.mediumSolved || profile.medium || 0
-  const hardSolved = profile.hardSolved || profile.hard || 0
+  const easySolved = profile.difficultyBreakdown?.easy || profile.easySolved || profile.easy || 0
+  const mediumSolved = profile.difficultyBreakdown?.medium || profile.mediumSolved || profile.medium || 0
+  const hardSolved = profile.difficultyBreakdown?.hard || profile.hardSolved || profile.hard || 0
   const acceptanceRate = totalSubmissions > 0
     ? ((solvedCount / totalSubmissions) * 100).toFixed(1)
     : 'N/A'

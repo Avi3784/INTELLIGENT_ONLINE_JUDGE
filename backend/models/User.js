@@ -17,10 +17,25 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
-    // We NEVER store plain text passwords
+    // We NEVER store plain text passwords. Make required false to allow OAuth users.
     passwordHash: {
       type: String,
-      required: [true, 'Password hash is required'],
+      required: false,
+    },
+    
+    // OAuth Fields
+    authProvider: {
+      type: String,
+      default: 'local',
+      enum: ['local', 'github', 'google']
+    },
+    providerId: {
+      type: String,
+      default: null
+    },
+    avatar: {
+      type: String,
+      default: null
     },
 
     isAdmin: {

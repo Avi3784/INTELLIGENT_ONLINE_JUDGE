@@ -119,8 +119,13 @@ function ProblemDetail() {
     setVerdict(null)
     setConsoleTab('result')
     try {
-      // If custom input is not empty, use it. Otherwise rely on backend defaults.
-      const customTestCases = customInput.trim() ? [{ input: customInput, expectedOutput: '' }] : []
+      // If custom input matches a sample test case, use its expected output
+      let expectedOut = '';
+      if (problem && problem.sampleTestCases) {
+        const matchedTc = problem.sampleTestCases.find(tc => tc.input === customInput);
+        if (matchedTc) expectedOut = matchedTc.expectedOutput || '';
+      }
+      const customTestCases = customInput.trim() ? [{ input: customInput, expectedOutput: expectedOut }] : []
       const response = await runCode({ problemId: id, language, code, customTestCases })
       const data = response.data.data || response.data
       setResults(data.testResults || data.results || [])
@@ -169,7 +174,8 @@ function ProblemDetail() {
       setAiFeedback(data.feedback || data.message || data)
     } catch (err) {
       console.error('AI feedback error:', err)
-      setAiFeedback('Failed to get AI feedback. Please try again.')
+      const msg = err.response?.data?.message || err.message || 'Failed to get AI feedback. Please try again.'
+      setAiFeedback(`**Error:** ${msg}`)
     } finally {
       setAiLoading(false)
     }
@@ -479,8 +485,10 @@ function ProblemDetail() {
 
                   {results && results.map((result, index) => (
                     <div key={index} className="result-card" style={{ marginBottom: '16px' }}>
-                      <div className={`result-status ${result.passed ? 'passed' : 'failed'}`}>
-                        {result.passed ? <><CheckCircle size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> Test Case Passed</> : <><XCircle size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> Test Case Failed</>}
+                      <div className={`result-status ${result.passed || result.expectedOutput === '' ? 'passed' : 'failed'}`}>
+                        {result.passed ? <><CheckCircle size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> Test Case Passed</> : 
+                         result.expectedOutput === '' ? <><CheckCircle size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> Execution Complete</> : 
+                         <><XCircle size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> Test Case Failed</>}
                         {result.isHidden && ' (Hidden)'}
                       </div>
                       
@@ -499,14 +507,30 @@ function ProblemDetail() {
                               </div>
                               <div className="result-block">
                                 <strong>Your Output:</strong>
-                                <pre className="actual-output" style={{ color: 'var(--color-hard)' }}>{result.actualOutput}</pre>
+                                <pre className="actual-output" style={{ color: result.expectedOutput === '' ? 'var(--text-primary)' : 'var(--color-hard)' }}>{result.actualOutput}</pre>
                               </div>
-                              <div className="result-block">
-                                <strong>Expected:</strong>
-                                <pre className="expected-output" style={{ color: 'var(--color-easy)' }}>{result.expectedOutput}</pre>
-                              </div>
+                              {result.expectedOutput !== '' && (
+                                <div className="result-block">
+                                  <strong>Expected:</strong>
+                                  <pre className="expected-output" style={{ color: 'var(--color-easy)' }}>{result.expectedOutput}</pre>
+                                </div>
+                              )}
                             </>
                           )}
+                        </div>
+                      )}
+                      
+                      {/* Show output if execution completed without expectedOutput (custom testcase) */}
+                      {result.passed === false && !result.isHidden && !result.error && result.expectedOutput === '' && (
+                        <div className="result-details">
+                          <div className="result-block">
+                            <strong>Input:</strong>
+                            <pre>{result.input}</pre>
+                          </div>
+                          <div className="result-block">
+                            <strong>Output:</strong>
+                            <pre className="actual-output" style={{ color: 'var(--text-primary)' }}>{result.actualOutput}</pre>
+                          </div>
                         </div>
                       )}
                     </div>

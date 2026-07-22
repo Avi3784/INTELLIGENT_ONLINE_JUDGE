@@ -1,0 +1,148 @@
+.vis-container {
+  min-height: 100vh;
+  padding: var(--space-xl) var(--space-md);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.vis-header {
+  margin-bottom: var(--space-xl);
+}
+
+.vis-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-xs) 0;
+}
+
+.vis-subtitle {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.vis-controls {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  box-shadow: 0 0 20px rgba(99,102,241,0.05);
+  backdrop-filter: var(--glass-blur);
+}
+
+@media (min-width: 768px) {
+  .vis-controls {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.vis-control-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.vis-control-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vis-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.vis-select {
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color var(--transition-fast);
+  min-width: 200px;
+}
+
+.vis-select:focus {
+  border-color: var(--primary);
+}
+
+.vis-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.vis-range {
+  width: 120px;
+  accent-color: var(--primary);
+}
+
+.vis-actions {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.vis-canvas {
+  background: #0a0a0f;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  height: 60vh;
+  min-height: 500px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+}
+
+.vis-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.vis-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0 10px;
+}
+
+.vis-dot-container {
+  position: absolute;
+}
+
+.vis-dot {
+  border-radius: 50%;
+  transition: all 0.15s ease;
+}
+
+.vis-dot.active {
+  background-color: #ef4444;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.8);
+  transform: scale(1.5);
+}
+
+.vis-dot.inactive {
+  background-color: var(--primary-light);
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
+}

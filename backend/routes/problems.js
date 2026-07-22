@@ -1,6 +1,7 @@
 const express = require('express');
 const Problem = require('../models/Problem');
 const { protect, adminOnly } = require('../middleware/auth');
+const redis = require('../config/redis');
 
 const router = express.Router();
 
@@ -16,6 +17,12 @@ router.get('/', async (req, res) => {
 
     const pageNum = Math.max(1, parseInt(page, 10) || 1);
     const limitNum = Math.max(1, Math.min(100, parseInt(limit, 10) || 20)); // Cap at 100
+
+    const cacheKey = `problems:page:${pageNum}:limit:${limitNum}:diff:${difficulty || 'all'}`;
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+      return res.json(JSON.parse(cached));
+    }
 
     const total = await Problem.countDocuments(filter);
 

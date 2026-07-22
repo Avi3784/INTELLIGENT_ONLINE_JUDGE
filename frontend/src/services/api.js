@@ -39,4 +39,14 @@ export const getSolutions = (problemId) => API.get(`/solutions/problem/${problem
 export const postSolution = (data) => API.post('/solutions', data)
 export const upvoteSolution = (id) => API.put(`/solutions/${id}/upvote`)
 
+// Admin Routes
+export const getAdminStats = () => API.get('/admin/stats')
+export const getAdminUsers = () => API.get('/admin/users')
+export const toggleUserRole = (id) => API.put(`/admin/users/${id}/role`)
+export const deleteUser = (id) => API.delete(`/admin/users/${id}`)
+
+export const createProblem = (data) => API.post('/problems', data)
+export const updateProblem = (id, data) => API.put(`/problems/${id}`, data)
+export const deleteProblem = (id) => API.delete(`/problems/${id}`)
+
 export default API

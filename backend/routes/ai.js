@@ -33,12 +33,16 @@ ${code}
 \`\`\`
 
 Provide:
-1. Code Review: Identify bugs, logic errors, or edge cases
-2. Optimization: Suggest improvements for time/space complexity
-3. Complexity Analysis: State the time and space complexity
-4. Tips: Give 2-3 actionable tips to improve
+1. Code Review: Identify bugs, logic errors, or edge cases. Use precise software engineering terminology.
+2. Optimization: Suggest improvements for time/space complexity using Big O notation strictly.
+3. Complexity Analysis: State the time and space complexity with rigorous academic justification.
+4. Professional Tips: Give 2-3 actionable tips based on industry best practices (e.g., Clean Code, SOLID principles, design patterns).
 
-Keep your response concise and helpful. Use markdown formatting.`;
+Strict Guidelines:
+- Do NOT use layman explanations or simple metaphors. 
+- Use professional, rigorous academic and software engineering terminology.
+- Keep the response concise, highly technical, and strictly focused on the algorithm and code quality.
+- Use markdown formatting.`;
 
     const result = await model.generateContent(prompt);
     const feedback = result.response.text();
@@ -46,7 +50,13 @@ Keep your response concise and helpful. Use markdown formatting.`;
     res.json({ feedback });
   } catch (err) {
     console.error('AI feedback error:', err);
-    res.status(500).json({ message: 'Failed to generate AI feedback' });
+    
+    // Check if it's a rate limit or quota error from Gemini
+    if (err.status === 429 || (err.message && err.message.includes('429'))) {
+      return res.status(429).json({ message: 'Google Gemini API Quota Exceeded. You have hit the rate limit for your API key. Please wait a moment or check your billing plan.' });
+    }
+    
+    res.status(500).json({ message: err.message || 'Failed to generate AI feedback' });
   }
 });
 

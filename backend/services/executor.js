@@ -8,22 +8,22 @@ const LANG_CONFIG = {
   python: {
     ext: '.py',
     compile: null,
-    run: (dir, file) => ['python', [file]],
+    run: (dir, file) => ['docker', ['run', '--rm', '-i', '--init', '-v', \`\${dir}:/app\`, '-w', '/app', '--network', 'none', '--memory', '256m', '--cpus', '1', 'python:3.9-slim', 'python', path.basename(file)]],
   },
   javascript: {
     ext: '.js',
     compile: null,
-    run: (dir, file) => ['node', [file]],
+    run: (dir, file) => ['docker', ['run', '--rm', '-i', '--init', '-v', \`\${dir}:/app\`, '-w', '/app', '--network', 'none', '--memory', '256m', '--cpus', '1', 'node:18-alpine', 'node', path.basename(file)]],
   },
   cpp: {
     ext: '.cpp',
-    compile: (dir, file) => ['g++', [file, '-o', path.join(dir, 'solution')]],
-    run: (dir) => [path.join(dir, 'solution'), []],
+    compile: (dir, file) => ['docker', ['run', '--rm', '-i', '-v', \`\${dir}:/app\`, '-w', '/app', 'gcc:12', 'g++', path.basename(file), '-o', 'solution']],
+    run: (dir) => ['docker', ['run', '--rm', '-i', '--init', '-v', \`\${dir}:/app\`, '-w', '/app', '--network', 'none', '--memory', '256m', '--cpus', '1', 'gcc:12', './solution']],
   },
   java: {
     ext: '.java',
-    compile: (dir, file) => ['javac', [file]],
-    run: (dir) => ['java', ['-cp', dir, 'Solution']],
+    compile: (dir, file) => ['docker', ['run', '--rm', '-i', '-v', \`\${dir}:/app\`, '-w', '/app', 'openjdk:17-jdk-alpine', 'javac', path.basename(file)]],
+    run: (dir) => ['docker', ['run', '--rm', '-i', '--init', '-v', \`\${dir}:/app\`, '-w', '/app', '--network', 'none', '--memory', '256m', '--cpus', '1', 'openjdk:17-jdk-alpine', 'java', 'Solution']],
   },
 };
 
@@ -103,11 +103,10 @@ async function executeCode(code, language, testCases, timeLimit = 2000, methodNa
         finalCode = `
 ${code}
 const fs = require('fs');
-const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split('\\n');
+const input = fs.readFileSync(0, 'utf-8').trim().split(/\\r?\\n/);
 if (input.length > 0 && input[0] !== '') {
   const parsedInput = input.map(line => JSON.parse(line));
-  const sol = new Solution();
-  const res = sol.${methodName}(...parsedInput);
+  const res = ${methodName}(...parsedInput);
   console.log(JSON.stringify(res));
 }
 `;
@@ -118,7 +117,7 @@ import json
 ${code}
 
 if __name__ == '__main__':
-    input_data = sys.stdin.read().strip().split('\\n')
+    input_data = sys.stdin.read().strip().splitlines()
     if input_data and input_data[0] != '':
         parsed_input = [json.loads(line) for line in input_data]
         sol = Solution()
@@ -166,7 +165,8 @@ ${driverCode[language]}
     const results = [];
     for (const tc of testCases) {
       const [cmd, args] = config.run(tmpDir, filepath);
-      const result = await runProcess(cmd, args, tc.input || '', timeLimit);
+      const formattedInput = (tc.input || '').replace(/\\n/g, '\n');
+      const result = await runProcess(cmd, args, formattedInput, timeLimit);
 
       if (result.timedOut) {
         results.push({
@@ -209,65 +209,7 @@ ${driverCode[language]}
       });
     }
 
-    // Try python3 fallback if python failed on all test cases
-    if (language === 'python' && results.length > 0 && results.every((r) => r.error && r.error.includes('RTE'))) {
-      const fallbackResults = [];
-      let fallbackWorked = false;
 
-      for (const tc of testCases) {
-        const result = await runProcess('python3', [filepath], tc.input || '', timeLimit);
-
-        if (result.timedOut) {
-          fallbackResults.push({
-            passed: false,
-            input: tc.input,
-            expectedOutput: tc.expectedOutput,
-            actualOutput: result.stdout.trim(),
-            executionTime: result.executionTime,
-            error: 'TLE: Time limit exceeded',
-            isHidden: tc.isHidden || false,
-          });
-          continue;
-        }
-
-        if (result.code !== 0 && result.stderr && result.stderr.includes('not found')) {
-          break; // python3 not available, stick with original results
-        }
-
-        fallbackWorked = true;
-
-        if (result.code !== 0) {
-          fallbackResults.push({
-            passed: false,
-            input: tc.input,
-            expectedOutput: tc.expectedOutput,
-            actualOutput: result.stdout.trim(),
-            executionTime: result.executionTime,
-            error: `RTE: ${result.stderr || 'Runtime error'}`,
-            isHidden: tc.isHidden || false,
-          });
-          continue;
-        }
-
-        const actualOutput = result.stdout.trim();
-        const expectedOutput = (tc.expectedOutput || '').trim();
-        const passed = actualOutput === expectedOutput;
-
-        fallbackResults.push({
-          passed,
-          input: tc.input,
-          expectedOutput: tc.expectedOutput,
-          actualOutput,
-          executionTime: result.executionTime,
-          error: null,
-          isHidden: tc.isHidden || false,
-        });
-      }
-
-      if (fallbackWorked && fallbackResults.length === testCases.length) {
-        return fallbackResults;
-      }
-    }
 
     return results;
   } finally {
