@@ -72,13 +72,13 @@ A global leaderboard ranks users by problems solved. User profiles display solve
 Create `backend/.env`:
 ```env
 PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
-GEMINI_API_KEY=your_gemini_api_key
-GITHUB_CLIENT_ID=your_github_client_id
-GITHUB_CLIENT_SECRET=your_github_client_secret
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
+MONGO_URI=mongodb_connection_string
+JWT_SECRET=jwt_secret
+GEMINI_API_KEY=gemini_api_key
+GITHUB_CLIENT_ID=github_client_id
+GITHUB_CLIENT_SECRET=github_client_secret
+GOOGLE_CLIENT_ID=google_client_id
+GOOGLE_CLIENT_SECRET=google_client_secret
 ```
 
 ### Installation & Running
@@ -125,6 +125,3 @@ cd frontend && npm test
 | GET    | `/api/solutions/:problemId` | Required | Get community solutions      |
 | POST   | `/api/solutions`            | Required | Share a solution             |
 
-## License
-
-ISC
