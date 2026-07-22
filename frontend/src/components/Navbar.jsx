@@ -28,6 +28,9 @@ function Navbar() {
           <Link to="/leaderboard" className="navbar-link">
             Leaderboard
           </Link>
+          <Link to="/arena" className="navbar-link">
+            Arena
+          </Link>
         </div>
         {user && (
           <Link to="/profile" className="navbar-link">
