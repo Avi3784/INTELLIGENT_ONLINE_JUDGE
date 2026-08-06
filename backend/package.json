@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "npx nodemon server.js || node server.js",
+    "worker": "node worker.js",
     "seed": "node seed/seedProblems.js",
     "test": "jest"
   },

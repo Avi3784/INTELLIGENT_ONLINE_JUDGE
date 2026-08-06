@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const ChatMessage = require('../models/ChatMessage');
 
+const JWT_SECRET = process.env.JWT_SECRET || 'secret';
+
 // Track online users
 const onlineUsers = new Map(); // socket.id -> { userId, username }
 
@@ -14,7 +16,7 @@ module.exports = (io) => {
         return next(new Error('Authentication error: No token provided'));
       }
       
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, JWT_SECRET);
       const user = await User.findById(decoded.id).select('username');
       
       if (!user) {

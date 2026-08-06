@@ -50,8 +50,18 @@ const AlgorithmVisualizer = () => {
 
   // Generate a new array whenever the array size changes
   useEffect(() => {
-    resetArray();
-    return () => stopSorting();
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    setIsSorting(false);
+    setArray(generateArray(arraySize));
+    setActiveIndices([]);
+
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, [arraySize]);
 
   const resetArray = () => {
@@ -555,7 +565,7 @@ const AlgorithmVisualizer = () => {
             disabled={isSorting}
             onClick={handleRun} 
             className="btn btn-primary"
-            style={{ display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 0 15px rgba(99,102,241,0.4)' }}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 0 15px rgba(0, 184, 163,0.4)' }}
           >
             <Play size={16} fill="currentColor" /> Visualize
           </button>

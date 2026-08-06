@@ -27,6 +27,9 @@ describe('Auth Routes', () => {
   });
 
   it('should fail to register user with same email', async () => {
+    // Seed user first
+    await request(app).post('/api/auth/register').send(testUser);
+
     const res = await request(app)
       .post('/api/auth/register')
       .send(testUser);
@@ -36,6 +39,9 @@ describe('Auth Routes', () => {
   });
 
   it('should login an existing user', async () => {
+    // Seed user first
+    await request(app).post('/api/auth/register').send(testUser);
+
     const res = await request(app)
       .post('/api/auth/login')
       .send({
@@ -48,6 +54,9 @@ describe('Auth Routes', () => {
   });
 
   it('should reject invalid password during login', async () => {
+    // Seed user first
+    await request(app).post('/api/auth/register').send(testUser);
+
     const res = await request(app)
       .post('/api/auth/login')
       .send({

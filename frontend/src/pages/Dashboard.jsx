@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getProblems } from '../services/api'
-import ProblemCard from '../components/ProblemCard'
-import { Lightbulb, AlertTriangle, Inbox } from 'lucide-react'
+import { Lightbulb, AlertTriangle, Inbox, Circle } from 'lucide-react'
 
 function Dashboard() {
+  const navigate = useNavigate()
   const [problems, setProblems] = useState([])
   const [filter, setFilter] = useState('ALL')
   const [loading, setLoading] = useState(true)
@@ -75,15 +76,13 @@ function Dashboard() {
         </div>
       </div>
 
-      {loading && (
-        <div className="problems-grid">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="card skeleton-card">
-              <div className="skeleton skeleton-title"></div>
-              <div className="skeleton skeleton-badge"></div>
-              <div className="skeleton skeleton-tags"></div>
-            </div>
-          ))}
+{loading && (
+        <div className="card">
+          <div className="problem-table">
+            <div className="skeleton skeleton-title" style={{ margin: '16px' }}></div>
+            <div className="skeleton skeleton-badge" style={{ margin: '16px' }}></div>
+            <div className="skeleton skeleton-tags" style={{ margin: '16px' }}></div>
+          </div>
         </div>
       )}
 
@@ -119,20 +118,53 @@ function Dashboard() {
       )}
 
       {!loading && !error && filteredProblems.length > 0 && (
-        <div className="problems-grid">
-          {filteredProblems.map((problem, index) => (
-            <div
-              key={problem._id}
-              className="slideUp"
-              style={{ animationDelay: `${index * 0.05}s` }}
-            >
-              <ProblemCard problem={problem} />
-            </div>
-          ))}
+        <div className="slideUp">
+          <table className="problem-table">
+            <thead>
+              <tr>
+                <th className="col-status"></th>
+                <th className="col-index">#</th>
+                <th className="col-title">Title</th>
+                <th className="col-difficulty">Difficulty</th>
+                <th className="col-acceptance">Acceptance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredProblems.map((problem, index) => (
+                <tr
+                  key={problem._id}
+                  onClick={() => navigate(`/problems/${problem._id}`)}
+                >
+                  <td className="col-status">
+                    <Circle size={16} style={{ color: 'var(--text-muted)', opacity: '0.4' }} />
+                  </td>
+                  <td className="col-index">{index + 1}</td>
+                  <td className="col-title">{problem.title}</td>
+                  <td className="col-difficulty">
+                    <span className={`badge ${getDifficultyClass(problem.difficulty)}`}>
+                      {problem.difficulty}
+                    </span>
+                  </td>
+                  <td className="col-acceptance">
+                    {problem.acceptanceRate != null ? `${problem.acceptanceRate}%` : '—'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>
   )
+}
+
+function getDifficultyClass(difficulty) {
+  switch (difficulty?.toUpperCase()) {
+    case 'EASY': return 'difficulty-easy'
+    case 'MEDIUM': return 'difficulty-medium'
+    case 'HARD': return 'difficulty-hard'
+    default: return 'difficulty-easy'
+  }
 }
 
 export default Dashboard

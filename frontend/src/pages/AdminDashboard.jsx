@@ -84,7 +84,7 @@ const AdminDashboard = () => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="card p-6 flex items-center gap-4">
-          <div className="p-4 bg-[rgba(99,102,241,0.1)] rounded-full text-primary">
+          <div className="p-4 bg-[rgba(0, 184, 163,0.1)] rounded-full text-primary">
             <Users size={32} />
           </div>
           <div>
@@ -113,7 +113,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-[rgba(99,102,241,0.2)] mb-6">
+      <div className="flex border-b border-[rgba(0, 184, 163,0.2)] mb-6">
         <button
           className={`px-6 py-3 font-medium transition-colors border-b-2 ${activeTab === 'problems' ? 'border-primary text-primary' : 'border-transparent text-gray-400 hover:text-white'}`}
           onClick={() => setActiveTab('problems')}
@@ -140,7 +140,7 @@ const AdminDashboard = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-[rgba(99,102,241,0.2)] text-gray-400">
+                <tr className="border-b border-[rgba(0, 184, 163,0.2)] text-gray-400">
                   <th className="pb-3 font-medium">Title</th>
                   <th className="pb-3 font-medium">Difficulty</th>
                   <th className="pb-3 font-medium text-right">Actions</th>
@@ -148,7 +148,7 @@ const AdminDashboard = () => {
               </thead>
               <tbody>
                 {problems.map(problem => (
-                  <tr key={problem._id} className="border-b border-[rgba(99,102,241,0.1)] hover:bg-[rgba(255,255,255,0.02)] transition-colors">
+                  <tr key={problem._id} className="border-b border-[rgba(0, 184, 163,0.1)] hover:bg-[rgba(255,255,255,0.02)] transition-colors">
                     <td className="py-4 text-white font-medium">{problem.title}</td>
                     <td className="py-4">
                       <span className={`badge ${problem.difficulty === 'EASY' ? 'badge-easy' : problem.difficulty === 'MEDIUM' ? 'badge-medium' : 'badge-hard'}`}>
@@ -178,7 +178,7 @@ const AdminDashboard = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-[rgba(99,102,241,0.2)] text-gray-400">
+                <tr className="border-b border-[rgba(0, 184, 163,0.2)] text-gray-400">
                   <th className="pb-3 font-medium">Username</th>
                   <th className="pb-3 font-medium">Email</th>
                   <th className="pb-3 font-medium">Role</th>
@@ -187,7 +187,7 @@ const AdminDashboard = () => {
               </thead>
               <tbody>
                 {users.map(u => (
-                  <tr key={u._id} className="border-b border-[rgba(99,102,241,0.1)] hover:bg-[rgba(255,255,255,0.02)] transition-colors">
+                  <tr key={u._id} className="border-b border-[rgba(0, 184, 163,0.1)] hover:bg-[rgba(255,255,255,0.02)] transition-colors">
                     <td className="py-4 text-white font-medium flex items-center gap-2">
                       {u.avatar && <img src={u.avatar} alt="avatar" className="w-6 h-6 rounded-full" />}
                       {u.username}

@@ -3,12 +3,14 @@ const GitHubStrategy = require('passport-github2').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/User');
 
+const backendUrl = process.env.BACKEND_URL || 'http://localhost:5000';
+
 // GitHub Strategy
 if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
   passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: "http://localhost:5000/api/oauth/github/callback"
+    callbackURL: `${backendUrl}/api/oauth/github/callback`
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       let email = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : `${profile.username}@github.com`;
@@ -57,7 +59,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:5000/api/oauth/google/callback"
+    callbackURL: `${backendUrl}/api/oauth/google/callback`
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       let email = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;

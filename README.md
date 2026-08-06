@@ -79,6 +79,16 @@ GITHUB_CLIENT_ID=github_client_id
 GITHUB_CLIENT_SECRET=github_client_secret
 GOOGLE_CLIENT_ID=google_client_id
 GOOGLE_CLIENT_SECRET=google_client_secret
+FRONTEND_URL=http://localhost:5173
+BACKEND_URL=http://localhost:5000
+```
+
+Create `frontend/.env` for production or preview deployments:
+```env
+VITE_API_BASE_URL=https://your-backend-domain.example/api
+VITE_BACKEND_URL=https://your-backend-domain.example
+VITE_SOCKET_URL=https://your-backend-domain.example
+VITE_OAUTH_URL=https://your-backend-domain.example
 ```
 
 ### Installation & Running
@@ -95,6 +105,74 @@ cd frontend
 npm install
 npm run dev           # Start on port 5173
 ```
+
+## Vercel Deployment
+
+This repository is split into a React frontend and a Node/Express backend. The frontend is the part intended for Vercel deployment.
+
+### Frontend on Vercel
+
+1. Set the Vercel project root to `frontend`.
+2. Configure these environment variables in Vercel:
+	- `VITE_API_BASE_URL`
+	- `VITE_BACKEND_URL`
+	- `VITE_SOCKET_URL`
+	- `VITE_OAUTH_URL`
+3. Point those values at your deployed backend URL.
+
+### Backend hosting
+
+The backend needs a separate host for Express, Socket.io, MongoDB, and the execution worker. Set these backend env vars on that host:
+```env
+FRONTEND_URL=https://your-vercel-app.vercel.app
+BACKEND_URL=https://your-backend-domain.example
+JWT_SECRET=your_jwt_secret
+MONGO_URI=your_mongodb_uri
+REDIS_URL=your_redis_url
+```
+
+### Notes
+
+- The frontend includes a `vercel.json` rewrite so client-side routes work on refresh.
+- OAuth callback URLs are derived from `BACKEND_URL` and `FRONTEND_URL`.
+- If Redis is unavailable, the backend now fails open for cache reads and falls back to inline submission judging.
+
+## Docker
+
+This project includes Docker support for both local development and production-style container runs.
+
+### Local development
+
+```bash
+docker compose up --build
+```
+
+This starts MongoDB, Redis, the backend API, the execution worker, and the frontend container.
+
+### Production-style compose
+
+```bash
+docker compose -f docker-compose.prod.yml up --build
+```
+
+Before running the production compose file, set these environment variables:
+
+```env
+JWT_SECRET=your_jwt_secret
+FRONTEND_URL=https://your-frontend-domain.example
+BACKEND_URL=https://your-backend-domain.example
+VITE_API_BASE_URL=https://your-backend-domain.example/api
+VITE_BACKEND_URL=https://your-backend-domain.example
+VITE_SOCKET_URL=https://your-backend-domain.example
+VITE_OAUTH_URL=https://your-backend-domain.example
+GEMINI_API_KEY=your_gemini_key
+```
+
+### Notes
+
+- The backend container now creates its `logs/` directory during build so Winston file logging does not fail.
+- The frontend container uses an nginx config with SPA fallback routing, so refreshes on React Router paths work.
+- The worker runs with `npm run worker`, which is now defined in the backend package scripts.
 
 ### Running Tests
 

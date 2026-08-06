@@ -1,19 +1,20 @@
 /**
- * App.css — Premium Dark Theme Stylesheet
+ * App.css — LeetCode-inspired DARK theme stylesheet
  * 
  * Design System for Visual Judge — Intelligent Online Judge
  * 
- * Color Palette:
- * - Background:  #0a0a0f (deep dark), #12121a (slightly lighter)
- * - Cards:       rgba(26, 26, 46, 0.8) — semi-transparent dark
- * - Primary:     #6366f1 → #8b5cf6 (blue-purple gradient)
- * - Easy:        #10b981 (emerald green)
- * - Medium:      #f59e0b (amber)
- * - Hard:        #ef4444 (rose red)
- * - Text:        #ffffff (primary), #94a3b8 (muted)
+ * Color Palette (Colorful, No Purple):
+ * - Background:  #0a0a0f, #1a1a1f (dark panels)
+ * - Cards:       #16161c with soft borders
+ * - Primary:     #00b8a3 (teal/cyan)
+ * - Accent:      #f97316 (orange)
+ * - Easy:        #2ecc71 (green)
+ * - Medium:      #f39c12 (amber)
+ * - Hard:        #ef4444 (red)
+ * - Text:        #f5f5f7 (primary), #9ca3af (muted)
  * 
- * Typography: Google Font "Inter"
- * Effects: Glassmorphism, smooth transitions, keyframe animations
+ * Typography: Inter-like sans stack
+ * Effects: Soft shadows, crisp borders, restrained motion
  */
 
 /* ============================================================
@@ -23,34 +24,34 @@
 :root {
   /* Background colors */
   --bg-primary: #0a0a0f;
-  --bg-secondary: #12121a;
-  --bg-card: rgba(26, 26, 46, 0.8);
-  --bg-card-hover: rgba(30, 30, 55, 0.9);
-  --bg-input: rgba(15, 15, 25, 0.8);
+  --bg-secondary: #1a1a1f;
+  --bg-card: #16161c;
+  --bg-card-hover: #1e1e26;
+  --bg-input: #1e1e26;
 
   /* Border colors */
-  --border-color: rgba(99, 102, 241, 0.15);
-  --border-hover: rgba(99, 102, 241, 0.4);
+  --border-color: #2d2d36;
+  --border-hover: #3f3f4a;
 
-  /* Accent / Primary gradient */
-  --primary: #6366f1;
-  --primary-light: #818cf8;
-  --secondary: #8b5cf6;
-  --gradient-primary: linear-gradient(135deg, #6366f1, #8b5cf6);
+  /* Accent / Primary gradient (teal/cyan, no purple) */
+  --primary: #00b8a3;
+  --primary-light: #2dd4bf;
+  --secondary: #f97316;
+  --gradient-primary: linear-gradient(135deg, #00b8a3, #f97316);
 
   /* Difficulty colors */
-  --color-easy: #10b981;
-  --color-medium: #f59e0b;
+  --color-easy: #2ecc71;
+  --color-medium: #f39c12;
   --color-hard: #ef4444;
 
   /* Text colors */
-  --text-primary: #ffffff;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --text-primary: #f5f5f7;
+  --text-secondary: #c9c9d1;
+  --text-muted: #8b8b96;
 
   /* Status colors */
   --color-error: #ef4444;
-  --color-success: #10b981;
+  --color-success: #2ecc71;
 
   /* Spacing scale */
   --space-xs: 0.25rem;
@@ -66,15 +67,15 @@
   --radius-lg: 16px;
   --radius-full: 9999px;
 
-  /* Glassmorphism effect values */
+/* Glassmorphism effect values */
   --glass-blur: blur(20px);
-  --glass-bg: rgba(26, 26, 46, 0.6);
+  --glass-bg: rgba(22, 22, 28, 0.85);
 
   /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 0 4px rgba(0, 184, 163, 0.15);
 
   /* Transitions */
   --transition-fast: 0.15s ease;
@@ -172,17 +173,17 @@ html {
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: Inter, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Subtle radial gradient overlay for depth */
   background-image:
-    radial-gradient(ellipse at 20% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+    radial-gradient(circle at top left, rgba(0, 184, 163, 0.08), transparent 28%),
+    radial-gradient(circle at top right, rgba(249, 115, 22, 0.08), transparent 26%),
+    linear-gradient(180deg, #0d0d12 0%, #08080c 100%);
   background-attachment: fixed;
 }
 
@@ -202,16 +203,16 @@ a:hover {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+  background: #1a1a1f;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.3);
+  background: #3a3a44;
   border-radius: var(--radius-full);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.5);
+  background: #4a4a56;
 }
 
 /* ============================================================
@@ -221,6 +222,7 @@ a:hover {
 .main-content {
   padding-top: var(--navbar-height);
   min-height: 100vh;
+  position: relative;
 }
 
 /* ============================================================
@@ -237,13 +239,11 @@ a:hover {
   align-items: center;
   justify-content: space-between;
   padding: 0 var(--space-xl);
-  /* Glassmorphism effect: semi-transparent bg + backdrop blur */
-  background: rgba(10, 10, 15, 0.75);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  /* Subtle bottom border with primary color glow */
-  border-bottom: 1px solid var(--border-color);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+background: rgba(13, 13, 18, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(45, 45, 54, 0.9);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 /* Left section: logo + nav links */
@@ -265,7 +265,7 @@ a:hover {
 }
 
 .navbar-brand:hover {
-  color: var(--primary-light);
+  color: var(--primary);
 }
 
 /* Emoji icon in the logo */
@@ -284,8 +284,8 @@ a:hover {
 }
 
 .navbar-link:hover {
-  color: var(--text-primary);
-  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary);
+  background: rgba(0, 184, 163, 0.08);
 }
 
 /* Right section: user info or auth buttons */
@@ -356,11 +356,11 @@ a:hover {
 .btn-primary {
   background: var(--gradient-primary);
   color: white;
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 10px 24px rgba(0, 184, 163, 0.18);
 }
 
 .btn-primary:hover {
-  box-shadow: 0 6px 25px rgba(99, 102, 241, 0.5);
+  box-shadow: 0 12px 30px rgba(0, 184, 163, 0.24);
   transform: translateY(-1px);
   color: white;
 }
@@ -380,8 +380,8 @@ a:hover {
 
 .btn-outline:hover {
   border-color: var(--primary);
-  color: var(--primary-light);
-  background: rgba(99, 102, 241, 0.08);
+  color: var(--primary);
+  background: rgba(0, 184, 163, 0.08);
 }
 
 /* Ghost button — no border, subtle hover effect */
@@ -392,7 +392,7 @@ a:hover {
 
 .btn-ghost:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 /* Small button variant */
@@ -443,7 +443,7 @@ a:hover {
 
 /* Active filter state — each difficulty gets its own highlight color */
 .btn-filter.filter-all.active {
-  background: rgba(99, 102, 241, 0.15);
+  background: rgba(0, 184, 163, 0.15);
   border-color: var(--primary);
   color: var(--primary-light);
 }
@@ -520,9 +520,9 @@ a:hover {
 
 /* Tag badges — neutral color */
 .badge-tag {
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(249, 115, 22, 0.08);
   color: var(--text-secondary);
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  border: 1px solid rgba(249, 115, 22, 0.16);
   font-size: 0.7rem;
   text-transform: none;
   letter-spacing: normal;
@@ -539,6 +539,7 @@ a:hover {
   transition: all var(--transition-base);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-sm);
 }
 
 /* ============================================================
@@ -556,6 +557,7 @@ a:hover {
 .problem-card:hover {
   transform: translateY(-4px);
   border-color: var(--border-hover);
+  box-shadow: var(--shadow-md);
 }
 
 .problem-card.difficulty-easy:hover {
@@ -600,7 +602,7 @@ a:hover {
 .problem-card-footer {
   margin-top: auto;
   padding-top: var(--space-md);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--border-color);
 }
 
 .problem-card-link {
@@ -744,7 +746,7 @@ a:hover {
 /* Focus state: glowing border effect */
 .input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), 0 0 15px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 184, 163, 0.15), 0 0 15px rgba(0, 184, 163, 0.1);
 }
 
 /* ============================================================
@@ -790,7 +792,7 @@ a:hover {
 .loading-spinner {
   width: 44px;
   height: 44px;
-  border: 3px solid rgba(99, 102, 241, 0.2);
+  border: 3px solid rgba(0, 184, 163, 0.2);
   border-top-color: var(--primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -821,9 +823,9 @@ a:hover {
 .skeleton {
   background: linear-gradient(
     90deg,
-    rgba(99, 102, 241, 0.05) 25%,
-    rgba(99, 102, 241, 0.12) 50%,
-    rgba(99, 102, 241, 0.05) 75%
+    rgba(0, 184, 163, 0.05) 25%,
+    rgba(0, 184, 163, 0.12) 50%,
+    rgba(0, 184, 163, 0.05) 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
@@ -1027,7 +1029,7 @@ a:hover {
 
 .test-case-header {
   padding: var(--space-sm) var(--space-lg);
-  background: rgba(99, 102, 241, 0.08);
+  background: rgba(0, 184, 163, 0.08);
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -1088,9 +1090,9 @@ a:hover {
   justify-content: center;
   text-align: center;
   padding: var(--space-2xl);
-  border: 2px dashed rgba(99, 102, 241, 0.3);
+  border: 2px dashed rgba(0, 184, 163, 0.3);
   border-radius: var(--radius-lg);
-  background: rgba(99, 102, 241, 0.03);
+  background: rgba(0, 184, 163, 0.03);
   min-height: 200px;
 }
 
@@ -1227,7 +1229,7 @@ a:hover {
 }
 
 .problem-info-panel::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.2);
+  background: rgba(0, 184, 163, 0.2);
   border-radius: var(--radius-full);
 }
 
@@ -1248,7 +1250,7 @@ a:hover {
 }
 
 .code-editor-panel::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.2);
+  background: rgba(0, 184, 163, 0.2);
   border-radius: var(--radius-full);
 }
 
@@ -1281,7 +1283,7 @@ a:hover {
 
 .language-selector:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 184, 163, 0.1);
 }
 
 .language-selector option {
@@ -1329,13 +1331,13 @@ a:hover {
 }
 
 .btn-submit {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  background: linear-gradient(135deg, #00b8a3, #f97316);
   color: white;
   flex: 1;
 }
 
 .btn-submit:hover:not(:disabled) {
-  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 184, 163, 0.4);
   transform: translateY(-1px);
 }
 
@@ -1351,7 +1353,7 @@ a:hover {
 
 .results-header {
   padding: var(--space-sm) var(--space-lg);
-  background: rgba(99, 102, 241, 0.08);
+  background: rgba(0, 184, 163, 0.08);
   border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
@@ -1436,9 +1438,9 @@ a:hover {
 }
 
 .verdict-rte {
-  background: rgba(168, 85, 247, 0.15);
-  color: #a855f7;
-  border: 1px solid rgba(168, 85, 247, 0.3);
+  background: rgba(249, 115, 22, 0.15);
+  color: var(--secondary);
+  border: 1px solid rgba(249, 115, 22, 0.3);
 }
 
 .verdict-pending {
@@ -1596,7 +1598,7 @@ a:hover {
   font-weight: 700;
   color: white;
   flex-shrink: 0;
-  box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 0 30px rgba(0, 184, 163, 0.3);
 }
 
 .profile-info h1 {
@@ -1721,8 +1723,8 @@ a:hover {
 
 .lang-badge {
   padding: 0.15rem 0.5rem;
-  background: rgba(99, 102, 241, 0.1);
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  background: rgba(0, 184, 163, 0.1);
+  border: 1px solid rgba(0, 184, 163, 0.2);
   border-radius: var(--radius-full);
   font-size: 0.7rem;
   color: var(--text-secondary);
@@ -1922,5 +1924,96 @@ a:hover {
   margin-bottom: 1rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--border-color);
+}
+
+/* ============================================================
+   LEETCODE-STYLE PROBLEM TABLE
+   ============================================================ */
+.problem-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.problem-table thead th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.problem-table tbody tr {
+  border-bottom: 1px solid var(--border-color);
+  transition: background var(--transition-fast);
+  cursor: pointer;
+}
+
+.problem-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.problem-table tbody tr:hover {
+  background: var(--bg-card-hover);
+}
+
+.problem-table td {
+  padding: 14px 16px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.problem-table .col-index {
+  width: 50px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.problem-table .col-title {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.problem-table tr:hover .col-title {
+  color: var(--primary-light);
+}
+
+.problem-table .col-difficulty {
+  width: 120px;
+}
+
+.problem-table .col-acceptance {
+  width: 120px;
+  text-align: right;
+  color: var(--text-muted);
+}
+
+/* Status dot before title (solved/open) */
+.problem-status-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.problem-table .col-status {
+  width: 40px;
+}
+
+/* ============================================================
+   LEETCODE-STYLE IMPORTANT TEXT
+   ============================================================ */
+.problem-title.accent {
+  color: var(--primary-light);
 }
 

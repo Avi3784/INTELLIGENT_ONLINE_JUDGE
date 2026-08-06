@@ -84,11 +84,6 @@ function ProblemDetail() {
         if (data.sampleTestCases && data.sampleTestCases.length > 0) {
           setCustomInput(data.sampleTestCases[0].input || '')
         }
-        if (data.defaultCode && data.defaultCode[language]) {
-          setCode(data.defaultCode[language])
-        } else {
-          setCode(STARTER_CODE[language])
-        }
       } catch (err) {
         console.error('Failed to fetch problem:', err)
         if (err.response?.status === 404) {
@@ -103,14 +98,21 @@ function ProblemDetail() {
     fetchProblem()
   }, [id])
 
+  useEffect(() => {
+    if (!problem) {
+      return
+    }
+
+    if (problem.defaultCode && problem.defaultCode[language]) {
+      setCode(problem.defaultCode[language])
+    } else {
+      setCode(STARTER_CODE[language])
+    }
+  }, [problem, language])
+
   const handleLanguageChange = (e) => {
     const newLang = e.target.value
     setLanguage(newLang)
-    if (problem && problem.defaultCode && problem.defaultCode[newLang]) {
-      setCode(problem.defaultCode[newLang])
-    } else {
-      setCode(STARTER_CODE[newLang])
-    }
   }
 
   const handleRun = async () => {

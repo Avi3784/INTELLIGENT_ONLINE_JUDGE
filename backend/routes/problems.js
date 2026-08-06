@@ -19,7 +19,13 @@ router.get('/', async (req, res) => {
     const limitNum = Math.max(1, Math.min(100, parseInt(limit, 10) || 20)); // Cap at 100
 
     const cacheKey = `problems:page:${pageNum}:limit:${limitNum}:diff:${difficulty || 'all'}`;
-    const cached = await redis.get(cacheKey);
+    let cached = null;
+    try {
+      cached = await redis.get(cacheKey);
+    } catch (cacheError) {
+      console.warn('Problem cache unavailable:', cacheError.message);
+    }
+
     if (cached) {
       return res.json(JSON.parse(cached));
     }
@@ -38,6 +44,17 @@ router.get('/', async (req, res) => {
       totalPages: Math.ceil(total / limitNum),
       totalProblems: total,
     });
+
+    try {
+      await redis.set(cacheKey, JSON.stringify({
+        problems,
+        page: pageNum,
+        totalPages: Math.ceil(total / limitNum),
+        totalProblems: total,
+      }), 'EX', 60);
+    } catch (cacheError) {
+      console.warn('Problem cache write skipped:', cacheError.message);
+    }
   } catch (error) {
     console.error('List problems error:', error.message);
     res.status(500).json({ message: 'Server error fetching problems' });

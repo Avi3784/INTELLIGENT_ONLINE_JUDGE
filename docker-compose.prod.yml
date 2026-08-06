@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mongo:
     image: mongo:latest
@@ -12,24 +10,33 @@ services:
     restart: always
 
   backend:
-    image: ghcr.io/\${GITHUB_REPOSITORY}/backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     restart: always
+    ports:
+      - "5000:5000"
     environment:
       - MONGO_URI=mongodb://mongo:27017/oj_prod
       - REDIS_URL=redis://redis:6379
-      - JWT_SECRET=\${JWT_SECRET}
-      - GEMINI_API_KEY=\${GEMINI_API_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - BACKEND_URL=${BACKEND_URL}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
     depends_on:
       - mongo
       - redis
 
   worker:
-    image: ghcr.io/\${GITHUB_REPOSITORY}/backend:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     command: npm run worker
     restart: always
     environment:
       - MONGO_URI=mongodb://mongo:27017/oj_prod
       - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
@@ -37,7 +44,14 @@ services:
       - redis
 
   frontend:
-    image: ghcr.io/\${GITHUB_REPOSITORY}/frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+        VITE_BACKEND_URL: ${VITE_BACKEND_URL}
+        VITE_SOCKET_URL: ${VITE_SOCKET_URL}
+        VITE_OAUTH_URL: ${VITE_OAUTH_URL}
     restart: always
     ports:
       - "80:80"

@@ -19,14 +19,14 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 184, 163, 0.4);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
 }
 
 .chat-toggle-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 6px 25px rgba(99, 102, 241, 0.6);
+  box-shadow: 0 6px 25px rgba(0, 184, 163, 0.6);
 }
 
 .online-badge {
@@ -58,7 +58,7 @@
 
 .chat-header {
   padding: 16px;
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(0, 184, 163, 0.1);
   border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;

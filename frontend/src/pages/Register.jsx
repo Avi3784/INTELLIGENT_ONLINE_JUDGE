@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { User, Mail, Lock, AlertTriangle, Rocket } from 'lucide-react'
+import { OAUTH_URL } from '../config'
 
 const GithubIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -168,14 +169,14 @@ function Register() {
         </form>
 
         <div style={{ display: 'flex', alignItems: 'center', margin: '24px 0' }}>
-          <div style={{ flex: 1, height: '1px', background: 'rgba(99,102,241,0.2)' }}></div>
+          <div style={{ flex: 1, height: '1px', background: 'rgba(0, 184, 163,0.2)' }}></div>
           <span style={{ padding: '0 12px', fontSize: '0.875rem', color: 'var(--text-muted)' }}>or sign up with</span>
-          <div style={{ flex: 1, height: '1px', background: 'rgba(99,102,241,0.2)' }}></div>
+          <div style={{ flex: 1, height: '1px', background: 'rgba(0, 184, 163,0.2)' }}></div>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <a
-            href="http://localhost:5000/api/oauth/github"
+            href={`${OAUTH_URL}/api/oauth/github`}
             className="btn btn-outline"
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
           >
@@ -183,7 +184,7 @@ function Register() {
             Continue with GitHub
           </a>
           <a
-            href="http://localhost:5000/api/oauth/google"
+            href={`${OAUTH_URL}/api/oauth/google`}
             className="btn btn-outline"
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
           >

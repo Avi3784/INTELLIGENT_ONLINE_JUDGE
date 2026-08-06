@@ -34,14 +34,15 @@ describe('ProblemCard Component', () => {
     expect(screen.getByText('Hash Table')).toBeInTheDocument();
   });
 
-  it('contains a link to the problem detail page', () => {
+  it('renders interactive card button for navigation', () => {
     render(
       <BrowserRouter>
         <ProblemCard problem={mockProblem} />
       </BrowserRouter>
     );
     
-    const linkElement = screen.getByRole('link');
-    expect(linkElement).toHaveAttribute('href', '/problems/123');
+    const cardElement = screen.getByRole('button');
+    expect(cardElement).toBeInTheDocument();
+    expect(screen.getByText(/Solve Challenge/i)).toBeInTheDocument();
   });
 });

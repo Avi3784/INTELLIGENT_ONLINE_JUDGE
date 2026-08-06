@@ -31,36 +31,38 @@ const AdminProblemForm = () => {
       navigate('/dashboard');
       return;
     }
-    
-    if (isEdit) {
-      fetchProblem();
-    }
-  }, [id, user, navigate]);
 
-  const fetchProblem = async () => {
-    try {
-      const res = await getProblemById(id);
-      const p = res.data;
-      setFormData({
-        title: p.title,
-        description: p.description,
-        difficulty: p.difficulty,
-        tags: p.tags.join(', '),
-        timeLimit: p.timeLimit,
-        memoryLimit: p.memoryLimit,
-        methodName: p.methodName || '',
-        sampleTestCases: p.sampleTestCases.length > 0 ? p.sampleTestCases : [{ input: '', expectedOutput: '' }],
-        hiddenTestCases: p.hiddenTestCases && p.hiddenTestCases.length > 0 ? p.hiddenTestCases : [{ input: '', expectedOutput: '' }],
-        defaultCode: p.defaultCode || { python: '', javascript: '', cpp: '', java: '' }
-      });
-    } catch (err) {
-      console.error('Failed to fetch problem', err);
-      alert('Failed to load problem data');
-      navigate('/admin');
-    } finally {
-      setLoading(false);
+    if (!isEdit) {
+      return;
     }
-  };
+
+    const fetchProblem = async () => {
+      try {
+        const res = await getProblemById(id);
+        const p = res.data;
+        setFormData({
+          title: p.title,
+          description: p.description,
+          difficulty: p.difficulty,
+          tags: p.tags.join(', '),
+          timeLimit: p.timeLimit,
+          memoryLimit: p.memoryLimit,
+          methodName: p.methodName || '',
+          sampleTestCases: p.sampleTestCases.length > 0 ? p.sampleTestCases : [{ input: '', expectedOutput: '' }],
+          hiddenTestCases: p.hiddenTestCases && p.hiddenTestCases.length > 0 ? p.hiddenTestCases : [{ input: '', expectedOutput: '' }],
+          defaultCode: p.defaultCode || { python: '', javascript: '', cpp: '', java: '' }
+        });
+      } catch (err) {
+        console.error('Failed to fetch problem', err);
+        alert('Failed to load problem data');
+        navigate('/admin');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProblem();
+  }, [id, user, navigate, isEdit]);
 
   const handleArrayChange = (field, index, subfield, value) => {
     const newArr = [...formData[field]];
@@ -149,7 +151,7 @@ const AdminProblemForm = () => {
           </div>
         </div>
 
-        <div className="border-t border-[rgba(99,102,241,0.2)] pt-6">
+        <div className="border-t border-[rgba(0, 184, 163,0.2)] pt-6">
           <h3 className="text-xl font-bold text-white mb-4">Sample Test Cases</h3>
           {formData.sampleTestCases.map((tc, idx) => (
             <div key={idx} className="flex gap-4 mb-4 items-start">
@@ -165,7 +167,7 @@ const AdminProblemForm = () => {
           <button type="button" onClick={() => addTestCase('sampleTestCases')} className="btn btn-outline btn-sm">Add Sample Test Case</button>
         </div>
 
-        <div className="border-t border-[rgba(99,102,241,0.2)] pt-6">
+        <div className="border-t border-[rgba(0, 184, 163,0.2)] pt-6">
           <h3 className="text-xl font-bold text-white mb-4">Hidden Test Cases</h3>
           {formData.hiddenTestCases.map((tc, idx) => (
             <div key={idx} className="flex gap-4 mb-4 items-start">

@@ -4,12 +4,14 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
 
+const JWT_SECRET = process.env.JWT_SECRET || 'secret';
+
 const router = express.Router();
 
 const generateToken = (user) => {
   return jwt.sign(
     { id: user._id, isAdmin: user.isAdmin },
-    process.env.JWT_SECRET,
+    JWT_SECRET,
     { expiresIn: '7d' }
   );
 };

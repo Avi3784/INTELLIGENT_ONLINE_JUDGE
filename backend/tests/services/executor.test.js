@@ -18,7 +18,7 @@ describe('Code Execution Engine', () => {
     expect(results).toHaveLength(1);
     expect(results[0].passed).toBe(true);
     expect(results[0].actualOutput).toBe('5');
-    expect(results[0].error).toBeUndefined();
+    expect(results[0].error).toBeFalsy();
   });
 
   it('should return WA (Wrong Answer) if output does not match', async () => {

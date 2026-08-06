@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const User = require('../models/User');
 const Problem = require('../models/Problem');
 const Submission = require('../models/Submission');
@@ -65,6 +66,10 @@ router.put('/users/:id/role', async (req, res) => {
       return res.status(400).json({ message: 'You cannot change your own role' });
     }
 
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
     const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -79,7 +84,7 @@ router.put('/users/:id/role', async (req, res) => {
       isAdmin: user.isAdmin
     });
   } catch (error) {
-    console.error('Admin role toggle error:', error.message);
+    console.error('Admin role toggle error:', error);
     res.status(500).json({ message: 'Server error updating user role' });
   }
 });
@@ -89,6 +94,10 @@ router.delete('/users/:id', async (req, res) => {
   try {
     if (req.user._id.toString() === req.params.id) {
       return res.status(400).json({ message: 'You cannot delete yourself' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
     }
 
     const user = await User.findById(req.params.id);

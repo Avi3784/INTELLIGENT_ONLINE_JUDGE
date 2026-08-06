@@ -8,6 +8,8 @@ const { executeCode } = require('../services/executor');
 const { submissionQueue } = require('../queue');
 const mongoose = require('mongoose');
 
+const SUPPORTED_LANGUAGES = ['python', 'javascript', 'cpp', 'java'];
+
 // Strip hidden test case details from results
 function stripHiddenDetails(testResults) {
   if (!testResults) return testResults;
@@ -39,6 +41,14 @@ router.post('/', protect, async (req, res) => {
       return res.status(400).json({ message: 'problemId, language, and code are required' });
     }
 
+    if (!mongoose.Types.ObjectId.isValid(problemId)) {
+      return res.status(400).json({ message: 'Invalid problem ID' });
+    }
+
+    if (!SUPPORTED_LANGUAGES.includes(language)) {
+      return res.status(400).json({ message: `Unsupported language: ${language}` });
+    }
+
     const problem = await Problem.findById(problemId);
     if (!problem) {
       return res.status(404).json({ message: 'Problem not found' });
@@ -67,21 +77,49 @@ router.post('/', protect, async (req, res) => {
       verdict: 'PENDING',
     });
 
-    // Queue the execution job
-    await submissionQueue.add('execute', {
-      submissionId: submission._id,
-      code,
-      language,
-      allTestCases,
-      timeLimit: problem.timeLimit,
-      methodName: problem.methodName,
-      driverCode: problem.driverCode,
-      userId: req.user._id,
-      problemId
-    });
+    let responseSubmission = submission;
+
+    // Queue the execution job; if Redis is unavailable, fall back to inline judging.
+    try {
+      await submissionQueue.add('execute', {
+        submissionId: submission._id,
+        code,
+        language,
+        allTestCases,
+        timeLimit: problem.timeLimit,
+        methodName: problem.methodName,
+        driverCode: problem.driverCode,
+        userId: req.user._id,
+        problemId,
+      });
+    } catch (queueError) {
+      console.warn('Queue unavailable, running submission inline:', queueError.message);
+      const results = await executeCode(code, language, allTestCases, problem.timeLimit, problem.methodName, problem.driverCode);
+      const verdict = determineVerdict(results);
+      const totalExecTime = results.reduce((sum, r) => sum + (r.executionTime || 0), 0);
+      const passedCount = results.filter((r) => r.passed).length;
+
+      responseSubmission = await Submission.findByIdAndUpdate(
+        submission._id,
+        {
+          verdict,
+          testResults: results,
+          executionTime: totalExecTime,
+          totalTestCases: results.length,
+          passedTestCases: passedCount,
+        },
+        { new: true }
+      );
+
+      if (verdict === 'AC') {
+        await User.findByIdAndUpdate(req.user._id, {
+          $addToSet: { solvedProblems: new mongoose.Types.ObjectId(problemId) },
+        });
+      }
+    }
 
     // Return with hidden details stripped
-    const responseObj = submission.toObject();
+    const responseObj = responseSubmission.toObject();
     responseObj.testResults = stripHiddenDetails(responseObj.testResults);
 
     res.status(201).json(responseObj);
@@ -96,8 +134,16 @@ router.post('/run', protect, async (req, res) => {
   try {
     const { problemId, language, code, customTestCases } = req.body;
 
-    if (!problemId || !language || !code) {
+    if (!language || !code) {
       return res.status(400).json({ message: 'problemId, language, and code are required' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(problemId)) {
+      return res.status(400).json({ message: 'Invalid problem ID' });
+    }
+
+    if (!SUPPORTED_LANGUAGES.includes(language)) {
+      return res.status(400).json({ message: `Unsupported language: ${language}` });
     }
 
     const problem = await Problem.findById(problemId).select('-hiddenTestCases');
@@ -162,6 +208,10 @@ router.get('/', protect, async (req, res) => {
 // GET /:id — Get specific submission
 router.get('/:id', protect, async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid submission ID' });
+    }
+
     const submission = await Submission.findById(req.params.id);
     if (!submission) {
       return res.status(404).json({ message: 'Submission not found' });

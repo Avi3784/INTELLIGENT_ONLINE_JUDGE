@@ -7,9 +7,24 @@ const mongoose = require('mongoose');
 const connection = {
   host: process.env.REDIS_HOST || (process.env.REDIS_URL ? new URL(process.env.REDIS_URL).hostname : '127.0.0.1'),
   port: process.env.REDIS_PORT || (process.env.REDIS_URL ? new URL(process.env.REDIS_URL).port : 6379),
+  lazyConnect: true,
+  enableReadyCheck: false,
+  maxRetriesPerRequest: 1,
+  retryStrategy: () => null,
 };
 
-const submissionQueue = new Queue('submissions', { connection });
+let submissionQueueInstance = null;
+
+function getSubmissionQueue() {
+  if (!submissionQueueInstance) {
+    submissionQueueInstance = new Queue('submissions', { connection });
+  }
+  return submissionQueueInstance;
+}
+
+const submissionQueue = {
+  add: (...args) => getSubmissionQueue().add(...args),
+};
 
 function determineVerdict(results) {
   const hasTLE = results.some((r) => r.error && r.error.includes('TLE'));
@@ -52,7 +67,7 @@ function createWorker() {
   }, { connection, concurrency: 5 });
 
   worker.on('failed', (job, err) => {
-    console.error(\`Job \${job.id} failed:\`, err);
+    console.error(`Job ${job.id} failed:`, err);
   });
 
   return worker;

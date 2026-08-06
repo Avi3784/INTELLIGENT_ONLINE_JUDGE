@@ -3,10 +3,13 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 
+const JWT_SECRET = process.env.JWT_SECRET || 'secret';
+const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+
 const generateToken = (user) => {
   return jwt.sign(
     { id: user._id, isAdmin: user.isAdmin },
-    process.env.JWT_SECRET,
+    JWT_SECRET,
     { expiresIn: '7d' }
   );
 };
@@ -18,14 +21,14 @@ router.get('/github/callback', (req, res, next) => {
   passport.authenticate('github', { session: false }, (err, user, info) => {
     if (err) {
       console.error('GitHub OAuth error:', err);
-      return res.redirect(`http://localhost:5173/login?error=${encodeURIComponent(err.message)}`);
+      return res.redirect(`${frontendUrl}/login?error=${encodeURIComponent(err.message)}`);
     }
     if (!user) {
       console.error('GitHub OAuth: No user returned', info);
-      return res.redirect('http://localhost:5173/login?error=github_failed');
+      return res.redirect(`${frontendUrl}/login?error=github_failed`);
     }
     const token = generateToken(user);
-    res.redirect(`http://localhost:5173/oauth-callback?token=${token}`);
+    res.redirect(`${frontendUrl}/oauth-callback?token=${token}`);
   })(req, res, next);
 });
 
@@ -36,14 +39,14 @@ router.get('/google/callback', (req, res, next) => {
   passport.authenticate('google', { session: false }, (err, user, info) => {
     if (err) {
       console.error('Google OAuth error:', err);
-      return res.redirect(`http://localhost:5173/login?error=${encodeURIComponent(err.message)}`);
+      return res.redirect(`${frontendUrl}/login?error=${encodeURIComponent(err.message)}`);
     }
     if (!user) {
       console.error('Google OAuth: No user returned', info);
-      return res.redirect('http://localhost:5173/login?error=google_failed');
+      return res.redirect(`${frontendUrl}/login?error=google_failed`);
     }
     const token = generateToken(user);
-    res.redirect(`http://localhost:5173/oauth-callback?token=${token}`);
+    res.redirect(`${frontendUrl}/oauth-callback?token=${token}`);
   })(req, res, next);
 });
 

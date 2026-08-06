@@ -1,11 +1,9 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 
 const OAuthCallback = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { setToken, restoreSession } = useAuth(); // We need to expose these or use a new method
 
   useEffect(() => {
     const handleCallback = async () => {

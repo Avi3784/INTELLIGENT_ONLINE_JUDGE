@@ -4,28 +4,62 @@ const path = require('path');
 const os = require('os');
 const crypto = require('crypto');
 
-const LANG_CONFIG = {
+const isWindows = process.platform === 'win32';
+const useDocker = process.env.USE_DOCKER === 'true';
+
+const NATIVE_LANG_CONFIG = {
   python: {
     ext: '.py',
     compile: null,
-    run: (dir, file) => ['docker', ['run', '--rm', '-i', '--init', '-v', \`\${dir}:/app\`, '-w', '/app', '--network', 'none', '--memory', '256m', '--cpus', '1', 'python:3.9-slim', 'python', path.basename(file)]],
+    run: (dir, file) => [process.platform === 'win32' ? 'python' : 'python3', [file]],
   },
   javascript: {
     ext: '.js',
     compile: null,
-    run: (dir, file) => ['docker', ['run', '--rm', '-i', '--init', '-v', \`\${dir}:/app\`, '-w', '/app', '--network', 'none', '--memory', '256m', '--cpus', '1', 'node:18-alpine', 'node', path.basename(file)]],
+    run: (dir, file) => ['node', [file]],
   },
   cpp: {
     ext: '.cpp',
-    compile: (dir, file) => ['docker', ['run', '--rm', '-i', '-v', \`\${dir}:/app\`, '-w', '/app', 'gcc:12', 'g++', path.basename(file), '-o', 'solution']],
-    run: (dir) => ['docker', ['run', '--rm', '-i', '--init', '-v', \`\${dir}:/app\`, '-w', '/app', '--network', 'none', '--memory', '256m', '--cpus', '1', 'gcc:12', './solution']],
+    compile: (dir, file) => {
+      const outExt = isWindows ? '.exe' : '';
+      return ['g++', [file, '-o', path.join(dir, `solution${outExt}`)]];
+    },
+    run: (dir) => {
+      const outExt = isWindows ? '.exe' : '';
+      return [path.join(dir, `solution${outExt}`), []];
+    },
   },
   java: {
     ext: '.java',
-    compile: (dir, file) => ['docker', ['run', '--rm', '-i', '-v', \`\${dir}:/app\`, '-w', '/app', 'openjdk:17-jdk-alpine', 'javac', path.basename(file)]],
-    run: (dir) => ['docker', ['run', '--rm', '-i', '--init', '-v', \`\${dir}:/app\`, '-w', '/app', '--network', 'none', '--memory', '256m', '--cpus', '1', 'openjdk:17-jdk-alpine', 'java', 'Solution']],
+    compile: (dir, file) => ['javac', [file]],
+    run: (dir) => ['java', ['-cp', dir, 'Solution']],
   },
 };
+
+const DOCKER_LANG_CONFIG = {
+  python: {
+    ext: '.py',
+    compile: null,
+    run: (dir, file) => ['docker', ['run', '--rm', '-i', '--init', '-v', `${dir}:/app`, '-w', '/app', '--network', 'none', '--memory', '256m', '--cpus', '1', 'python:3.9-slim', 'python', path.basename(file)]],
+  },
+  javascript: {
+    ext: '.js',
+    compile: null,
+    run: (dir, file) => ['docker', ['run', '--rm', '-i', '--init', '-v', `${dir}:/app`, '-w', '/app', '--network', 'none', '--memory', '256m', '--cpus', '1', 'node:18-alpine', 'node', path.basename(file)]],
+  },
+  cpp: {
+    ext: '.cpp',
+    compile: (dir, file) => ['docker', ['run', '--rm', '-i', '-v', `${dir}:/app`, '-w', '/app', 'gcc:12', 'g++', path.basename(file), '-o', 'solution']],
+    run: (dir) => ['docker', ['run', '--rm', '-i', '--init', '-v', `${dir}:/app`, '-w', '/app', '--network', 'none', '--memory', '256m', '--cpus', '1', 'gcc:12', './solution']],
+  },
+  java: {
+    ext: '.java',
+    compile: (dir, file) => ['docker', ['run', '--rm', '-i', '-v', `${dir}:/app`, '-w', '/app', 'openjdk:17-jdk-alpine', 'javac', path.basename(file)]],
+    run: (dir) => ['docker', ['run', '--rm', '-i', '--init', '-v', `${dir}:/app`, '-w', '/app', '--network', 'none', '--memory', '256m', '--cpus', '1', 'openjdk:17-jdk-alpine', 'java', 'Solution']],
+  },
+};
+
+const LANG_CONFIG = useDocker ? DOCKER_LANG_CONFIG : NATIVE_LANG_CONFIG;
 
 function runProcess(cmd, args, input, timeLimit) {
   return new Promise((resolve) => {

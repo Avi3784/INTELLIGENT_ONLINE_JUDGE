@@ -103,7 +103,7 @@ const SolutionsTab = ({ problemId }) => {
             transition={{ duration: 0.3 }}
             className="mb-10 overflow-hidden"
           >
-            <div className="bg-[var(--bg-card)] border border-[var(--primary)] rounded-2xl p-6 shadow-[0_0_20px_rgba(99,102,241,0.15)] relative overflow-hidden">
+            <div className="bg-[var(--bg-card)] border border-[var(--primary)] rounded-2xl p-6 shadow-[0_0_20px_rgba(0, 184, 163,0.15)] relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--primary)] opacity-10 blur-[50px] rounded-full"></div>
               
               <h4 className="text-lg font-semibold mb-4 text-white flex items-center gap-2">
@@ -213,7 +213,7 @@ const SolutionsTab = ({ problemId }) => {
                     </div>
                     <button 
                       onClick={() => handleUpvote(sol._id)}
-                      className="flex items-center gap-1.5 px-3 py-1 bg-[var(--bg-main)] border border-[var(--border-color)] rounded-full text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--primary)] hover:border-[var(--primary)] transition-all group-hover:shadow-[0_0_10px_rgba(99,102,241,0.2)]"
+                      className="flex items-center gap-1.5 px-3 py-1 bg-[var(--bg-main)] border border-[var(--border-color)] rounded-full text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--primary)] hover:border-[var(--primary)] transition-all group-hover:shadow-[0_0_10px_rgba(0, 184, 163,0.2)]"
                     >
                       <ThumbsUp size={14} className="group-hover:-translate-y-0.5 transition-transform" /> 
                       <span>{sol.upvotes?.length || 0}</span>

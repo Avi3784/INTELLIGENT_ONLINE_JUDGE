@@ -8,8 +8,9 @@ beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
   const uri = mongoServer.getUri();
   
-  // Set the URI in the environment variable so standard DB connection can use it if needed
+  // Set environment variables for test execution
   process.env.MONGO_URI = uri;
+  process.env.JWT_SECRET = process.env.JWT_SECRET || 'test_jwt_secret_key_12345';
   
   await mongoose.connect(uri);
 });
