@@ -172,7 +172,7 @@ function Profile() {
               <div className="submission-info">
                 <span
                   className="submission-problem"
-                  onClick={() => navigate(`/problems/${sub.problemId || sub.problem?._id || sub.problem}`)}
+                  onClick={() => navigate(`/problems/${sub.problemId?._id || sub.problemId || sub.problem?._id || (typeof sub.problem === 'string' ? sub.problem : '')}`)}
                 >
                   {sub.problemTitle || sub.problem?.title || 'Problem'}
                 </span>
