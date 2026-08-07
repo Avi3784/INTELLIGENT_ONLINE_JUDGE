@@ -52,6 +52,7 @@ router.post('/register', async (req, res) => {
         username: user.username,
         email: user.email,
         isAdmin: user.isAdmin,
+        solvedProblems: user.solvedProblems,
       },
     });
   } catch (error) {
@@ -90,6 +91,7 @@ router.post('/login', async (req, res) => {
         username: user.username,
         email: user.email,
         isAdmin: user.isAdmin,
+        solvedProblems: user.solvedProblems,
       },
     });
   } catch (error) {

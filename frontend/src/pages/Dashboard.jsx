@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getProblems } from '../services/api'
-import { Lightbulb, AlertTriangle, Inbox, Circle } from 'lucide-react'
+import { Lightbulb, AlertTriangle, Inbox, Circle, CheckCircle } from 'lucide-react'
 import TrackerSystem from '../components/TrackerSystem'
+import { useAuth } from '../context/AuthContext'
 
 function Dashboard() {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [problems, setProblems] = useState([])
   const [filter, setFilter] = useState('ALL')
   const [loading, setLoading] = useState(true)
@@ -77,9 +79,6 @@ function Dashboard() {
         </div>
       </div>
 
-      {!loading && !error && problems.length > 0 && (
-        <TrackerSystem problems={problems} />
-      )}
 
       {loading && (
         <div className="card">
@@ -123,7 +122,8 @@ function Dashboard() {
       )}
 
       {!loading && !error && filteredProblems.length > 0 && (
-        <div className="slideUp">
+        <div className="card slideUp" style={{ padding: '24px' }}>
+          {filter === 'ALL' && <TrackerSystem problems={problems} />}
           <table className="problem-table">
             <thead>
               <tr>
@@ -141,7 +141,11 @@ function Dashboard() {
                   onClick={() => navigate(`/problems/${problem._id}`)}
                 >
                   <td className="col-status">
-                    <Circle size={16} style={{ color: 'var(--text-muted)', opacity: '0.4' }} />
+                    {user?.solvedProblems?.some(id => id.toString() === problem._id.toString()) ? (
+                      <CheckCircle size={16} style={{ color: 'var(--color-easy)' }} />
+                    ) : (
+                      <Circle size={16} style={{ color: 'var(--text-muted)', opacity: '0.4' }} />
+                    )}
                   </td>
                   <td className="col-index">{index + 1}</td>
                   <td className="col-title">{problem.title}</td>

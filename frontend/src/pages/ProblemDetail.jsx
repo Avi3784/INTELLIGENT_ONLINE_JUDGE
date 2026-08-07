@@ -5,6 +5,7 @@ import Editor from '@monaco-editor/react'
 import { CheckCircle, XCircle, Clock, Database, Search, Play, Send, Zap, Bot, ArrowLeft, MessageSquare, BookOpen, Lightbulb } from 'lucide-react'
 import { Panel, Group as PanelGroup, Separator as PanelResizeHandle } from 'react-resizable-panels'
 import SolutionsTab from '../components/SolutionsTab'
+import { useAuth } from '../context/AuthContext'
 
 const STARTER_CODE = {
   python: '# Write your solution here\n\n',
@@ -50,6 +51,7 @@ function renderMarkdown(text) {
 function ProblemDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { refreshSession } = useAuth()
 
   const [problem, setProblem] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -104,12 +106,15 @@ function ProblemDetail() {
       return
     }
 
-    if (problem.defaultCode && problem.defaultCode[language]) {
+    const savedCode = localStorage.getItem(`code_${id}_${language}`)
+    if (savedCode) {
+      setCode(savedCode)
+    } else if (problem.defaultCode && problem.defaultCode[language]) {
       setCode(problem.defaultCode[language])
     } else {
       setCode(STARTER_CODE[language])
     }
-  }, [problem, language])
+  }, [problem, language, id])
 
   const handleLanguageChange = (e) => {
     const newLang = e.target.value
@@ -151,8 +156,12 @@ function ProblemDetail() {
       const response = await submitCode({ problemId: id, language, code })
       const data = response.data.data || response.data
       setResults(data.testResults || data.results || [])
-      setVerdict(data.verdict || data.status || null)
+      const finalVerdict = data.verdict || data.status || null
+      setVerdict(finalVerdict)
       hasSubmitted.current = true
+      if (finalVerdict === 'ACCEPTED' && refreshSession) {
+        refreshSession()
+      }
     } catch (err) {
       console.error('Submit error:', err)
       const msg = err.response?.data?.message || err.response?.data?.error || 'Submission failed'
@@ -434,7 +443,11 @@ function ProblemDetail() {
                 theme="vs-dark"
                 language={LANGUAGE_MAP[language]}
                 value={code}
-                onChange={(value) => setCode(value || '')}
+                onChange={(value) => {
+                  const newCode = value || ''
+                  setCode(newCode)
+                  localStorage.setItem(`code_${id}_${language}`, newCode)
+                }}
                 options={{
                   fontSize: 14,
                   minimap: { enabled: false },

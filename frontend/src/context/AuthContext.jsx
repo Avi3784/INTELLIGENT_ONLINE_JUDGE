@@ -16,28 +16,27 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(localStorage.getItem('token'))
   const [loading, setLoading] = useState(true)
 
+  const refreshSession = async () => {
+    const storedToken = localStorage.getItem('token')
+    if (storedToken) {
+      try {
+        const response = await getMe()
+        setUser(response.data.data || response.data.user || response.data)
+        setToken(storedToken)
+      } catch (error) {
+        console.error('Session restoration failed:', error)
+        localStorage.removeItem('token')
+        setToken(null)
+        setUser(null)
+      }
+    }
+    setLoading(false)
+  }
+
   // On mount, verify any stored token and restore the user session
   useEffect(() => {
-    const restoreSession = async () => {
-      const storedToken = localStorage.getItem('token')
-      if (storedToken) {
-        try {
-          const response = await getMe()
-          setUser(response.data.data || response.data.user || response.data)
-          setToken(storedToken)
-        } catch (error) {
-          console.error('Session restoration failed:', error)
-          localStorage.removeItem('token')
-          setToken(null)
-          setUser(null)
-        }
-      }
-      setLoading(false)
-    }
-
-    restoreSession()
+    refreshSession()
   }, [])
-
   const login = async (email, password) => {
     const response = await loginUser({ email, password })
     const data = response.data
@@ -76,6 +75,7 @@ export function AuthProvider({ children }) {
     login,
     register,
     logout,
+    refreshSession,
   }
 
   return (

@@ -59,7 +59,7 @@ const TrackerSystem = ({ problems }) => {
   }, [solvedProblemIds.length]);
 
   return (
-    <div className="tracker-system card slideUp" style={{ padding: '24px', marginBottom: '32px', display: 'flex', gap: '32px', flexWrap: 'wrap' }}>
+    <div className="tracker-system" style={{ padding: '0 0 24px 0', borderBottom: '1px solid var(--border-color)', marginBottom: '24px', display: 'flex', gap: '32px', flexWrap: 'wrap' }}>
       
       {/* Left: Stats Rings */}
       <div style={{ flex: '1', minWidth: '300px' }}>
