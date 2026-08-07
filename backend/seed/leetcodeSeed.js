@@ -24,7 +24,7 @@ const problems = [
     },
     driverCode: {
       cpp: "\nint main() {\n    Solution sol;\n    int arg0; cin >> arg0;\n    auto res = sol.isPalindrome(arg0);\n    cout << (res ? \"true\" : \"false\") << endl;\n    return 0;\n}\n",
-      java: "\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n        int arg0 = Integer.parseInt(scanner.nextLine().trim());\n        boolean res = sol.isPalindrome(arg0);\n        System.out.println(res);\n    }\n}\n"
+      java: "\nclass Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        Solution sol = new Solution();\n        int arg0 = Integer.parseInt(scanner.nextLine().trim());\n        boolean res = sol.isPalindrome(arg0);\n        System.out.println(res);\n    }\n}\n"
     },
     officialSolution: {
       explanation: "Reverse the number by extracting digits from right to left using modulo 10 and multiplying the reversed number by 10. Finally, check if it matches the original number. Negative numbers are never palindromes.",
@@ -74,7 +74,7 @@ const problems = [
     },
     driverCode: {
       cpp: "\nint main() {\n    Solution sol;\n    string arg0; string line0; getline(cin >> ws, line0); if(line0.size()>=2 && line0[0]=='\"' && line0.back()=='\"') arg0 = line0.substr(1, line0.size()-2); else arg0 = line0;\n    auto res = sol.isValid(arg0);\n    cout << (res ? \"true\" : \"false\") << endl;\n    return 0;\n}\n",
-      java: "\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n        String arg0 = scanner.nextLine().trim(); if(arg0.startsWith(\"\\\"\")) arg0 = arg0.substring(1, arg0.length()-1);\n        boolean res = sol.isValid(arg0);\n        System.out.println(res);\n    }\n}\n"
+      java: "\nclass Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        Solution sol = new Solution();\n        String arg0 = scanner.nextLine().trim(); if(arg0.startsWith(\"\\\"\")) arg0 = arg0.substring(1, arg0.length()-1);\n        boolean res = sol.isValid(arg0);\n        System.out.println(res);\n    }\n}\n"
     },
     officialSolution: {
       explanation: "Use a stack to keep track of opening brackets. When you see a closing bracket, check if it matches the top of the stack.",
@@ -124,7 +124,7 @@ const problems = [
     },
     driverCode: {
       cpp: "\nint main() {\n    Solution sol;\n    vector<int> arg0; string s0; getline(cin >> ws, s0); string temp0 = \"\"; for(char c : s0) { if(c == '[' || c == ']') continue; if(c == ',') { if(temp0!=\"\") { arg0.push_back(stoi(temp0)); temp0=\"\"; } } else temp0 += c; } if(temp0!=\"\") arg0.push_back(stoi(temp0));\n    auto res = sol.maxProfit(arg0);\n    cout << res << endl;\n    return 0;\n}\n",
-      java: "\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n        String s0 = scanner.nextLine().trim(); if(s0.startsWith(\"[\")) s0 = s0.substring(1, s0.length()-1); String[] parts0 = s0.split(\",\"); int[] arg0 = new int[s0.isEmpty() ? 0 : parts0.length]; if(!s0.isEmpty()) { for(int i=0; i<parts0.length; i++) arg0[i] = Integer.parseInt(parts0[i].trim()); }\n        int res = sol.maxProfit(arg0);\n        System.out.println(res);\n    }\n}\n"
+      java: "\nclass Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        Solution sol = new Solution();\n        String s0 = scanner.nextLine().trim(); if(s0.startsWith(\"[\")) s0 = s0.substring(1, s0.length()-1); String[] parts0 = s0.split(\",\"); int[] arg0 = new int[s0.isEmpty() ? 0 : parts0.length]; if(!s0.isEmpty()) { for(int i=0; i<parts0.length; i++) arg0[i] = Integer.parseInt(parts0[i].trim()); }\n        int res = sol.maxProfit(arg0);\n        System.out.println(res);\n    }\n}\n"
     },
     officialSolution: {
       explanation: "Keep track of the lowest price seen so far and the maximum profit you can get if you sell at the current price.",
@@ -170,7 +170,7 @@ const problems = [
     },
     driverCode: {
       cpp: "\nint main() {\n    Solution sol;\n    vector<int> arg0; string s0; getline(cin >> ws, s0); string temp0 = \"\"; for(char c : s0) { if(c == '[' || c == ']') continue; if(c == ',') { if(temp0!=\"\") { arg0.push_back(stoi(temp0)); temp0=\"\"; } } else temp0 += c; } if(temp0!=\"\") arg0.push_back(stoi(temp0));\n    auto res = sol.containsDuplicate(arg0);\n    cout << (res ? \"true\" : \"false\") << endl;\n    return 0;\n}\n",
-      java: "\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n        String s0 = scanner.nextLine().trim(); if(s0.startsWith(\"[\")) s0 = s0.substring(1, s0.length()-1); String[] parts0 = s0.split(\",\"); int[] arg0 = new int[s0.isEmpty() ? 0 : parts0.length]; if(!s0.isEmpty()) { for(int i=0; i<parts0.length; i++) arg0[i] = Integer.parseInt(parts0[i].trim()); }\n        boolean res = sol.containsDuplicate(arg0);\n        System.out.println(res);\n    }\n}\n"
+      java: "\nclass Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        Solution sol = new Solution();\n        String s0 = scanner.nextLine().trim(); if(s0.startsWith(\"[\")) s0 = s0.substring(1, s0.length()-1); String[] parts0 = s0.split(\",\"); int[] arg0 = new int[s0.isEmpty() ? 0 : parts0.length]; if(!s0.isEmpty()) { for(int i=0; i<parts0.length; i++) arg0[i] = Integer.parseInt(parts0[i].trim()); }\n        boolean res = sol.containsDuplicate(arg0);\n        System.out.println(res);\n    }\n}\n"
     },
     officialSolution: {
       explanation: "Use a hash set to store seen numbers. If a number is already in the set, a duplicate exists.",
@@ -216,7 +216,7 @@ const problems = [
     },
     driverCode: {
       cpp: "\nint main() {\n    Solution sol;\n    vector<int> arg0; string s0; getline(cin >> ws, s0); string temp0 = \"\"; for(char c : s0) { if(c == '[' || c == ']') continue; if(c == ',') { if(temp0!=\"\") { arg0.push_back(stoi(temp0)); temp0=\"\"; } } else temp0 += c; } if(temp0!=\"\") arg0.push_back(stoi(temp0));\n    auto res = sol.productExceptSelf(arg0);\n    cout << \"[\"; for(int i=0; i<res.size(); i++) { cout << res[i] << (i==res.size()-1 ? \"\" : \",\"); } cout << \"]\" << endl;\n    return 0;\n}\n",
-      java: "\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n        String s0 = scanner.nextLine().trim(); if(s0.startsWith(\"[\")) s0 = s0.substring(1, s0.length()-1); String[] parts0 = s0.split(\",\"); int[] arg0 = new int[s0.isEmpty() ? 0 : parts0.length]; if(!s0.isEmpty()) { for(int i=0; i<parts0.length; i++) arg0[i] = Integer.parseInt(parts0[i].trim()); }\n        int[] res = sol.productExceptSelf(arg0);\n        System.out.print(\"[\"); for(int i=0; i<res.length; i++) { System.out.print(res[i] + (i==res.length-1 ? \"\" : \",\")); } System.out.println(\"]\");\n    }\n}\n"
+      java: "\nclass Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        Solution sol = new Solution();\n        String s0 = scanner.nextLine().trim(); if(s0.startsWith(\"[\")) s0 = s0.substring(1, s0.length()-1); String[] parts0 = s0.split(\",\"); int[] arg0 = new int[s0.isEmpty() ? 0 : parts0.length]; if(!s0.isEmpty()) { for(int i=0; i<parts0.length; i++) arg0[i] = Integer.parseInt(parts0[i].trim()); }\n        int[] res = sol.productExceptSelf(arg0);\n        System.out.print(\"[\"); for(int i=0; i<res.length; i++) { System.out.print(res[i] + (i==res.length-1 ? \"\" : \",\")); } System.out.println(\"]\");\n    }\n}\n"
     },
     officialSolution: {
       explanation: "Calculate the product of all numbers to the left of each index, then multiply by the product of all numbers to the right of each index.",
@@ -262,7 +262,7 @@ const problems = [
     },
     driverCode: {
       cpp: "\nint main() {\n    Solution sol;\n    vector<int> arg0; string s0; getline(cin >> ws, s0); string temp0 = \"\"; for(char c : s0) { if(c == '[' || c == ']') continue; if(c == ',') { if(temp0!=\"\") { arg0.push_back(stoi(temp0)); temp0=\"\"; } } else temp0 += c; } if(temp0!=\"\") arg0.push_back(stoi(temp0));\n    auto res = sol.maxSubArray(arg0);\n    cout << res << endl;\n    return 0;\n}\n",
-      java: "\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n        String s0 = scanner.nextLine().trim(); if(s0.startsWith(\"[\")) s0 = s0.substring(1, s0.length()-1); String[] parts0 = s0.split(\",\"); int[] arg0 = new int[s0.isEmpty() ? 0 : parts0.length]; if(!s0.isEmpty()) { for(int i=0; i<parts0.length; i++) arg0[i] = Integer.parseInt(parts0[i].trim()); }\n        int res = sol.maxSubArray(arg0);\n        System.out.println(res);\n    }\n}\n"
+      java: "\nclass Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        Solution sol = new Solution();\n        String s0 = scanner.nextLine().trim(); if(s0.startsWith(\"[\")) s0 = s0.substring(1, s0.length()-1); String[] parts0 = s0.split(\",\"); int[] arg0 = new int[s0.isEmpty() ? 0 : parts0.length]; if(!s0.isEmpty()) { for(int i=0; i<parts0.length; i++) arg0[i] = Integer.parseInt(parts0[i].trim()); }\n        int res = sol.maxSubArray(arg0);\n        System.out.println(res);\n    }\n}\n"
     },
     officialSolution: {
       explanation: "Keep a running sum of the current sequence. If the sum drops below zero, reset it to zero. Track the largest sum seen.",
@@ -313,7 +313,7 @@ const problems = [
     },
     driverCode: {
       cpp: "\nint main() {\n    Solution sol;\n    vector<int> arg0; string s0; getline(cin >> ws, s0); string temp0 = \"\"; for(char c : s0) { if(c == '[' || c == ']') continue; if(c == ',') { if(temp0!=\"\") { arg0.push_back(stoi(temp0)); temp0=\"\"; } } else temp0 += c; } if(temp0!=\"\") arg0.push_back(stoi(temp0));\n    auto res = sol.missingNumber(arg0);\n    cout << res << endl;\n    return 0;\n}\n",
-      java: "\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n        String s0 = scanner.nextLine().trim(); if(s0.startsWith(\"[\")) s0 = s0.substring(1, s0.length()-1); String[] parts0 = s0.split(\",\"); int[] arg0 = new int[s0.isEmpty() ? 0 : parts0.length]; if(!s0.isEmpty()) { for(int i=0; i<parts0.length; i++) arg0[i] = Integer.parseInt(parts0[i].trim()); }\n        int res = sol.missingNumber(arg0);\n        System.out.println(res);\n    }\n}\n"
+      java: "\nclass Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        Solution sol = new Solution();\n        String s0 = scanner.nextLine().trim(); if(s0.startsWith(\"[\")) s0 = s0.substring(1, s0.length()-1); String[] parts0 = s0.split(\",\"); int[] arg0 = new int[s0.isEmpty() ? 0 : parts0.length]; if(!s0.isEmpty()) { for(int i=0; i<parts0.length; i++) arg0[i] = Integer.parseInt(parts0[i].trim()); }\n        int res = sol.missingNumber(arg0);\n        System.out.println(res);\n    }\n}\n"
     },
     officialSolution: {
       explanation: "Calculate the expected sum of numbers from 0 to n. The missing number is the expected sum minus the actual sum of the array.",
@@ -364,7 +364,7 @@ const problems = [
     },
     driverCode: {
       cpp: "\nint main() {\n    Solution sol;\n    string arg0; string line0; getline(cin >> ws, line0); if(line0.size()>=2 && line0[0]=='\"' && line0.back()=='\"') arg0 = line0.substr(1, line0.size()-2); else arg0 = line0;\n    string arg1; string line1; getline(cin >> ws, line1); if(line1.size()>=2 && line1[0]=='\"' && line1.back()=='\"') arg1 = line1.substr(1, line1.size()-2); else arg1 = line1;\n    auto res = sol.isAnagram(arg0, arg1);\n    cout << (res ? \"true\" : \"false\") << endl;\n    return 0;\n}\n",
-      java: "\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n        String arg0 = scanner.nextLine().trim(); if(arg0.startsWith(\"\\\"\")) arg0 = arg0.substring(1, arg0.length()-1);\n        String arg1 = scanner.nextLine().trim(); if(arg1.startsWith(\"\\\"\")) arg1 = arg1.substring(1, arg1.length()-1);\n        boolean res = sol.isAnagram(arg0, arg1);\n        System.out.println(res);\n    }\n}\n"
+      java: "\nclass Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        Solution sol = new Solution();\n        String arg0 = scanner.nextLine().trim(); if(arg0.startsWith(\"\\\"\")) arg0 = arg0.substring(1, arg0.length()-1);\n        String arg1 = scanner.nextLine().trim(); if(arg1.startsWith(\"\\\"\")) arg1 = arg1.substring(1, arg1.length()-1);\n        boolean res = sol.isAnagram(arg0, arg1);\n        System.out.println(res);\n    }\n}\n"
     },
     officialSolution: {
       explanation: "Count how many times each character appears in both strings. If the counts match exactly, they are anagrams.",
@@ -410,7 +410,7 @@ const problems = [
     },
     driverCode: {
       cpp: "\nint main() {\n    Solution sol;\n    vector<int> arg0; string s0; getline(cin >> ws, s0); string temp0 = \"\"; for(char c : s0) { if(c == '[' || c == ']') continue; if(c == ',') { if(temp0!=\"\") { arg0.push_back(stoi(temp0)); temp0=\"\"; } } else temp0 += c; } if(temp0!=\"\") arg0.push_back(stoi(temp0));\n    auto res = sol.maxArea(arg0);\n    cout << res << endl;\n    return 0;\n}\n",
-      java: "\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n        String s0 = scanner.nextLine().trim(); if(s0.startsWith(\"[\")) s0 = s0.substring(1, s0.length()-1); String[] parts0 = s0.split(\",\"); int[] arg0 = new int[s0.isEmpty() ? 0 : parts0.length]; if(!s0.isEmpty()) { for(int i=0; i<parts0.length; i++) arg0[i] = Integer.parseInt(parts0[i].trim()); }\n        int res = sol.maxArea(arg0);\n        System.out.println(res);\n    }\n}\n"
+      java: "\nclass Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        Solution sol = new Solution();\n        String s0 = scanner.nextLine().trim(); if(s0.startsWith(\"[\")) s0 = s0.substring(1, s0.length()-1); String[] parts0 = s0.split(\",\"); int[] arg0 = new int[s0.isEmpty() ? 0 : parts0.length]; if(!s0.isEmpty()) { for(int i=0; i<parts0.length; i++) arg0[i] = Integer.parseInt(parts0[i].trim()); }\n        int res = sol.maxArea(arg0);\n        System.out.println(res);\n    }\n}\n"
     },
     officialSolution: {
       explanation: "Use two pointers starting at both ends. Calculate the area, then move the pointer that points to the shorter line inward to find a potentially taller line.",
@@ -456,7 +456,7 @@ const problems = [
     },
     driverCode: {
       cpp: "\nint main() {\n    Solution sol;\n    vector<int> arg0; string s0; getline(cin >> ws, s0); string temp0 = \"\"; for(char c : s0) { if(c == '[' || c == ']') continue; if(c == ',') { if(temp0!=\"\") { arg0.push_back(stoi(temp0)); temp0=\"\"; } } else temp0 += c; } if(temp0!=\"\") arg0.push_back(stoi(temp0));\n    auto res = sol.findMin(arg0);\n    cout << res << endl;\n    return 0;\n}\n",
-      java: "\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n        String s0 = scanner.nextLine().trim(); if(s0.startsWith(\"[\")) s0 = s0.substring(1, s0.length()-1); String[] parts0 = s0.split(\",\"); int[] arg0 = new int[s0.isEmpty() ? 0 : parts0.length]; if(!s0.isEmpty()) { for(int i=0; i<parts0.length; i++) arg0[i] = Integer.parseInt(parts0[i].trim()); }\n        int res = sol.findMin(arg0);\n        System.out.println(res);\n    }\n}\n"
+      java: "\nclass Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        Solution sol = new Solution();\n        String s0 = scanner.nextLine().trim(); if(s0.startsWith(\"[\")) s0 = s0.substring(1, s0.length()-1); String[] parts0 = s0.split(\",\"); int[] arg0 = new int[s0.isEmpty() ? 0 : parts0.length]; if(!s0.isEmpty()) { for(int i=0; i<parts0.length; i++) arg0[i] = Integer.parseInt(parts0[i].trim()); }\n        int res = sol.findMin(arg0);\n        System.out.println(res);\n    }\n}\n"
     },
     officialSolution: {
       explanation: "Use binary search. If the middle element is greater than the rightmost element, the minimum is to the right. Otherwise, it is to the left or is the middle element.",
@@ -506,7 +506,7 @@ const problems = [
     },
     driverCode: {
       cpp: "\nint main() {\n    Solution sol;\n    vector<int> arg0; string s0; getline(cin >> ws, s0); string temp0 = \"\"; for(char c : s0) { if(c == '[' || c == ']') continue; if(c == ',') { if(temp0!=\"\") { arg0.push_back(stoi(temp0)); temp0=\"\"; } } else temp0 += c; } if(temp0!=\"\") arg0.push_back(stoi(temp0));\n    int arg1; cin >> arg1;\n    auto res = sol.search(arg0, arg1);\n    cout << res << endl;\n    return 0;\n}\n",
-      java: "\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n        String s0 = scanner.nextLine().trim(); if(s0.startsWith(\"[\")) s0 = s0.substring(1, s0.length()-1); String[] parts0 = s0.split(\",\"); int[] arg0 = new int[s0.isEmpty() ? 0 : parts0.length]; if(!s0.isEmpty()) { for(int i=0; i<parts0.length; i++) arg0[i] = Integer.parseInt(parts0[i].trim()); }\n        int arg1 = Integer.parseInt(scanner.nextLine().trim());\n        int res = sol.search(arg0, arg1);\n        System.out.println(res);\n    }\n}\n"
+      java: "\nclass Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        Solution sol = new Solution();\n        String s0 = scanner.nextLine().trim(); if(s0.startsWith(\"[\")) s0 = s0.substring(1, s0.length()-1); String[] parts0 = s0.split(\",\"); int[] arg0 = new int[s0.isEmpty() ? 0 : parts0.length]; if(!s0.isEmpty()) { for(int i=0; i<parts0.length; i++) arg0[i] = Integer.parseInt(parts0[i].trim()); }\n        int arg1 = Integer.parseInt(scanner.nextLine().trim());\n        int res = sol.search(arg0, arg1);\n        System.out.println(res);\n    }\n}\n"
     },
     officialSolution: {
       explanation: "Use binary search. Check which half of the array is normally sorted, then see if the target falls within that sorted half to decide which way to narrow the search.",
@@ -556,7 +556,7 @@ const problems = [
     },
     driverCode: {
       cpp: "\nint main() {\n    Solution sol;\n    int arg0; cin >> arg0;\n    auto res = sol.climbStairs(arg0);\n    cout << res << endl;\n    return 0;\n}\n",
-      java: "\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n        int arg0 = Integer.parseInt(scanner.nextLine().trim());\n        int res = sol.climbStairs(arg0);\n        System.out.println(res);\n    }\n}\n"
+      java: "\nclass Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        Solution sol = new Solution();\n        int arg0 = Integer.parseInt(scanner.nextLine().trim());\n        int res = sol.climbStairs(arg0);\n        System.out.println(res);\n    }\n}\n"
     },
     officialSolution: {
       explanation: "The number of ways to reach any step is the sum of the ways to reach the two previous steps. Keep track of the last two totals to calculate the next one.",
@@ -606,7 +606,7 @@ const problems = [
     },
     driverCode: {
       cpp: "\nint main() {\n    Solution sol;\n    vector<vector<int>> arg0; string s0; getline(cin >> ws, s0); vector<int> curr0; string temp0 = \"\"; bool in_array0 = false; for(int i = 1; i < s0.size()-1; i++) { char c = s0[i]; if (c == '[') { in_array0 = true; } else if (c == ']') { if(temp0!=\"\") { curr0.push_back(stoi(temp0)); temp0=\"\"; } arg0.push_back(curr0); curr0.clear(); in_array0 = false; } else if (c == ',') { if(in_array0 && temp0!=\"\") { curr0.push_back(stoi(temp0)); temp0=\"\"; } } else { temp0 += c; } }\n    auto res = sol.merge(arg0);\n    cout << \"[\"; for(int i=0; i<res.size(); i++) { cout << \"[\"; for(int j=0; j<res[i].size(); j++) { cout << res[i][j] << (j==res[i].size()-1 ? \"\" : \",\"); } cout << \"]\" << (i==res.size()-1 ? \"\" : \",\"); } cout << \"]\" << endl;\n    return 0;\n}\n",
-      java: "\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n        String s0 = scanner.nextLine().trim(); if(s0.startsWith(\"[\")) s0 = s0.substring(1, s0.length()-1); List<int[]> list0 = new ArrayList<>(); int i0 = 0; while(i0 < s0.length()) { if(s0.charAt(i0) == '[') { int j = i0+1; while(s0.charAt(j) != ']') j++; String inner = s0.substring(i0+1, j); String[] parts = inner.split(\",\"); int[] arr = new int[inner.isEmpty() ? 0 : parts.length]; if(!inner.isEmpty()) { for(int k=0; k<parts.length; k++) arr[k] = Integer.parseInt(parts[k].trim()); } list0.add(arr); i0 = j+1; } else { i0++; } } int[][] arg0 = list0.toArray(new int[0][]);\n        int[][] res = sol.merge(arg0);\n        System.out.print(\"[\"); for(int i=0; i<res.length; i++) { System.out.print(\"[\"); for(int j=0; j<res[i].length; j++) { System.out.print(res[i][j] + (j==res[i].length-1 ? \"\" : \",\")); } System.out.print(\"]\" + (i==res.length-1 ? \"\" : \",\")); } System.out.println(\"]\");\n    }\n}\n"
+      java: "\nclass Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        Solution sol = new Solution();\n        String s0 = scanner.nextLine().trim(); if(s0.startsWith(\"[\")) s0 = s0.substring(1, s0.length()-1); java.util.List<int[]> list0 = new java.util.ArrayList<>(); int i0 = 0; while(i0 < s0.length()) { if(s0.charAt(i0) == '[') { int j = i0+1; while(s0.charAt(j) != ']') j++; String inner = s0.substring(i0+1, j); String[] parts = inner.split(\",\"); int[] arr = new int[inner.isEmpty() ? 0 : parts.length]; if(!inner.isEmpty()) { for(int k=0; k<parts.length; k++) arr[k] = Integer.parseInt(parts[k].trim()); } list0.add(arr); i0 = j+1; } else { i0++; } } int[][] arg0 = list0.toArray(new int[0][]);\n        int[][] res = sol.merge(arg0);\n        System.out.print(\"[\"); for(int i=0; i<res.length; i++) { System.out.print(\"[\"); for(int j=0; j<res[i].length; j++) { System.out.print(res[i][j] + (j==res[i].length-1 ? \"\" : \",\")); } System.out.print(\"]\" + (i==res.length-1 ? \"\" : \",\")); } System.out.println(\"]\");\n    }\n}\n"
     },
     officialSolution: {
       explanation: "First, sort the intervals based on their start values. Then, go through them one by one and combine overlapping intervals by extending the end time.",
@@ -653,7 +653,7 @@ const problems = [
     },
     driverCode: {
       cpp: "\nint main() {\n    Solution sol;\n    string arg0; string line0; getline(cin >> ws, line0); if(line0.size()>=2 && line0[0]=='\"' && line0.back()=='\"') arg0 = line0.substr(1, line0.size()-2); else arg0 = line0;\n    auto res = sol.lengthOfLongestSubstring(arg0);\n    cout << res << endl;\n    return 0;\n}\n",
-      java: "\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n        String arg0 = scanner.nextLine().trim(); if(arg0.startsWith(\"\\\"\")) arg0 = arg0.substring(1, arg0.length()-1);\n        int res = sol.lengthOfLongestSubstring(arg0);\n        System.out.println(res);\n    }\n}\n"
+      java: "\nclass Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        Solution sol = new Solution();\n        String arg0 = scanner.nextLine().trim(); if(arg0.startsWith(\"\\\"\")) arg0 = arg0.substring(1, arg0.length()-1);\n        int res = sol.lengthOfLongestSubstring(arg0);\n        System.out.println(res);\n    }\n}\n"
     },
     officialSolution: {
       explanation: "Use a sliding window. Expand the right side to add characters to a set. If a duplicate is found, shrink the left side until the duplicate is removed.",
@@ -703,7 +703,7 @@ const problems = [
     },
     driverCode: {
       cpp: "\nint main() {\n    Solution sol;\n    int arg0; cin >> arg0;\n    auto res = sol.fib(arg0);\n    cout << res << endl;\n    return 0;\n}\n",
-      java: "\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n        int arg0 = Integer.parseInt(scanner.nextLine().trim());\n        int res = sol.fib(arg0);\n        System.out.println(res);\n    }\n}\n"
+      java: "\nclass Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        Solution sol = new Solution();\n        int arg0 = Integer.parseInt(scanner.nextLine().trim());\n        int res = sol.fib(arg0);\n        System.out.println(res);\n    }\n}\n"
     },
     officialSolution: {
       explanation: "Keep track of the two previous values and repeatedly add them together to calculate the next Fibonacci number in the sequence.",

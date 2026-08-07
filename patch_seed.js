@@ -75,7 +75,7 @@ function getJavaParser(type, index) {
     if (type === 'int') return `int arg${index} = Integer.parseInt(scanner.nextLine().trim());`;
     if (type === 'String') return `String arg${index} = scanner.nextLine().trim(); if(arg${index}.startsWith("\\"")) arg${index} = arg${index}.substring(1, arg${index}.length()-1);`;
     if (type === 'int[]') return `String s${index} = scanner.nextLine().trim(); if(s${index}.startsWith("[")) s${index} = s${index}.substring(1, s${index}.length()-1); String[] parts${index} = s${index}.split(","); int[] arg${index} = new int[s${index}.isEmpty() ? 0 : parts${index}.length]; if(!s${index}.isEmpty()) { for(int i=0; i<parts${index}.length; i++) arg${index}[i] = Integer.parseInt(parts${index}[i].trim()); }`;
-    if (type === 'int[][]') return `String s${index} = scanner.nextLine().trim(); if(s${index}.startsWith("[")) s${index} = s${index}.substring(1, s${index}.length()-1); List<int[]> list${index} = new ArrayList<>(); int i${index} = 0; while(i${index} < s${index}.length()) { if(s${index}.charAt(i${index}) == '[') { int j = i${index}+1; while(s${index}.charAt(j) != ']') j++; String inner = s${index}.substring(i${index}+1, j); String[] parts = inner.split(","); int[] arr = new int[inner.isEmpty() ? 0 : parts.length]; if(!inner.isEmpty()) { for(int k=0; k<parts.length; k++) arr[k] = Integer.parseInt(parts[k].trim()); } list${index}.add(arr); i${index} = j+1; } else { i${index}++; } } int[][] arg${index} = list${index}.toArray(new int[0][]);`;
+    if (type === 'int[][]') return `String s${index} = scanner.nextLine().trim(); if(s${index}.startsWith("[")) s${index} = s${index}.substring(1, s${index}.length()-1); java.util.List<int[]> list${index} = new java.util.ArrayList<>(); int i${index} = 0; while(i${index} < s${index}.length()) { if(s${index}.charAt(i${index}) == '[') { int j = i${index}+1; while(s${index}.charAt(j) != ']') j++; String inner = s${index}.substring(i${index}+1, j); String[] parts = inner.split(","); int[] arr = new int[inner.isEmpty() ? 0 : parts.length]; if(!inner.isEmpty()) { for(int k=0; k<parts.length; k++) arr[k] = Integer.parseInt(parts[k].trim()); } list${index}.add(arr); i${index} = j+1; } else { i${index}++; } } int[][] arg${index} = list${index}.toArray(new int[0][]);`;
     return '';
 }
 
@@ -89,7 +89,7 @@ function getJavaPrinter(type) {
 
 function generateJavaDriver(methodName, sig) {
     if(!sig) return '';
-    let code = `\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n`;
+    let code = `\nclass Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        Solution sol = new Solution();\n`;
     for (let i = 0; i < sig.args.length; i++) code += `        ${getJavaParser(sig.args[i], i)}\n`;
     const callArgs = sig.args.map((_, i) => `arg${i}`).join(', ');
     code += `        ${sig.ret} res = sol.${methodName}(${callArgs});\n`;

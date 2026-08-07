@@ -148,7 +148,7 @@ ${driverCode[language]}
       if (details.build_result === 'failure') {
         results.push({
           passed: false,
-          error: \`Compilation Error:\n\${details.build_stderr || 'Unknown build error'}\`,
+          error: "Compilation Error:\\n" + (details.build_stderr || 'Unknown build error'),
           testCase: testCase
         });
         continue;
@@ -157,7 +157,7 @@ ${driverCode[language]}
       if (details.result !== 'success' || details.stderr) {
         results.push({
           passed: false,
-          error: \`Runtime Error:\n\${details.stderr || details.result}\`,
+          error: "Runtime Error:\\n" + (details.stderr || details.result),
           testCase: testCase
         });
         continue;
@@ -174,10 +174,10 @@ ${driverCode[language]}
       });
       
     } catch (error) {
-      console.error(\`Paiza API Error for test case \${i}:\`, error);
+      console.error("Paiza API Error for test case " + i + ":", error);
       results.push({
         passed: false,
-        error: \`Execution Error: \${error.message}\`,
+        error: "Execution Error: " + error.message,
         testCase: testCase
       });
     }

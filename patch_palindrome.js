@@ -42,7 +42,7 @@ function getJavaPrinter(type) {
 
 function generateJavaDriver(methodName, sig) {
     if(!sig) return '';
-    let code = `\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n`;
+    let code = `\nclass Main {\n    public static void main(String[] args) {\n        java.util.Scanner scanner = new java.util.Scanner(System.in);\n        Solution sol = new Solution();\n`;
     for (let i = 0; i < sig.args.length; i++) code += `        ${getJavaParser(sig.args[i], i)}\n`;
     const callArgs = sig.args.map((_, i) => `arg${i}`).join(', ');
     code += `        ${sig.ret} res = sol.${methodName}(${callArgs});\n`;
