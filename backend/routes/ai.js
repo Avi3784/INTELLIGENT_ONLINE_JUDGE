@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/auth');
+const Groq = require('groq-sdk');
 
 // POST /feedback — Get AI feedback on submitted code
 router.post('/feedback', protect, async (req, res) => {
@@ -11,13 +12,11 @@ router.post('/feedback', protect, async (req, res) => {
       return res.status(400).json({ message: 'code, language, problemTitle, and problemDescription are required' });
     }
 
-    if (!process.env.GEMINI_API_KEY) {
-      return res.status(400).json({ message: 'AI feedback is not configured. Add GEMINI_API_KEY to .env' });
+    if (!process.env.GROQ_API_KEY) {
+      return res.status(400).json({ message: 'AI feedback is not configured. Add GROQ_API_KEY to .env' });
     }
 
-    const { GoogleGenerativeAI } = require('@google/generative-ai');
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
     const prompt = `You are an expert code reviewer for a competitive programming platform.
 
@@ -39,24 +38,62 @@ Provide:
 4. Professional Tips: Give 2-3 actionable tips based on industry best practices (e.g., Clean Code, SOLID principles, design patterns).
 
 Strict Guidelines:
-- Do NOT use layman explanations or simple metaphors. 
+- You must use easy, simple, formal, and professional language. No informal words needed. DO NOT use the word 'layman'.
 - Use professional, rigorous academic and software engineering terminology.
 - Keep the response concise, highly technical, and strictly focused on the algorithm and code quality.
 - Use markdown formatting.`;
 
-    const result = await model.generateContent(prompt);
-    const feedback = result.response.text();
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [{ role: 'user', content: prompt }],
+      model: 'llama3-70b-8192',
+    });
+    
+    const feedback = chatCompletion.choices[0]?.message?.content || "";
 
     res.json({ feedback });
   } catch (err) {
     console.error('AI feedback error:', err);
     
-    // Check if it's a rate limit or quota error from Gemini
-    if (err.status === 429 || (err.message && err.message.includes('429'))) {
-      return res.status(429).json({ message: 'Google Gemini API Quota Exceeded. You have hit the rate limit for your API key. Please wait a moment or check your billing plan.' });
-    }
-    
     res.status(500).json({ message: err.message || 'Failed to generate AI feedback' });
+  }
+});
+
+// POST /chat - Chat with AI assistant
+router.post('/chat', protect, async (req, res) => {
+  try {
+    const { messages } = req.body;
+
+    if (!messages || !Array.isArray(messages)) {
+      return res.status(400).json({ message: 'messages array is required' });
+    }
+
+    if (!process.env.GROQ_API_KEY) {
+      return res.status(400).json({ message: 'AI chat is not configured. Add GROQ_API_KEY to .env' });
+    }
+
+    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+    const systemMessage = {
+      role: 'system',
+      content: 'You are an AI assistant for a competitive programming platform. You ONLY answer questions related to Data Structures, Algorithms, code explanations, and programming logic. Use easy, simple, formal, and professional language. Explain code step-by-step. If the user asks about anything unrelated, politely decline.'
+    };
+
+    const apiMessages = [systemMessage, ...messages];
+
+    const chatCompletion = await groq.chat.completions.create({
+      messages: apiMessages,
+      model: 'llama3-70b-8192',
+    });
+
+    const responseText = chatCompletion.choices[0]?.message?.content || "";
+
+    // The requirements specify: Return the AI's response text.
+    // The previous feedback route returned { feedback }, here we can return the text.
+    // Many chat components expect just the string or an object with text/content.
+    res.send(responseText);
+  } catch (err) {
+    console.error('AI chat error:', err);
+    res.status(500).json({ message: err.message || 'Failed to generate AI chat response' });
   }
 });
 

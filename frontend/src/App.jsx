@@ -5,6 +5,8 @@ import { AuthProvider } from './context/AuthContext'
 import { SocketProvider } from './context/SocketContext'
 import Navbar from './components/Navbar'
 import LiveChat from './components/LiveChat'
+import ProtectedRoute from './components/ProtectedRoute'
+import Chatbot from './components/Chatbot'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
@@ -12,7 +14,6 @@ import ProblemDetail from './pages/ProblemDetail'
 import Profile from './pages/Profile'
 import Leaderboard from './pages/Leaderboard'
 import AlgorithmVisualizer from './pages/AlgorithmVisualizer'
-import ProtectedRoute from './components/ProtectedRoute'
 import OAuthCallback from './pages/OAuthCallback'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminProblemForm from './pages/AdminProblemForm'
@@ -25,6 +26,7 @@ function App() {
         <SocketProvider>
           <Navbar />
           <LiveChat />
+          <Chatbot />
 
           <main className="main-content">
             <Routes>

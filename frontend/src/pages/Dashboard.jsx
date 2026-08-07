@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getProblems } from '../services/api'
 import { Lightbulb, AlertTriangle, Inbox, Circle } from 'lucide-react'
+import TrackerSystem from '../components/TrackerSystem'
 
 function Dashboard() {
   const navigate = useNavigate()
@@ -76,7 +77,11 @@ function Dashboard() {
         </div>
       </div>
 
-{loading && (
+      {!loading && !error && problems.length > 0 && (
+        <TrackerSystem problems={problems} />
+      )}
+
+      {loading && (
         <div className="card">
           <div className="problem-table">
             <div className="skeleton skeleton-title" style={{ margin: '16px' }}></div>

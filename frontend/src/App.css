@@ -22,36 +22,36 @@
    Central place to manage all colors, spacing, and effects
    ============================================================ */
 :root {
-  /* Background colors */
-  --bg-primary: #0a0a0f;
-  --bg-secondary: #1a1a1f;
-  --bg-card: #16161c;
-  --bg-card-hover: #1e1e26;
-  --bg-input: #1e1e26;
+/* Background colors */
+  --bg-primary: #0B0E14;
+  --bg-secondary: #131720;
+  --bg-card: #1C2130;
+  --bg-card-hover: #262B3B;
+  --bg-input: #131720;
 
   /* Border colors */
-  --border-color: #2d2d36;
-  --border-hover: #3f3f4a;
+  --border-color: #2F364B;
+  --border-hover: #4A5473;
 
-  /* Accent / Primary gradient (teal/cyan, no purple) */
-  --primary: #00b8a3;
-  --primary-light: #2dd4bf;
-  --secondary: #f97316;
-  --gradient-primary: linear-gradient(135deg, #00b8a3, #f97316);
+  /* Accent / Primary gradient (Teal/Purple Aurora) */
+  --primary: #00E5FF;
+  --primary-light: #66FFFF;
+  --secondary: #B388FF;
+  --gradient-primary: linear-gradient(135deg, #00E5FF, #B388FF);
 
   /* Difficulty colors */
-  --color-easy: #2ecc71;
-  --color-medium: #f39c12;
-  --color-hard: #ef4444;
+  --color-easy: #00E676;
+  --color-medium: #FFAB00;
+  --color-hard: #FF1744;
 
   /* Text colors */
-  --text-primary: #f5f5f7;
-  --text-secondary: #c9c9d1;
-  --text-muted: #8b8b96;
+  --text-primary: #F0F4F8;
+  --text-secondary: #B0BEC5;
+  --text-muted: #78909C;
 
   /* Status colors */
-  --color-error: #ef4444;
-  --color-success: #2ecc71;
+  --color-error: #FF1744;
+  --color-success: #00E676;
 
   /* Spacing scale */
   --space-xs: 0.25rem;

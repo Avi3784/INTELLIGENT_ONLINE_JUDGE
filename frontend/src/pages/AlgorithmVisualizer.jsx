@@ -21,6 +21,77 @@ const ALGORITHMS = [
   { id: 'oddeven', name: 'Odd-Even Sort', time: 'O(n²)' }
 ];
 
+const CODE_SNIPPETS = {
+  bubble: `function bubbleSort(arr) {
+  let n = arr.length;
+  for (let i = 0; i < n - 1; i++) {
+    for (let j = 0; j < n - i - 1; j++) {
+      // Compare adjacent elements
+      if (arr[j] > arr[j + 1]) { 
+        // Swap if out of order
+        swap(arr, j, j + 1);
+      }
+    }
+  }
+}`,
+  selection: `function selectionSort(arr) {
+  let n = arr.length;
+  for (let i = 0; i < n - 1; i++) {
+    let minIdx = i;
+    for (let j = i + 1; j < n; j++) {
+      // Find the minimum element
+      if (arr[j] < arr[minIdx]) minIdx = j;
+    }
+    // Swap with the first element
+    if (minIdx !== i) swap(arr, i, minIdx);
+  }
+}`,
+  insertion: `function insertionSort(arr) {
+  let n = arr.length;
+  for (let i = 1; i < n; i++) {
+    let j = i;
+    // Move elements greater than key
+    while (j > 0 && arr[j - 1] > arr[j]) {
+      swap(arr, j, j - 1);
+      j--;
+    }
+  }
+}`,
+  merge: `async function merge(left, mid, right) {
+  // ... split into L and R arrays
+  while (i < n1 && j < n2) {
+    // Compare elements from L and R
+    if (L[i] <= R[j]) {
+      arr[k] = L[i]; i++;
+    } else {
+      arr[k] = R[j]; j++;
+    }
+    k++;
+  }
+}`,
+  quick: `async function partition(low, high) {
+  let pivot = arr[high];
+  let i = low - 1;
+  for (let j = low; j < high; j++) {
+    // Compare with pivot
+    if (arr[j] < pivot) {
+      i++;
+      swap(arr, i, j);
+    }
+  }
+  swap(arr, i + 1, high);
+}`
+};
+// Default snippet for others
+const DEFAULT_SNIPPET = `function sort(arr) {
+  // Implementation details...
+  // Comparing elements
+  if (arr[i] > arr[j]) {
+    // Swapping elements
+    swap(arr, i, j);
+  }
+}`;
+
 // Helper function to create a random array of numbers for the visualizer
 const generateArray = (size) => Array.from({ length: size }, (_, i) => ({
   id: `pt-${i}-${Math.random().toString(36).substr(2, 9)}`,
@@ -38,6 +109,7 @@ const AlgorithmVisualizer = () => {
   
   // Track which elements are being compared so we can highlight them
   const [activeIndices, setActiveIndices] = useState([]);
+  const [activeLine, setActiveLine] = useState(null);
   
   // Used to stop the animation midway if the user clicks stop
   const abortControllerRef = useRef(null);
@@ -105,9 +177,10 @@ const AlgorithmVisualizer = () => {
   };
 
   // Updates the screen with the new array state and highlights active items
-  const updateState = async (newArr, active = []) => {
+  const updateState = async (newArr, active = [], line = null) => {
     setArray([...newArr]);
     setActiveIndices(active);
+    setActiveLine(line);
     await sleep(210 - speedRef.current); // Use ref to get live speed updates
   };
 
@@ -126,10 +199,10 @@ const AlgorithmVisualizer = () => {
     let n = arr.length;
     for (let i = 0; i < n - 1; i++) {
       for (let j = 0; j < n - i - 1; j++) {
-        await updateState(arr, [j, j + 1]);
+        await updateState(arr, [j, j + 1], 5); // Line 5: Compare
         if (arr[j].value > arr[j + 1].value) {
           swap(arr, j, j + 1);
-          await updateState(arr, [j, j + 1]);
+          await updateState(arr, [j, j + 1], 7); // Line 7: Swap
         }
       }
     }
@@ -140,12 +213,12 @@ const AlgorithmVisualizer = () => {
     for (let i = 0; i < n - 1; i++) {
       let minIdx = i;
       for (let j = i + 1; j < n; j++) {
-        await updateState(arr, [minIdx, j]);
+        await updateState(arr, [minIdx, j], 6); // Line 6: Find min
         if (arr[j].value < arr[minIdx].value) minIdx = j;
       }
       if (minIdx !== i) {
         swap(arr, i, minIdx);
-        await updateState(arr, [i, minIdx]);
+        await updateState(arr, [i, minIdx], 9); // Line 9: Swap
       }
     }
   };
@@ -155,9 +228,9 @@ const AlgorithmVisualizer = () => {
     for (let i = 1; i < n; i++) {
       let j = i;
       while (j > 0 && arr[j - 1].value > arr[j].value) {
-        await updateState(arr, [j, j - 1]);
+        await updateState(arr, [j, j - 1], 5); // Line 5: Move elements
         swap(arr, j, j - 1);
-        await updateState(arr, [j, j - 1]);
+        await updateState(arr, [j, j - 1], 6); // Line 6: Swap
         j--;
       }
     }
@@ -249,7 +322,7 @@ const AlgorithmVisualizer = () => {
       for (let j = 0; j < n2; j++) R.push(arr[mid + 1 + j]);
       let i = 0, j = 0, k = left;
       while (i < n1 && j < n2) {
-        await updateState(arr, [left + i, mid + 1 + j, k]);
+        await updateState(arr, [left + i, mid + 1 + j, k], 4); // Line 4: Compare
         if (L[i].value <= R[j].value) {
           arr[k] = L[i]; i++;
         } else {
@@ -282,14 +355,14 @@ const AlgorithmVisualizer = () => {
       let pivot = arr[high].value;
       let i = low - 1;
       for (let j = low; j < high; j++) {
-        await updateState(arr, [j, high, i + 1]);
+        await updateState(arr, [j, high, i + 1], 5); // Line 5: Compare
         if (arr[j].value < pivot) {
           i++;
           swap(arr, i, j);
         }
       }
       swap(arr, i + 1, high);
-      await updateState(arr, [i + 1, high]);
+      await updateState(arr, [i + 1, high], 9); // Line 9: Swap
       return i + 1;
     };
     const sort = async (low, high) => {
@@ -498,6 +571,7 @@ const AlgorithmVisualizer = () => {
       }
     } finally {
       setActiveIndices([]);
+      setActiveLine(null);
       setIsSorting(false);
     }
   };
@@ -614,6 +688,51 @@ const AlgorithmVisualizer = () => {
             );
           })}
         </div>
+      </div>
+      
+      {/* Code Viewer Panel */}
+      <div className="vis-code-panel" style={{
+        marginTop: '24px',
+        padding: '20px',
+        backgroundColor: 'var(--bg-card)',
+        borderRadius: 'var(--radius-lg)',
+        border: '1px solid var(--border-color)',
+      }}>
+        <h3 style={{ marginBottom: '16px', color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Settings2 size={20} /> Live Execution
+        </h3>
+        <pre style={{
+          backgroundColor: '#0B0E14',
+          padding: '16px',
+          borderRadius: '8px',
+          overflowX: 'auto',
+          fontSize: '14px',
+          lineHeight: '1.6',
+          fontFamily: "'JetBrains Mono', monospace",
+          color: 'var(--text-primary)'
+        }}>
+          {(CODE_SNIPPETS[algorithm] || DEFAULT_SNIPPET).split('\\n').map((lineText, idx) => {
+            const lineNum = idx + 1;
+            const isHighlighted = activeLine === lineNum;
+            return (
+              <div 
+                key={idx}
+                style={{
+                  backgroundColor: isHighlighted ? 'rgba(0, 229, 255, 0.2)' : 'transparent',
+                  borderLeft: isHighlighted ? '3px solid var(--primary)' : '3px solid transparent',
+                  paddingLeft: '12px',
+                  marginLeft: '-16px',
+                  transition: 'background-color 0.1s ease',
+                  display: 'flex',
+                  gap: '16px'
+                }}
+              >
+                <span style={{ color: 'var(--text-muted)', userSelect: 'none', minWidth: '24px' }}>{lineNum}</span>
+                <span style={{ color: isHighlighted ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{lineText}</span>
+              </div>
+            );
+          })}
+        </pre>
       </div>
     </div>
   );

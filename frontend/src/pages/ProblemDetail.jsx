@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { getProblemById, runCode, submitCode, getAIFeedback } from '../services/api'
 import Editor from '@monaco-editor/react'
 import { CheckCircle, XCircle, Clock, Database, Search, Play, Send, Zap, Bot, ArrowLeft, MessageSquare, BookOpen, Lightbulb } from 'lucide-react'
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import SolutionsTab from '../components/SolutionsTab'
 
 const STARTER_CODE = {
@@ -250,10 +251,11 @@ function ProblemDetail() {
         </button>
       </div>
 
-      <div className="leetcode-workspace">
+      <PanelGroup direction="horizontal" className="leetcode-workspace" style={{ display: 'flex', height: 'calc(100vh - var(--navbar-height) - 50px)' }}>
         {/* Left Pane: Problem Description */}
-        <div className="pane left-pane">
-          <div className="pane-content problem-info-panel">
+        <Panel defaultSize={50} minSize={30}>
+          <div className="pane left-pane" style={{ height: '100%' }}>
+            <div className="pane-content problem-info-panel" style={{ height: '100%', overflowY: 'auto' }}>
             <div className="problem-header">
               <div className="problem-title-row">
                 <h1 className="problem-title">{problem.title}</h1>
@@ -324,25 +326,17 @@ function ProblemDetail() {
 
                 {problem.hints && problem.hints.length > 0 && (
                   <div className="problem-section hints-section">
-                    <button 
-                      className="btn btn-outline" 
-                      onClick={() => setShowHints(!showHints)}
-                      style={{ width: '100%', display: 'flex', justifyContent: 'space-between' }}
-                    >
-                      <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Lightbulb size={16} color="var(--color-medium)"/> 
-                        {showHints ? 'Hide Hints' : `Show Hints (${problem.hints.length})`}
-                      </span>
-                    </button>
-                    {showHints && (
-                      <div className="hints-list" style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {problem.hints.map((hint, idx) => (
-                          <div key={idx} style={{ padding: '12px', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-sm)', borderLeft: '3px solid var(--color-medium)' }}>
-                            <strong>Hint {idx + 1}:</strong> {hint}
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    <div className="hints-list" style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {problem.hints.map((hint, idx) => (
+                        <details key={idx} style={{ padding: '12px', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-sm)', borderLeft: '3px solid var(--color-medium)' }}>
+                          <summary style={{ cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <Lightbulb size={16} color="var(--color-medium)"/> 
+                            Hint {idx + 1}
+                          </summary>
+                          <div style={{ marginTop: '8px', color: 'var(--text-secondary)' }}>{hint}</div>
+                        </details>
+                      ))}
+                    </div>
                   </div>
                 )}
 
@@ -358,11 +352,15 @@ function ProblemDetail() {
                       <div className="test-case-body">
                         <div className="test-case-section">
                           <span className="test-case-section-label">Input</span>
-                          <pre className="test-case-code">{tc.input}</pre>
+                          <div className="test-case-code">
+                            {tc.input.split('\\n').map((line, i) => (
+                              <div key={i}>{line}</div>
+                            ))}
+                          </div>
                         </div>
                         <div className="test-case-section">
                           <span className="test-case-section-label">Output</span>
-                          <pre className="test-case-code">{tc.expectedOutput}</pre>
+                          <div className="test-case-code">{tc.expectedOutput}</div>
                         </div>
                       </div>
                     </div>
@@ -392,12 +390,16 @@ function ProblemDetail() {
               <SolutionsTab problemId={id} />
             )}
           </div>
-        </div>
+        </Panel>
+
+        <PanelResizeHandle className="resize-handle-x" />
 
         {/* Right Pane: Code Editor + Console */}
-        <div className="pane right-pane">
-          {/* Top Half: Editor */}
-          <div className="editor-container">
+        <Panel minSize={30}>
+          <PanelGroup direction="vertical">
+            {/* Top Half: Editor */}
+            <Panel defaultSize={60} minSize={20}>
+              <div className="editor-container" style={{ height: '100%' }}>
             <div className="editor-toolbar">
               <select
                 className="language-selector"
@@ -438,9 +440,13 @@ function ProblemDetail() {
               />
             </div>
           </div>
+            </Panel>
 
-          {/* Bottom Half: Console */}
-          <div className="console-container">
+            <PanelResizeHandle className="resize-handle-y" />
+
+            {/* Bottom Half: Console */}
+            <Panel defaultSize={40} minSize={20}>
+              <div className="console-container" style={{ height: '100%' }}>
             <div className="console-header">
               <button 
                 className={`console-tab ${consoleTab === 'testcases' ? 'active' : ''}`}
@@ -559,9 +565,10 @@ function ProblemDetail() {
                 </div>
               )}
             </div>
-          </div>
-        </div>
-      </div>
+            </Panel>
+          </PanelGroup>
+        </Panel>
+      </PanelGroup>
     </div>
   )
 }
