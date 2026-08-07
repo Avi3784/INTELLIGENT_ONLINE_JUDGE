@@ -21,8 +21,8 @@ const ALGORITHMS = [
   { id: 'oddeven', name: 'Odd-Even Sort', time: 'O(n²)' }
 ];
 
-const CODE_LANGS = ['javascript', 'python', 'cpp', 'java', 'c'];
-const LANG_LABELS = { javascript: 'JavaScript', python: 'Python', cpp: 'C++', java: 'Java', c: 'C' };
+const CODE_LANGS = ['javascript', 'python', 'cpp', 'java'];
+const LANG_LABELS = { javascript: 'JavaScript', python: 'Python', cpp: 'C++', java: 'Java' };
 
 const CODE_SNIPPETS = {
   bubble: {
