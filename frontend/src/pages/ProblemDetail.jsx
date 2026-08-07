@@ -353,7 +353,7 @@ function ProblemDetail() {
                         <div className="test-case-section">
                           <span className="test-case-section-label">Input</span>
                           <div className="test-case-code">
-                            {tc.input.split('\\n').map((line, i) => (
+                            {tc.input.split(/\\n|\n/).map((line, i) => (
                               <div key={i}>{line}</div>
                             ))}
                           </div>
@@ -373,7 +373,7 @@ function ProblemDetail() {
               <div className="problem-section" style={{ padding: 'var(--space-lg)' }}>
                 <h2 className="section-title text-xl font-bold mb-4" style={{ color: 'var(--color-easy)' }}>Official Solution</h2>
                 <div className="mb-6 p-4 rounded-xl" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', border: '1px solid var(--color-easy)' }}>
-                  <h3 className="font-semibold mb-2">Layman Explanation</h3>
+                  <h3 className="font-semibold mb-2">Explanation</h3>
                   <p style={{ color: 'var(--text-secondary)' }}>{problem.officialSolution.explanation}</p>
                 </div>
                 
@@ -399,7 +399,7 @@ function ProblemDetail() {
         <Panel minSize={30}>
           <PanelGroup direction="vertical">
             {/* Top Half: Editor */}
-            <Panel defaultSize={60} minSize={20}>
+            <Panel defaultSize={70} minSize={30}>
               <div className="editor-container" style={{ height: '100%' }}>
             <div className="editor-toolbar">
               <select
@@ -446,7 +446,7 @@ function ProblemDetail() {
             <PanelResizeHandle className="resize-handle-y" />
 
             {/* Bottom Half: Console */}
-            <Panel defaultSize={40} minSize={20}>
+            <Panel defaultSize={30} minSize={15}>
               <div className="console-container" style={{ height: '100%' }}>
             <div className="console-header">
               <button 

@@ -80,6 +80,165 @@ const CODE_SNIPPETS = {
     }
   }
   swap(arr, i + 1, high);
+}`,
+  shell: `function shellSort(arr) {
+  let n = arr.length;
+  for (let gap = Math.floor(n/2); gap > 0; gap = Math.floor(gap/2)) {
+    for (let i = gap; i < n; i++) {
+      let temp = arr[i];
+      let j = i;
+      // Compare and shift elements
+      while (j >= gap && arr[j-gap] > temp) {
+        arr[j] = arr[j-gap];
+        j -= gap;
+      }
+      arr[j] = temp;
+    }
+  }
+}`,
+  cocktail: `function cocktailSort(arr) {
+  let swapped = true;
+  let start = 0, end = arr.length - 1;
+  while (swapped) {
+    swapped = false;
+    // Forward pass
+    for (let i = start; i < end; i++) {
+      if (arr[i] > arr[i+1]) {
+        swap(arr, i, i+1);
+        swapped = true;
+      }
+    }
+    // Backward pass
+    for (let i = end-1; i >= start; i--) {
+      if (arr[i] > arr[i+1]) {
+        swap(arr, i, i+1);
+        swapped = true;
+      }
+    }
+    start++;
+  }
+}`,
+  gnome: `function gnomeSort(arr) {
+  let index = 0;
+  while (index < arr.length) {
+    if (index === 0) index++;
+    // Compare current with previous
+    if (arr[index] >= arr[index-1]) {
+      index++;
+    } else {
+      // Swap and move back
+      swap(arr, index, index-1);
+      index--;
+    }
+  }
+}`,
+  comb: `function combSort(arr) {
+  let n = arr.length;
+  let gap = n;
+  let swapped = true;
+  while (gap !== 1 || swapped) {
+    gap = Math.floor(gap * 10 / 13);
+    if (gap < 1) gap = 1;
+    swapped = false;
+    // Compare elements with gap
+    for (let i = 0; i < n - gap; i++) {
+      if (arr[i] > arr[i+gap]) {
+        swap(arr, i, i+gap);
+        swapped = true;
+      }
+    }
+  }
+}`,
+  heap: `function heapSort(arr) {
+  let n = arr.length;
+  // Build max heap
+  for (let i = Math.floor(n/2)-1; i >= 0; i--)
+    heapify(arr, n, i);
+  // Extract elements
+  for (let i = n-1; i > 0; i--) {
+    swap(arr, 0, i);
+    heapify(arr, i, 0);
+  }
+}`,
+  cycle: `function cycleSort(arr) {
+  let n = arr.length;
+  for (let start = 0; start < n-1; start++) {
+    let item = arr[start];
+    let pos = start;
+    // Find position
+    for (let i = start+1; i < n; i++)
+      if (arr[i] < item) pos++;
+    if (pos === start) continue;
+    // Place item at correct position
+    [arr[pos], item] = [item, arr[pos]];
+  }
+}`,
+  pancake: `function pancakeSort(arr) {
+  for (let size = arr.length; size > 1; size--) {
+    // Find max element index
+    let maxIdx = 0;
+    for (let i = 1; i < size; i++)
+      if (arr[i] > arr[maxIdx]) maxIdx = i;
+    if (maxIdx !== size - 1) {
+      // Flip to bring max to front
+      flip(arr, maxIdx);
+      // Flip to send max to end
+      flip(arr, size - 1);
+    }
+  }
+}`,
+  radix: `function radixSort(arr) {
+  let max = Math.max(...arr);
+  // Sort by each digit
+  for (let exp = 1; max/exp > 0; exp *= 10) {
+    let output = new Array(arr.length);
+    let count = new Array(10).fill(0);
+    for (let i = 0; i < arr.length; i++)
+      count[Math.floor(arr[i]/exp) % 10]++;
+    for (let i = 1; i < 10; i++)
+      count[i] += count[i-1];
+    // Build output array
+    for (let i = arr.length-1; i >= 0; i--) {
+      output[count[Math.floor(arr[i]/exp)%10]-1] = arr[i];
+      count[Math.floor(arr[i]/exp) % 10]--;
+    }
+  }
+}`,
+  counting: `function countingSort(arr) {
+  let max = Math.max(...arr);
+  let count = new Array(max + 1).fill(0);
+  // Count occurrences
+  for (let i = 0; i < arr.length; i++)
+    count[arr[i]]++;
+  // Build prefix sum
+  for (let i = 1; i <= max; i++)
+    count[i] += count[i-1];
+  // Build output array
+  let output = new Array(arr.length);
+  for (let i = arr.length-1; i >= 0; i--) {
+    output[count[arr[i]]-1] = arr[i];
+    count[arr[i]]--;
+  }
+}`,
+  oddeven: `function oddEvenSort(arr) {
+  let sorted = false;
+  while (!sorted) {
+    sorted = true;
+    // Odd indexed pairs
+    for (let i = 1; i < arr.length-1; i += 2) {
+      if (arr[i] > arr[i+1]) {
+        swap(arr, i, i+1);
+        sorted = false;
+      }
+    }
+    // Even indexed pairs
+    for (let i = 0; i < arr.length-1; i += 2) {
+      if (arr[i] > arr[i+1]) {
+        swap(arr, i, i+1);
+        sorted = false;
+      }
+    }
+  }
 }`
 };
 // Default snippet for others
@@ -711,7 +870,7 @@ const AlgorithmVisualizer = () => {
           fontFamily: "'JetBrains Mono', monospace",
           color: 'var(--text-primary)'
         }}>
-          {(CODE_SNIPPETS[algorithm] || DEFAULT_SNIPPET).split('\\n').map((lineText, idx) => {
+          {(CODE_SNIPPETS[algorithm] || DEFAULT_SNIPPET).split('\n').map((lineText, idx) => {
             const lineNum = idx + 1;
             const isHighlighted = activeLine === lineNum;
             return (

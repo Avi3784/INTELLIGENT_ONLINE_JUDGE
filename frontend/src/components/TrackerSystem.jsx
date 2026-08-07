@@ -47,7 +47,7 @@ const TrackerSystem = ({ problems }) => {
     for (let i = 180; i >= 0; i--) {
       const date = new Date();
       date.setDate(today.getDate() - i);
-      const isSolvedDay = solvedProblemIds.length > 0 && Math.random() > 0.8;
+      const isSolvedDay = solvedProblemIds.length > 0 && Math.random() > 0.7;
       
       data.push({
         date: date.toISOString().split('T')[0],
@@ -56,7 +56,7 @@ const TrackerSystem = ({ problems }) => {
       });
     }
     return data;
-  }, [solvedProblemIds]);
+  }, [solvedProblemIds.length]);
 
   return (
     <div className="tracker-system card slideUp" style={{ padding: '24px', marginBottom: '32px', display: 'flex', gap: '32px', flexWrap: 'wrap' }}>

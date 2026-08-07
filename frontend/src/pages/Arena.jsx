@@ -18,7 +18,8 @@ const Arena = () => {
       navigate('/login');
       return;
     }
-    const socket = io(ARENA_URL, { withCredentials: true });
+    const token = localStorage.getItem('token');
+    const socket = io(ARENA_URL, { withCredentials: true, auth: { token } });
     setArenaSocket(socket);
 
     socket.on('queue_status', (data) => setStatus(data.status));
