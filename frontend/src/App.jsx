@@ -17,7 +17,6 @@ import AlgorithmVisualizer from './pages/AlgorithmVisualizer'
 import OAuthCallback from './pages/OAuthCallback'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminProblemForm from './pages/AdminProblemForm'
-import Arena from './pages/Arena'
 
 function App() {
   return (
@@ -38,9 +37,7 @@ function App() {
               <Route path="/problems/:id" element={<ProtectedRoute><ProblemDetail /></ProtectedRoute>} />
               <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               <Route path="/leaderboard" element={<Leaderboard />} />
-              <Route path="/visualizer" element={<AlgorithmVisualizer />} />
-              <Route path="/arena" element={<Arena />} />
-              <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+              <Route path="/visualizer" element={<AlgorithmVisualizer />} />              <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
               <Route path="/admin/problems/new" element={<ProtectedRoute><AdminProblemForm /></ProtectedRoute>} />
               <Route path="/admin/problems/:id/edit" element={<ProtectedRoute><AdminProblemForm /></ProtectedRoute>} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />

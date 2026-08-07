@@ -43,20 +43,6 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
 
-    eloRating: {
-      type: Number,
-      default: 1200,
-    },
-    
-    matchesWon: {
-      type: Number,
-      default: 0,
-    },
-    
-    matchesLost: {
-      type: Number,
-      default: 0,
-    },
 
     solvedProblems: [
       {

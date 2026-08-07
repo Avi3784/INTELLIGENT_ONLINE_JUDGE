@@ -38,9 +38,6 @@ const io = new Server(server, {
 const chatHandler = require('./sockets/chatHandler');
 chatHandler(io);
 
-const arenaHandler = require('./sockets/arenaHandler');
-arenaHandler(io);
-
 // 1. Logger setup (Winston)
 const logger = winston.createLogger({
   level: 'info',
