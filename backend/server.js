@@ -11,6 +11,7 @@ const rateLimit = require('express-rate-limit');
 const morgan = require('morgan');
 const winston = require('winston');
 const connectDB = require('./config/db');
+const { createWorker } = require('./queue');
 
 const authRoutes = require('./routes/auth');
 const problemRoutes = require('./routes/problems');
@@ -112,5 +113,9 @@ const PORT = process.env.PORT || 5000;
 connectDB().then(() => {
   server.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
+
+    // Start the worker in the same process to avoid needing a separate paid Render Worker instance
+    console.log('Starting background worker...');
+    createWorker();
   });
 });

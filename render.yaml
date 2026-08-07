@@ -36,25 +36,7 @@ services:
       - key: GOOGLE_CLIENT_SECRET
         sync: false
 
-  # The Worker for Code Execution (BullMQ)
-  - type: worker
-    name: oj-worker
-    env: node
-    rootDir: backend
-    buildCommand: npm install
-    startCommand: npm run worker
-    envVars:
-      - key: NODE_VERSION
-        value: 18.x
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: oj-redis
-          property: connectionString
-      - key: MONGO_URI
-        sync: false
-      - key: JWT_SECRET
-        sync: false
+
 
   # Managed Redis Instance for the Queue
   - type: redis
