@@ -1,8 +1,4 @@
-const mongoose = require('mongoose');
-
-const Problem = mongoose.models.Problem || mongoose.model('Problem', new mongoose.Schema({}, { strict: false }));
-
-const problems = [
+module.exports = [
   {
     title: "Palindrome Number",
     description: "Given an integer x, return true if x is a palindrome, and false otherwise.",
@@ -23,8 +19,8 @@ const problems = [
       java: "class Solution {\n    public boolean isPalindrome(int x) {\n        \n    }\n}"
     },
     driverCode: {
-      cpp: "\nint main() {\n    Solution sol;\n    int arg0; cin >> arg0;\n    auto res = sol.isPalindrome(arg0);\n    cout << (res ? \"true\" : \"false\") << endl;\n    return 0;\n}\n",
-      java: "\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n        int arg0 = Integer.parseInt(scanner.nextLine().trim());\n        boolean res = sol.isPalindrome(arg0);\n        System.out.println(res);\n    }\n}\n"
+      cpp: "",
+      java: ""
     },
     officialSolution: {
       explanation: "Reverse the number by extracting digits from right to left using modulo 10 and multiplying the reversed number by 10. Finally, check if it matches the original number. Negative numbers are never palindromes.",
@@ -732,18 +728,3 @@ const problems = [
     ]
   }
 ];
-
-require('dotenv').config({ path: '../.env' }); // Load .env from parent directory
-
-mongoose.connect(process.env.MONGO_URI)
-  .then(async () => {
-    console.log('Connected to MongoDB');
-    await Problem.deleteMany({});
-    console.log('Cleared existing problems');
-    await Problem.insertMany(problems);
-    console.log('Inserted 15 new problems successfully');
-    mongoose.disconnect();
-  })
-  .catch(err => {
-    console.error('Connection error', err);
-  });

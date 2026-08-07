@@ -1,19 +1,12 @@
 const https = require('https');
 const http = require('http');
-const { spawn } = require('child_process');
-const fs = require('fs').promises;
-const path = require('path');
-const os = require('os');
-const crypto = require('crypto');
 
-// Piston API — free, public code execution engine
-const PISTON_URL = process.env.PISTON_URL || 'https://emkc.org/api/v2/piston';
-
-const PISTON_LANG_MAP = {
-  python: { language: 'python', version: '3.10.0' },
-  javascript: { language: 'javascript', version: '18.15.0' },
-  cpp: { language: 'c++', version: '10.2.0' },
-  java: { language: 'java', version: '15.0.2' },
+// Paiza.IO API - Free, public code execution engine
+const PAIZA_LANG_MAP = {
+  python: 'python3',
+  javascript: 'javascript',
+  cpp: 'cpp',
+  java: 'java'
 };
 
 // Simple HTTP POST helper that works without external dependencies
@@ -26,7 +19,7 @@ function httpPost(url, body) {
     const req = lib.request({
       hostname: parsed.hostname,
       port: parsed.port,
-      path: parsed.pathname,
+      path: parsed.pathname + parsed.search,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,77 +31,49 @@ function httpPost(url, body) {
       res.on('end', () => {
         try {
           resolve(JSON.parse(responseData));
-        } catch {
-          reject(new Error(`Invalid JSON response: ${responseData.substring(0, 200)}`));
+        } catch (e) {
+          resolve({ message: responseData });
         }
       });
     });
 
-    req.on('error', reject);
-    req.setTimeout(30000, () => { req.destroy(); reject(new Error('Request timed out')); });
+    req.on('error', (e) => reject(e));
     req.write(data);
     req.end();
   });
 }
 
-// Execute a single test case via Piston API
-async function executeViaPiston(code, language, input, timeLimit) {
-  const langConfig = PISTON_LANG_MAP[language];
-  if (!langConfig) throw new Error(`Unsupported language: ${language}`);
-
-  const fileExt = { python: 'py', javascript: 'js', cpp: 'cpp', java: 'java' }[language];
-  const filename = language === 'java' ? 'Solution.java' : `solution.${fileExt}`;
-
-  const startTime = Date.now();
-
-  try {
-    const result = await httpPost(`${PISTON_URL}/execute`, {
-      language: langConfig.language,
-      version: langConfig.version,
-      files: [{ name: filename, content: code }],
-      stdin: input || '',
-      run_timeout: timeLimit,
-      compile_timeout: 15000,
+// Simple HTTP GET helper
+function httpGet(urlStr) {
+  return new Promise((resolve, reject) => {
+    const url = new URL(urlStr);
+    const lib = url.protocol === 'https:' ? https : http;
+    const req = lib.request({
+      hostname: url.hostname,
+      port: url.port,
+      path: url.pathname + url.search,
+      method: 'GET'
+    }, (res) => {
+      let responseData = '';
+      res.on('data', (chunk) => { responseData += chunk; });
+      res.on('end', () => {
+        try {
+          resolve(JSON.parse(responseData));
+        } catch (e) {
+          resolve({ message: responseData });
+        }
+      });
     });
-
-    const executionTime = Date.now() - startTime;
-
-    // Handle compilation errors
-    if (result.compile && result.compile.code !== 0 && result.compile.stderr) {
-      return {
-        stdout: '',
-        stderr: result.compile.stderr,
-        code: 1,
-        timedOut: false,
-        executionTime,
-        compilationError: true,
-      };
-    }
-
-    // Handle run result
-    const run = result.run || {};
-    const timedOut = run.signal === 'SIGKILL' || (run.stderr && run.stderr.includes('timed out'));
-
-    return {
-      stdout: run.stdout || '',
-      stderr: run.stderr || '',
-      code: run.code ?? 0,
-      timedOut,
-      executionTime,
-    };
-  } catch (err) {
-    return {
-      stdout: '',
-      stderr: `Execution service error: ${err.message}`,
-      code: 1,
-      timedOut: false,
-      executionTime: Date.now() - startTime,
-    };
-  }
+    req.on('error', (e) => reject(e));
+    req.end();
+  });
 }
 
+/**
+ * Execute code using Paiza.IO API
+ */
 async function executeCode(code, language, testCases, timeLimit = 2000, methodName = null, driverCode = null) {
-  if (!PISTON_LANG_MAP[language]) {
+  if (!PAIZA_LANG_MAP[language]) {
     throw new Error(`Unsupported language: ${language}`);
   }
 
@@ -150,72 +115,77 @@ ${driverCode[language]}
     }
   }
 
-  // For Java, wrap in class if needed
-  if (language === 'java' && !finalCode.includes('class ') && !driverCode) {
-    finalCode = `public class Solution {\n${finalCode}\n}`;
-  }
-
-  // Run each test case
   const results = [];
-  for (const tc of testCases) {
-    const formattedInput = (tc.input || '').replace(/\\n/g, '\n');
-    const result = await executeViaPiston(finalCode, language, formattedInput, timeLimit);
 
-    if (result.compilationError) {
-      // If compilation fails, all test cases fail with the same error
-      return testCases.map((t) => ({
-        passed: false,
-        input: t.input,
-        expectedOutput: t.expectedOutput,
-        actualOutput: '',
-        executionTime: result.executionTime,
-        error: `RTE: ${result.stderr || 'Compilation failed'}`,
-        isHidden: t.isHidden || false,
-      }));
-    }
+  for (let i = 0; i < testCases.length; i++) {
+    const testCase = testCases[i];
+    
+    try {
+      const createRes = await httpPost('https://api.paiza.io/runners/create', {
+        source_code: finalCode,
+        language: PAIZA_LANG_MAP[language],
+        input: testCase.input,
+        api_key: 'guest'
+      });
 
-    if (result.timedOut) {
+      if (createRes.error) {
+        throw new Error(createRes.error);
+      }
+
+      let status = 'running';
+      let details;
+      const startTime = Date.now();
+
+      while (status !== 'completed') {
+        if (Date.now() - startTime > timeLimit + 10000) {
+          throw new Error('Execution timeout');
+        }
+        await new Promise(r => setTimeout(r, 1000));
+        details = await httpGet(`https://api.paiza.io/runners/get_details?id=${createRes.id}&api_key=guest`);
+        status = details.status;
+      }
+
+      if (details.build_result === 'failure') {
+        results.push({
+          passed: false,
+          error: \`Compilation Error:\n\${details.build_stderr || 'Unknown build error'}\`,
+          testCase: testCase
+        });
+        continue;
+      }
+
+      if (details.result !== 'success' || details.stderr) {
+        results.push({
+          passed: false,
+          error: \`Runtime Error:\n\${details.stderr || details.result}\`,
+          testCase: testCase
+        });
+        continue;
+      }
+
+      const actualOutput = details.stdout ? details.stdout.trim() : '';
+      const expectedOutput = testCase.expectedOutput.trim();
+
+      results.push({
+        passed: actualOutput === expectedOutput,
+        actualOutput,
+        expectedOutput,
+        testCase: testCase
+      });
+      
+    } catch (error) {
+      console.error(\`Paiza API Error for test case \${i}:\`, error);
       results.push({
         passed: false,
-        input: tc.input,
-        expectedOutput: tc.expectedOutput,
-        actualOutput: result.stdout.trim(),
-        executionTime: result.executionTime,
-        error: 'TLE: Time limit exceeded',
-        isHidden: tc.isHidden || false,
+        error: \`Execution Error: \${error.message}\`,
+        testCase: testCase
       });
-      continue;
     }
-
-    if (result.code !== 0) {
-      results.push({
-        passed: false,
-        input: tc.input,
-        expectedOutput: tc.expectedOutput,
-        actualOutput: result.stdout.trim(),
-        executionTime: result.executionTime,
-        error: `RTE: ${result.stderr || 'Runtime error'}`,
-        isHidden: tc.isHidden || false,
-      });
-      continue;
-    }
-
-    const actualOutput = result.stdout.trim();
-    const expectedOutput = (tc.expectedOutput || '').trim();
-    const passed = actualOutput === expectedOutput;
-
-    results.push({
-      passed,
-      input: tc.input,
-      expectedOutput: tc.expectedOutput,
-      actualOutput,
-      executionTime: result.executionTime,
-      error: null,
-      isHidden: tc.isHidden || false,
-    });
   }
 
   return results;
 }
 
-module.exports = { executeCode };
+module.exports = {
+  executeCode
+};

@@ -1005,6 +1005,8 @@ background: rgba(13, 13, 18, 0.9);
 
 .problem-description p {
   margin-bottom: var(--space-md);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .problem-description p:last-child {
@@ -1918,6 +1920,8 @@ background: rgba(13, 13, 18, 0.9);
 .result-block pre {
   margin: 0;
   white-space: pre-wrap;
+  word-break: break-all;
+  overflow-wrap: break-word;
   font-family: monospace;
 }
 .verdict-banner {

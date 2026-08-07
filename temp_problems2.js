@@ -1,54 +1,52 @@
-const mongoose = require('mongoose');
-
-const Problem = mongoose.models.Problem || mongoose.model('Problem', new mongoose.Schema({}, { strict: false }));
-
-const problems = [
+module.exports = [
   {
-    title: "Palindrome Number",
-    description: "Given an integer x, return true if x is a palindrome, and false otherwise.",
+    title: "Two Sum",
+    description: "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
     difficulty: "EASY",
     tags: [
-      "math"
+      "arrays",
+      "hash table"
     ],
     timeLimit: 2000,
     memoryLimit: 256,
     hints: [
-      "Beware of integer overflow when you reverse the integer."
+      "A really brute force way would be to search for all possible pairs of numbers but that would be too slow. Again, it's best to try out brute force solutions for just for completeness. It is from these brute force solutions that you can come up with optimizations.",
+      "So, if we fix one of the numbers, say x, we have to scan the entire array to find the next number y which is value - x where value is the input parameter. Can we change our array keeping so that this search becomes faster?"
     ],
-    methodName: "isPalindrome",
+    methodName: "twoSum",
     defaultCode: {
-      python: "class Solution:\n    def isPalindrome(self, x):\n        pass",
-      javascript: "class Solution {\n  isPalindrome(x) {\n    \n  }\n}",
-      cpp: "#include <iostream>\nusing namespace std;\n\nclass Solution {\npublic:\n    bool isPalindrome(int x) {\n        \n    }\n};",
-      java: "class Solution {\n    public boolean isPalindrome(int x) {\n        \n    }\n}"
+      python: "class Solution:\n    def twoSum(self, nums, target):\n        pass",
+      javascript: "class Solution {\n  twoSum(nums, target) {\n    \n  }\n}",
+      cpp: "#include <iostream>\n#include <vector>\nusing namespace std;\n\nclass Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        \n    }\n};",
+      java: "import java.util.*;\n\nclass Solution {\n    public int[] twoSum(int[] nums, int target) {\n        \n    }\n}"
     },
     driverCode: {
-      cpp: "\nint main() {\n    Solution sol;\n    int arg0; cin >> arg0;\n    auto res = sol.isPalindrome(arg0);\n    cout << (res ? \"true\" : \"false\") << endl;\n    return 0;\n}\n",
-      java: "\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n        int arg0 = Integer.parseInt(scanner.nextLine().trim());\n        boolean res = sol.isPalindrome(arg0);\n        System.out.println(res);\n    }\n}\n"
+      cpp: "\nint main() {\n    Solution sol;\n    vector<int> arg0; string s0; getline(cin >> ws, s0); string temp0 = \"\"; for(char c : s0) { if(c == '[' || c == ']') continue; if(c == ',') { if(temp0!=\"\") { arg0.push_back(stoi(temp0)); temp0=\"\"; } } else temp0 += c; } if(temp0!=\"\") arg0.push_back(stoi(temp0));\n    int arg1; cin >> arg1;\n    auto res = sol.twoSum(arg0, arg1);\n    cout << \"[\"; for(int i=0; i<res.size(); i++) { cout << res[i] << (i==res.size()-1 ? \"\" : \",\"); } cout << \"]\" << endl;\n    return 0;\n}\n",
+      java: "\nclass Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        Solution sol = new Solution();\n        String s0 = scanner.nextLine().trim(); if(s0.startsWith(\"[\")) s0 = s0.substring(1, s0.length()-1); String[] parts0 = s0.split(\",\"); int[] arg0 = new int[s0.isEmpty() ? 0 : parts0.length]; if(!s0.isEmpty()) { for(int i=0; i<parts0.length; i++) arg0[i] = Integer.parseInt(parts0[i].trim()); }\n        int arg1 = Integer.parseInt(scanner.nextLine().trim());\n        int[] res = sol.twoSum(arg0, arg1);\n        System.out.print(\"[\"); for(int i=0; i<res.length; i++) { System.out.print(res[i] + (i==res.length-1 ? \"\" : \",\")); } System.out.println(\"]\");\n    }\n}\n"
     },
     officialSolution: {
-      explanation: "Reverse the number by extracting digits from right to left using modulo 10 and multiplying the reversed number by 10. Finally, check if it matches the original number. Negative numbers are never palindromes.",
+      explanation: "Use a hash map to store numbers and their indices as you iterate. For each number, check if the target minus the number exists in the map.",
       code: {
-        python: "class Solution:\n    def isPalindrome(self, x):\n        if x < 0: return False\n        temp = x\n        rev = 0\n        while temp > 0:\n            rev = rev * 10 + temp % 10\n            temp //= 10\n        return rev == x",
-        javascript: "class Solution {\n  isPalindrome(x) {\n    if (x < 0) return false;\n    let temp = x;\n    let rev = 0;\n    while (temp > 0) {\n      rev = rev * 10 + temp % 10;\n      temp = Math.floor(temp / 10);\n    }\n    return rev === x;\n  }\n}",
-        cpp: "#include <iostream>\nusing namespace std;\n\nclass Solution {\npublic:\n    bool isPalindrome(int x) {\n        if (x < 0) return false;\n        long long temp = x;\n        long long rev = 0;\n        while (temp > 0) {\n            rev = rev * 10 + temp % 10;\n            temp /= 10;\n        }\n        return rev == x;\n    }\n};",
-        java: "class Solution {\n    public boolean isPalindrome(int x) {\n        if (x < 0) return false;\n        long temp = x;\n        long rev = 0;\n        while (temp > 0) {\n            rev = rev * 10 + temp % 10;\n            temp /= 10;\n        }\n        return rev == x;\n    }\n}"
+        python: "class Solution:\n    def twoSum(self, nums, target):\n        numMap = {}\n        for i, num in enumerate(nums):\n            diff = target - num\n            if diff in numMap:\n                return [numMap[diff], i]\n            numMap[num] = i\n        return []",
+        javascript: "class Solution {\n  twoSum(nums, target) {\n    const numMap = new Map();\n    for (let i = 0; i < nums.length; i++) {\n      const diff = target - nums[i];\n      if (numMap.has(diff)) return [numMap.get(diff), i];\n      numMap.set(nums[i], i);\n    }\n    return [];\n  }\n}",
+        cpp: "#include <iostream>\n#include <vector>\n#include <unordered_map>\nusing namespace std;\n\nclass Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        unordered_map<int, int> numMap;\n        for (int i = 0; i < nums.size(); i++) {\n            int diff = target - nums[i];\n            if (numMap.count(diff)) return {numMap[diff], i};\n            numMap[nums[i]] = i;\n        }\n        return {};\n    }\n};",
+        java: "import java.util.*;\n\nclass Solution {\n    public int[] twoSum(int[] nums, int target) {\n        Map<Integer, Integer> numMap = new HashMap<>();\n        for (int i = 0; i < nums.length; i++) {\n            int diff = target - nums[i];\n            if (numMap.containsKey(diff)) return new int[] {numMap.get(diff), i};\n            numMap.put(nums[i], i);\n        }\n        return new int[]{};\n    }\n}"
       }
     },
     sampleTestCases: [
       {
-        input: "121",
-        expectedOutput: "true"
+        input: "[2,7,11,15]\\n9",
+        expectedOutput: "[0,1]"
       }
     ],
     hiddenTestCases: [
       {
-        input: "-121",
-        expectedOutput: "false"
+        input: "[3,2,4]\\n6",
+        expectedOutput: "[1,2]"
       },
       {
-        input: "10",
-        expectedOutput: "false"
+        input: "[3,3]\\n6",
+        expectedOutput: "[0,1]"
       }
     ]
   },
@@ -79,8 +77,8 @@ const problems = [
     officialSolution: {
       explanation: "Use a stack to keep track of opening brackets. When you see a closing bracket, check if it matches the top of the stack.",
       code: {
-        python: "class Solution:\n    def isValid(self, s):\n        stack = []\n        mapping = {): \"(\", }: \"{\", ]: \"[\"}\n        for char in s:\n            if char in mapping:\n                top_element = stack.pop() if stack else \"#\"\n                if mapping[char] != top_element:\n                    return False\n            else:\n                stack.append(char)\n        return not stack",
-        javascript: "class Solution {\n  isValid(s) {\n    const stack = [];\n    const map = { ): \"(\", }: \"{\", ]: \"[\" };\n    for (let char of s) {\n      if (map[char]) {\n        const top = stack.length ? stack.pop() : \"#\";\n        if (map[char] !== top) return false;\n      } else {\n        stack.push(char);\n      }\n    }\n    return stack.length === 0;\n  }\n}",
+        python: "class Solution:\n    def isValid(self, s):\n        stack = []\n        mapping = {\)\: \"(\", \}\: \"{\", \]\: \"[\"}\n        for char in s:\n            if char in mapping:\n                top_element = stack.pop() if stack else \"#\"\n                if mapping[char] != top_element:\n                    return False\n            else:\n                stack.append(char)\n        return not stack",
+        javascript: "class Solution {\n  isValid(s) {\n    const stack = [];\n    const map = { \)\: \"(\", \}\: \"{\", \]\: \"[\" };\n    for (let char of s) {\n      if (map[char]) {\n        const top = stack.length ? stack.pop() : \"#\";\n        if (map[char] !== top) return false;\n      } else {\n        stack.push(char);\n      }\n    }\n    return stack.length === 0;\n  }\n}",
         cpp: "#include <iostream>\n#include <string>\n#include <stack>\n#include <unordered_map>\nusing namespace std;\n\nclass Solution {\npublic:\n    bool isValid(string s) {\n        stack<char> st;\n        unordered_map<char, char> m = {{ ')', '(' }, { '}', '{' }, { ']', '[' }};\n        for (char c : s) {\n            if (m.count(c)) {\n                if (st.empty() || st.top() != m[c]) return false;\n                st.pop();\n            } else {\n                st.push(c);\n            }\n        }\n        return st.empty();\n    }\n};",
         java: "import java.util.*;\n\nclass Solution {\n    public boolean isValid(String s) {\n        Stack<Character> stack = new Stack<>();\n        for (char c : s.toCharArray()) {\n            if (c == '(') stack.push(')');\n            else if (c == '{') stack.push('}');\n            else if (c == '[') stack.push(']');\n            else if (stack.isEmpty() || stack.pop() != c) return false;\n        }\n        return stack.isEmpty();\n    }\n}"
       }
@@ -732,18 +730,3 @@ const problems = [
     ]
   }
 ];
-
-require('dotenv').config({ path: '../.env' }); // Load .env from parent directory
-
-mongoose.connect(process.env.MONGO_URI)
-  .then(async () => {
-    console.log('Connected to MongoDB');
-    await Problem.deleteMany({});
-    console.log('Cleared existing problems');
-    await Problem.insertMany(problems);
-    console.log('Inserted 15 new problems successfully');
-    mongoose.disconnect();
-  })
-  .catch(err => {
-    console.error('Connection error', err);
-  });
