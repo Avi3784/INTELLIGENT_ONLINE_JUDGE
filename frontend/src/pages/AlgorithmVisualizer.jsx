@@ -855,13 +855,14 @@ const AlgorithmVisualizer = () => {
         let temp = arr[i];
         let j;
         for (j = i; j >= gap && arr[j - gap].value > temp.value; j -= gap) {
-          await updateState(arr, [j, j - gap]);
+          await updateState(arr, [j, j - gap], 7); // Line 7: Compare
           arr[j] = arr[j - gap];
           arr[j].idx = j;
+          await updateState(arr, [j], 8); // Line 8: Shift
         }
         arr[j] = temp;
         arr[j].idx = j;
-        await updateState(arr, [j]);
+        await updateState(arr, [j], 10); // Line 10: Place
       }
     }
   };
@@ -874,20 +875,22 @@ const AlgorithmVisualizer = () => {
     while (swapped) {
       swapped = false;
       for (let i = start; i < end; ++i) {
-        await updateState(arr, [i, i + 1]);
+        await updateState(arr, [i, i + 1], 6); // Line 6: Compare forward
         if (arr[i].value > arr[i + 1].value) {
           swap(arr, i, i + 1);
           swapped = true;
+          await updateState(arr, [i, i + 1], 7); // Line 7: Swap forward
         }
       }
       if (!swapped) break;
       swapped = false;
       end = end - 1;
       for (let i = end - 1; i >= start; --i) {
-        await updateState(arr, [i, i + 1]);
+        await updateState(arr, [i, i + 1], 9); // Line 9: Compare backward
         if (arr[i].value > arr[i + 1].value) {
           swap(arr, i, i + 1);
           swapped = true;
+          await updateState(arr, [i, i + 1], 10); // Line 10: Swap backward
         }
       }
       start = start + 1;
@@ -897,11 +900,13 @@ const AlgorithmVisualizer = () => {
   const gnomeSort = async (arr) => {
     let index = 0;
     while (index < arr.length) {
-      await updateState(arr, [index, index - 1]);
-      if (index === 0 || arr[index].value >= arr[index - 1].value) {
+      if (index === 0) index++;
+      await updateState(arr, [index, index - 1], 6); // Line 6: Compare
+      if (arr[index].value >= arr[index - 1].value) {
         index++;
       } else {
         swap(arr, index, index - 1);
+        await updateState(arr, [index, index - 1], 7); // Line 7: Swap
         index--;
       }
     }
@@ -916,10 +921,11 @@ const AlgorithmVisualizer = () => {
       if (gap < 1) gap = 1;
       swapped = false;
       for (let i = 0; i < n - gap; i++) {
-        await updateState(arr, [i, i + gap]);
+        await updateState(arr, [i, i + gap], 8); // Line 8: Compare
         if (arr[i].value > arr[i + gap].value) {
           swap(arr, i, i + gap);
           swapped = true;
+          await updateState(arr, [i, i + gap], 9); // Line 9: Swap
         }
       }
     }
@@ -996,18 +1002,19 @@ const AlgorithmVisualizer = () => {
       if (l < n && arr[l].value > arr[largest].value) largest = l;
       if (r < n && arr[r].value > arr[largest].value) largest = r;
       if (largest !== i) {
-        await updateState(arr, [i, largest]);
+        await updateState(arr, [i, largest], 5); // Line 5: heapify
         swap(arr, i, largest);
         await heapify(n, largest);
       }
     };
     for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+      await updateState(arr, [i], 4); // Line 4: build max heap
       await heapify(n, i);
     }
     for (let i = n - 1; i > 0; i--) {
-      await updateState(arr, [0, i]);
+      await updateState(arr, [0, i], 8); // Line 8: extract
       swap(arr, 0, i);
-      await heapify(i, 0);
+      await heapify(i, 0); // Line 9: heapify
     }
   };
 
@@ -1017,7 +1024,7 @@ const AlgorithmVisualizer = () => {
       let item = arr[cycleStart];
       let pos = cycleStart;
       for (let i = cycleStart + 1; i < n; i++) {
-        await updateState(arr, [i, pos]);
+        await updateState(arr, [i, pos], 6); // Line 6: Compare
         if (arr[i].value < item.value) pos++;
       }
       if (pos === cycleStart) continue;
@@ -1027,12 +1034,12 @@ const AlgorithmVisualizer = () => {
         item = arr[pos];
         arr[pos] = temp;
         arr[pos].idx = pos;
-        await updateState(arr, [pos]);
+        await updateState(arr, [pos], 9); // Line 9: Place
       }
       while (pos !== cycleStart) {
         pos = cycleStart;
         for (let i = cycleStart + 1; i < n; i++) {
-          await updateState(arr, [i, pos]);
+          await updateState(arr, [i, pos], 6); // Line 6: Compare
           if (arr[i].value < item.value) pos += 1;
         }
         while (pos < n && item.value === arr[pos].value) pos += 1;
@@ -1041,7 +1048,7 @@ const AlgorithmVisualizer = () => {
           item = arr[pos];
           arr[pos] = temp;
           arr[pos].idx = pos;
-          await updateState(arr, [pos]);
+          await updateState(arr, [pos], 9); // Line 9: Place
         }
       }
     }
@@ -1051,19 +1058,22 @@ const AlgorithmVisualizer = () => {
     const flip = async (i) => {
       let temp, start = 0;
       while (start < i) {
-        await updateState(arr, [start, i]);
+        await updateState(arr, [start, i], 8); // Line 8: flip
         swap(arr, start, i);
         start++;
         i--;
       }
     };
-    const findMax = (n) => {
+    const findMax = async (n) => {
       let mi = 0;
-      for (let i = 0; i < n; ++i) if (arr[i].value > arr[mi].value) mi = i;
+      for (let i = 0; i < n; ++i) {
+        await updateState(arr, [i, mi], 6); // Line 6: Compare
+        if (arr[i].value > arr[mi].value) mi = i;
+      }
       return mi;
     };
     for (let currSize = arr.length; currSize > 1; --currSize) {
-      let mi = findMax(currSize);
+      let mi = await findMax(currSize);
       if (mi !== currSize - 1) {
         await flip(mi);
         await flip(currSize - 1);
@@ -1083,14 +1093,14 @@ const AlgorithmVisualizer = () => {
       for (i = 0; i < arr.length; i++) count[Math.floor(arr[i].value / exp) % 10]++;
       for (i = 1; i < 10; i++) count[i] += count[i - 1];
       for (i = arr.length - 1; i >= 0; i--) {
-        await updateState(arr, [i]);
+        await updateState(arr, [i], 5); // Line 5: Sort by digit
         output[count[Math.floor(arr[i].value / exp) % 10] - 1] = arr[i];
         count[Math.floor(arr[i].value / exp) % 10]--;
       }
       for (i = 0; i < arr.length; i++) {
         arr[i] = output[i];
         arr[i].idx = i;
-        await updateState(arr, [i]);
+        await updateState(arr, [i], 5); // Line 5: Update
       }
     };
     let m = getMax();
@@ -1107,7 +1117,7 @@ const AlgorithmVisualizer = () => {
     let count = new Array(max + 1).fill(0);
     let output = new Array(arr.length);
     for (let i = 0; i < arr.length; i++) {
-      await updateState(arr, [i]);
+      await updateState(arr, [i], 5); // Line 5: count occurrences
       count[arr[i].value]++;
     }
     for (let i = 1; i <= max; i++) {
@@ -1120,7 +1130,7 @@ const AlgorithmVisualizer = () => {
     for (let i = 0; i < arr.length; i++) {
       arr[i] = output[i];
       arr[i].idx = i;
-      await updateState(arr, [i]);
+      await updateState(arr, [i], 9); // Line 9: rebuild
     }
   };
 
@@ -1130,17 +1140,19 @@ const AlgorithmVisualizer = () => {
     while (!isSorted) {
       isSorted = true;
       for (let i = 1; i <= n - 2; i += 2) {
-        await updateState(arr, [i, i + 1]);
+        await updateState(arr, [i, i + 1], 6); // Line 6: Odd indexed
         if (arr[i].value > arr[i + 1].value) {
           swap(arr, i, i + 1);
           isSorted = false;
+          await updateState(arr, [i, i + 1], 7); // Line 7: Swap
         }
       }
       for (let i = 0; i <= n - 2; i += 2) {
-        await updateState(arr, [i, i + 1]);
+        await updateState(arr, [i, i + 1], 9); // Line 9: Even indexed
         if (arr[i].value > arr[i + 1].value) {
           swap(arr, i, i + 1);
           isSorted = false;
+          await updateState(arr, [i, i + 1], 10); // Line 10: Swap
         }
       }
     }
