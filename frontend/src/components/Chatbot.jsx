@@ -37,7 +37,8 @@ const Chatbot = () => {
       setMessages(prev => [...prev, { role: 'assistant', content: res.data.response }]);
     } catch (err) {
       console.error('Chat error:', err);
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, I am having trouble connecting to the server right now. Check your Groq API Key!' }]);
+      const errMsg = err.response?.data?.message || err.message || 'Unknown error occurred.';
+      setMessages(prev => [...prev, { role: 'assistant', content: `Error connecting to AI: ${errMsg}` }]);
     } finally {
       setIsLoading(false);
     }

@@ -87,10 +87,7 @@ router.post('/chat', protect, async (req, res) => {
 
     const responseText = chatCompletion.choices[0]?.message?.content || "";
 
-    // The requirements specify: Return the AI's response text.
-    // The previous feedback route returned { feedback }, here we can return the text.
-    // Many chat components expect just the string or an object with text/content.
-    res.send(responseText);
+    res.json({ response: responseText });
   } catch (err) {
     console.error('AI chat error:', err);
     res.status(500).json({ message: err.message || 'Failed to generate AI chat response' });
