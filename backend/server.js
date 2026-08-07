@@ -61,6 +61,9 @@ app.use(morgan('combined', { stream: { write: message => logger.info(message.tri
 // 2. Security HTTP Headers (Helmet)
 app.use(helmet());
 
+// Trust the reverse proxy (Render) so rate limiting can read X-Forwarded-For
+app.set('trust proxy', 1);
+
 // 3. API Rate Limiting
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
