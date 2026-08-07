@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import ActivityCalendar from 'react-activity-calendar';
+import { ActivityCalendar } from 'react-activity-calendar';
 import { Target, Trophy, Flame } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
