@@ -23,7 +23,12 @@ function getSubmissionQueue() {
 }
 
 const submissionQueue = {
-  add: (...args) => getSubmissionQueue().add(...args),
+  add: (...args) => {
+    if (!process.env.REDIS_URL) {
+      return Promise.reject(new Error('No REDIS_URL provided. Fallback to inline execution.'));
+    }
+    return getSubmissionQueue().add(...args);
+  },
 };
 
 function determineVerdict(results) {

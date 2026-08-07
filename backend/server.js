@@ -114,8 +114,12 @@ connectDB().then(() => {
   server.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
 
-    // Start the worker in the same process to avoid needing a separate paid Render Worker instance
-    console.log('Starting background worker...');
-    createWorker();
+    // Start the worker only if Redis is configured (prevents ECONNREFUSED spam on free tier)
+    if (process.env.REDIS_URL) {
+      console.log('Starting background worker...');
+      createWorker();
+    } else {
+      console.log('No REDIS_URL found. Running in inline-execution mode.');
+    }
   });
 });
