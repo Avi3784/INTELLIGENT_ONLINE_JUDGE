@@ -45,7 +45,7 @@ Strict Guidelines:
 
     const chatCompletion = await groq.chat.completions.create({
       messages: [{ role: 'user', content: prompt }],
-      model: 'llama3-70b-8192',
+      model: 'llama-3.3-70b-versatile',
     });
     
     const feedback = chatCompletion.choices[0]?.message?.content || "";
@@ -82,7 +82,7 @@ router.post('/chat', protect, async (req, res) => {
 
     const chatCompletion = await groq.chat.completions.create({
       messages: apiMessages,
-      model: 'llama3-70b-8192',
+      model: 'llama-3.3-70b-versatile',
     });
 
     const responseText = chatCompletion.choices[0]?.message?.content || "";
