@@ -60,3 +60,4 @@ services:
   - type: redis
     name: oj-redis
     plan: free
+    ipAllowList: [] # Empty list restricts access to only internal Render services
