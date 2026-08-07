@@ -11,11 +11,6 @@ services:
         value: 18.x
       - key: PORT
         value: 5000
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: oj-redis
-          property: connectionString
       # These must be filled in via the Render Dashboard manually
       - key: MONGO_URI
         sync: false
@@ -35,11 +30,3 @@ services:
         sync: false
       - key: GOOGLE_CLIENT_SECRET
         sync: false
-
-
-
-  # Managed Redis Instance for the Queue
-  - type: redis
-    name: oj-redis
-    plan: free
-    ipAllowList: [] # Empty list restricts access to only internal Render services
