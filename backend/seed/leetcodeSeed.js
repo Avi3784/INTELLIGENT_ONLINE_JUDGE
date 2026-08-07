@@ -79,8 +79,8 @@ const problems = [
     officialSolution: {
       explanation: "Use a stack to keep track of opening brackets. When you see a closing bracket, check if it matches the top of the stack.",
       code: {
-        python: "class Solution:\n    def isValid(self, s):\n        stack = []\n        mapping = {): \"(\", }: \"{\", ]: \"[\"}\n        for char in s:\n            if char in mapping:\n                top_element = stack.pop() if stack else \"#\"\n                if mapping[char] != top_element:\n                    return False\n            else:\n                stack.append(char)\n        return not stack",
-        javascript: "class Solution {\n  isValid(s) {\n    const stack = [];\n    const map = { ): \"(\", }: \"{\", ]: \"[\" };\n    for (let char of s) {\n      if (map[char]) {\n        const top = stack.length ? stack.pop() : \"#\";\n        if (map[char] !== top) return false;\n      } else {\n        stack.push(char);\n      }\n    }\n    return stack.length === 0;\n  }\n}",
+        python: "class Solution:\n    def isValid(self, s):\n        stack = []\n        mapping = {\")\": \"(\", \"}\": \"{\", \"]\": \"[\"}\n        for char in s:\n            if char in mapping:\n                top_element = stack.pop() if stack else \"#\"\n                if mapping[char] != top_element:\n                    return False\n            else:\n                stack.append(char)\n        return not stack",
+        javascript: "class Solution {\n  isValid(s) {\n    const stack = [];\n    const map = { \")\": \"(\", \"}\": \"{\", \"]\": \"[\" };\n    for (let char of s) {\n      if (map[char]) {\n        const top = stack.length ? stack.pop() : \"#\";\n        if (map[char] !== top) return false;\n      } else {\n        stack.push(char);\n      }\n    }\n    return stack.length === 0;\n  }\n}",
         cpp: "#include <iostream>\n#include <string>\n#include <stack>\n#include <unordered_map>\nusing namespace std;\n\nclass Solution {\npublic:\n    bool isValid(string s) {\n        stack<char> st;\n        unordered_map<char, char> m = {{ ')', '(' }, { '}', '{' }, { ']', '[' }};\n        for (char c : s) {\n            if (m.count(c)) {\n                if (st.empty() || st.top() != m[c]) return false;\n                st.pop();\n            } else {\n                st.push(c);\n            }\n        }\n        return st.empty();\n    }\n};",
         java: "import java.util.*;\n\nclass Solution {\n    public boolean isValid(String s) {\n        Stack<Character> stack = new Stack<>();\n        for (char c : s.toCharArray()) {\n            if (c == '(') stack.push(')');\n            else if (c == '{') stack.push('}');\n            else if (c == '[') stack.push(']');\n            else if (stack.isEmpty() || stack.pop() != c) return false;\n        }\n        return stack.isEmpty();\n    }\n}"
       }
@@ -377,13 +377,13 @@ const problems = [
     },
     sampleTestCases: [
       {
-        input: "\"anagram\"\\n\"nagaram\"",
+        input: `"anagram"\n"nagaram"`,
         expectedOutput: "true"
       }
     ],
     hiddenTestCases: [
       {
-        input: "\"rat\"\\n\"car\"",
+        input: `"rat"\n"car"`,
         expectedOutput: "false"
       }
     ]
@@ -519,17 +519,17 @@ const problems = [
     },
     sampleTestCases: [
       {
-        input: "[4,5,6,7,0,1,2]\\n0",
+        input: `[4,5,6,7,0,1,2]\n0`,
         expectedOutput: "4"
       }
     ],
     hiddenTestCases: [
       {
-        input: "[4,5,6,7,0,1,2]\\n3",
+        input: `[4,5,6,7,0,1,2]\n3`,
         expectedOutput: "-1"
       },
       {
-        input: "[1]\\n0",
+        input: `[1]\n0`,
         expectedOutput: "-1"
       }
     ]

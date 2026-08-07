@@ -22,7 +22,7 @@ const ALGORITHMS = [
 ];
 
 const CODE_LANGS = ['javascript', 'python', 'cpp', 'java'];
-const LANG_LABELS = { javascript: 'JavaScript', python: 'Python', cpp: 'C++', java: 'Java' };
+const LANG_LABELS = { javascript: 'JavaScript', python: 'Python', cpp: 'C++', c: 'C' };
 
 const CODE_SNIPPETS = {
   bubble: {
@@ -57,7 +57,7 @@ const CODE_SNIPPETS = {
         }
     }
 }`,
-    java: `void bubbleSort(int[] arr) {
+    c: `void bubbleSort(int[] arr) {
     int n = arr.length;
     for (int i = 0; i < n - 1; i++) {
         for (int j = 0; j < n - i - 1; j++) {
@@ -107,7 +107,7 @@ const CODE_SNIPPETS = {
         if (minIdx != i) swap(arr[i], arr[minIdx]);
     }
 }`,
-    java: `void selectionSort(int[] arr) {
+    c: `void selectionSort(int[] arr) {
     int n = arr.length;
     for (int i = 0; i < n - 1; i++) {
         int minIdx = i;
@@ -158,7 +158,7 @@ const CODE_SNIPPETS = {
         arr[j + 1] = key;
     }
 }`,
-    java: `void insertionSort(int[] arr) {
+    c: `void insertionSort(int[] arr) {
     int n = arr.length;
     for (int i = 1; i < n; i++) {
         int key = arr[i];
@@ -208,7 +208,7 @@ const CODE_SNIPPETS = {
         else arr[k++] = R[j++];
     }
 }`,
-    java: `void merge(int[] arr, int l, int m, int r) {
+    c: `void merge(int[] arr, int l, int m, int r) {
     int n1 = m - l + 1, n2 = r - m;
     int[] L = new int[n1], R = new int[n2];
     for (int i = 0; i < n1; i++) L[i] = arr[l+i];
@@ -258,7 +258,7 @@ const CODE_SNIPPETS = {
     swap(arr[i + 1], arr[high]);
     return i + 1;
 }`,
-    java: `int partition(int[] arr, int low, int high) {
+    c: `int partition(int[] arr, int low, int high) {
     int pivot = arr[high];
     int i = low - 1;
     for (int j = low; j < high; j++) {
@@ -313,7 +313,7 @@ const CODE_SNIPPETS = {
         }
     }
 }`,
-    java: `void shellSort(int[] arr) {
+    c: `void shellSort(int[] arr) {
     int n = arr.length;
     for (int gap = n/2; gap > 0; gap /= 2) {
         for (int i = gap; i < n; i++) {
@@ -367,7 +367,7 @@ const CODE_SNIPPETS = {
         start++;
     }
 }`,
-    java: `void cocktailSort(int[] arr) {
+    c: `void cocktailSort(int[] arr) {
     boolean swapped = true; int start = 0, end = arr.length-1;
     while (swapped) {
         swapped = false;
@@ -406,7 +406,7 @@ const CODE_SNIPPETS = {
         else { swap(arr[index], arr[index-1]); index--; }
     }
 }`,
-    java: `void gnomeSort(int[] arr) {
+    c: `void gnomeSort(int[] arr) {
     int index = 0;
     while (index < arr.length) {
         if (index == 0) index++;
@@ -448,7 +448,7 @@ const CODE_SNIPPETS = {
             if (arr[i] > arr[i+gap]) { swap(arr[i],arr[i+gap]); swapped=true; }
     }
 }`,
-    java: `void combSort(int[] arr) {
+    c: `void combSort(int[] arr) {
     int gap = arr.length; boolean swapped = true;
     while (gap != 1 || swapped) {
         gap = (gap * 10) / 13;
@@ -490,7 +490,7 @@ const CODE_SNIPPETS = {
         heapify(arr, i, 0);
     }
 }`,
-    java: `void heapSort(int[] arr) {
+    c: `void heapSort(int[] arr) {
     int n = arr.length;
     // Build max heap
     for (int i = n/2 - 1; i >= 0; i--)
@@ -532,7 +532,7 @@ const CODE_SNIPPETS = {
         swap(arr[pos], item);
     }
 }`,
-    java: `void cycleSort(int[] arr) {
+    c: `void cycleSort(int[] arr) {
     int n = arr.length;
     for (int start = 0; start < n-1; start++) {
         int item = arr[start], pos = start;
@@ -572,7 +572,7 @@ const CODE_SNIPPETS = {
         }
     }
 }`,
-    java: `void pancakeSort(int[] arr) {
+    c: `void pancakeSort(int[] arr) {
     for (int size = arr.length; size > 1; size--) {
         int maxIdx = 0;
         for (int i = 1; i < size; i++)
@@ -604,7 +604,7 @@ const CODE_SNIPPETS = {
     for (int exp = 1; mx/exp > 0; exp *= 10)
         countSortByDigit(arr, n, exp);
 }`,
-    java: `void radixSort(int[] arr) {
+    c: `void radixSort(int[] arr) {
     int max = Arrays.stream(arr).max().getAsInt();
     // Sort by each digit position
     for (int exp = 1; max/exp > 0; exp *= 10)
@@ -642,7 +642,7 @@ const CODE_SNIPPETS = {
     for (int i = 0; i <= mx; i++)
         while (count[i]-- > 0) arr[idx++] = i;
 }`,
-    java: `void countingSort(int[] arr) {
+    c: `void countingSort(int[] arr) {
     int max = Arrays.stream(arr).max().getAsInt();
     int[] count = new int[max + 1];
     // Count occurrences
@@ -690,7 +690,7 @@ const CODE_SNIPPETS = {
             if (arr[i] > arr[i+1]) { swap(arr[i],arr[i+1]); sorted=false; }
     }
 }`,
-    java: `void oddEvenSort(int[] arr) {
+    c: `void oddEvenSort(int[] arr) {
     boolean sorted = false;
     while (!sorted) {
         sorted = true;
@@ -1333,7 +1333,7 @@ const AlgorithmVisualizer = () => {
           fontFamily: "'JetBrains Mono', monospace",
           color: 'var(--text-primary)'
         }}>
-          {(CODE_SNIPPETS[algorithm]?.[codeLang] || CODE_SNIPPETS[algorithm]?.javascript || '').split('\n').map((lineText, idx) => {
+          {(CODE_SNIPPETS[algorithm]?.[codeLang] || CODE_SNIPPETS[algorithm]?.javascript || '// Code snippet is not available yet.').split('\n').map((lineText, idx) => {
             const lineNum = idx + 1;
             const isHighlighted = activeLine === lineNum;
             return (
