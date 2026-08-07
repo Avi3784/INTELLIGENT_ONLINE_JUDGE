@@ -792,7 +792,11 @@ const AlgorithmVisualizer = () => {
   const updateState = async (newArr, active = [], line = null) => {
     setArray([...newArr]);
     setActiveIndices(active);
-    setActiveLine(line);
+    if (line !== null && typeof line === 'object') {
+      setActiveLine(line[codeLang] || line.javascript || null);
+    } else {
+      setActiveLine(line);
+    }
     await sleep(210 - speedRef.current); // Use ref to get live speed updates
   };
 
@@ -811,10 +815,10 @@ const AlgorithmVisualizer = () => {
     let n = arr.length;
     for (let i = 0; i < n - 1; i++) {
       for (let j = 0; j < n - i - 1; j++) {
-        await updateState(arr, [j, j + 1], 5); // Line 5: Compare
+        await updateState(arr, [j, j + 1], { javascript: 6, python: 6, cpp: 5, java: 6 });
         if (arr[j].value > arr[j + 1].value) {
           swap(arr, j, j + 1);
-          await updateState(arr, [j, j + 1], 7); // Line 7: Swap
+          await updateState(arr, [j, j + 1], { javascript: 8, python: 8, cpp: 7, java: 8 });
         }
       }
     }
@@ -825,12 +829,12 @@ const AlgorithmVisualizer = () => {
     for (let i = 0; i < n - 1; i++) {
       let minIdx = i;
       for (let j = i + 1; j < n; j++) {
-        await updateState(arr, [minIdx, j], 6); // Line 6: Find min
+        await updateState(arr, [minIdx, j], { javascript: 7, python: 7, cpp: 6, java: 7 });
         if (arr[j].value < arr[minIdx].value) minIdx = j;
       }
       if (minIdx !== i) {
         swap(arr, i, minIdx);
-        await updateState(arr, [i, minIdx], 9); // Line 9: Swap
+        await updateState(arr, [i, minIdx], { javascript: 10, python: 10, cpp: 9, java: 10 });
       }
     }
   };
@@ -840,9 +844,9 @@ const AlgorithmVisualizer = () => {
     for (let i = 1; i < n; i++) {
       let j = i;
       while (j > 0 && arr[j - 1].value > arr[j].value) {
-        await updateState(arr, [j, j - 1], 5); // Line 5: Move elements
+        await updateState(arr, [j, j - 1], { javascript: 5, python: 6, cpp: 5, java: 6 });
         swap(arr, j, j - 1);
-        await updateState(arr, [j, j - 1], 6); // Line 6: Swap
+        await updateState(arr, [j, j - 1], { javascript: 6, python: 8, cpp: 6, java: 8 });
         j--;
       }
     }
@@ -855,14 +859,14 @@ const AlgorithmVisualizer = () => {
         let temp = arr[i];
         let j;
         for (j = i; j >= gap && arr[j - gap].value > temp.value; j -= gap) {
-          await updateState(arr, [j, j - gap], 7); // Line 7: Compare
+          await updateState(arr, [j, j - gap], { javascript: 7, python: 8, cpp: 6, java: 7 });
           arr[j] = arr[j - gap];
           arr[j].idx = j;
-          await updateState(arr, [j], 8); // Line 8: Shift
+          await updateState(arr, [j], { javascript: 8, python: 9, cpp: 7, java: 8 });
         }
         arr[j] = temp;
         arr[j].idx = j;
-        await updateState(arr, [j], 10); // Line 10: Place
+        await updateState(arr, [j], { javascript: 10, python: 10, cpp: 9, java: 10 });
       }
     }
   };
@@ -875,22 +879,22 @@ const AlgorithmVisualizer = () => {
     while (swapped) {
       swapped = false;
       for (let i = start; i < end; ++i) {
-        await updateState(arr, [i, i + 1], 6); // Line 6: Compare forward
+        await updateState(arr, [i, i + 1], { javascript: 7, python: 7, cpp: 6, java: 6 });
         if (arr[i].value > arr[i + 1].value) {
           swap(arr, i, i + 1);
           swapped = true;
-          await updateState(arr, [i, i + 1], 7); // Line 7: Swap forward
+          await updateState(arr, [i, i + 1], { javascript: 7, python: 8, cpp: 6, java: 6 });
         }
       }
       if (!swapped) break;
       swapped = false;
       end = end - 1;
       for (let i = end - 1; i >= start; --i) {
-        await updateState(arr, [i, i + 1], 9); // Line 9: Compare backward
+        await updateState(arr, [i, i + 1], { javascript: 10, python: 12, cpp: 8, java: 8 });
         if (arr[i].value > arr[i + 1].value) {
           swap(arr, i, i + 1);
           swapped = true;
-          await updateState(arr, [i, i + 1], 10); // Line 10: Swap backward
+          await updateState(arr, [i, i + 1], { javascript: 10, python: 13, cpp: 8, java: 8 });
         }
       }
       start = start + 1;
@@ -901,12 +905,12 @@ const AlgorithmVisualizer = () => {
     let index = 0;
     while (index < arr.length) {
       if (index === 0) index++;
-      await updateState(arr, [index, index - 1], 6); // Line 6: Compare
+      await updateState(arr, [index, index - 1], { javascript: 6, python: 6, cpp: 5, java: 5 });
       if (arr[index].value >= arr[index - 1].value) {
         index++;
       } else {
         swap(arr, index, index - 1);
-        await updateState(arr, [index, index - 1], 7); // Line 7: Swap
+        await updateState(arr, [index, index - 1], { javascript: 7, python: 8, cpp: 6, java: 6 });
         index--;
       }
     }
@@ -921,11 +925,11 @@ const AlgorithmVisualizer = () => {
       if (gap < 1) gap = 1;
       swapped = false;
       for (let i = 0; i < n - gap; i++) {
-        await updateState(arr, [i, i + gap], 8); // Line 8: Compare
+        await updateState(arr, [i, i + gap], { javascript: 8, python: 9, cpp: 7, java: 7 });
         if (arr[i].value > arr[i + gap].value) {
           swap(arr, i, i + gap);
           swapped = true;
-          await updateState(arr, [i, i + gap], 9); // Line 9: Swap
+          await updateState(arr, [i, i + gap], { javascript: 8, python: 10, cpp: 7, java: 7 });
         }
       }
     }
@@ -940,7 +944,7 @@ const AlgorithmVisualizer = () => {
       for (let j = 0; j < n2; j++) R.push(arr[mid + 1 + j]);
       let i = 0, j = 0, k = left;
       while (i < n1 && j < n2) {
-        await updateState(arr, [left + i, mid + 1 + j, k], 4); // Line 4: Compare
+        await updateState(arr, [left + i, mid + 1 + j, k], { javascript: 6, python: 6, cpp: 8, java: 8 });
         if (L[i].value <= R[j].value) {
           arr[k] = L[i]; i++;
         } else {
@@ -973,14 +977,15 @@ const AlgorithmVisualizer = () => {
       let pivot = arr[high].value;
       let i = low - 1;
       for (let j = low; j < high; j++) {
-        await updateState(arr, [j, high, i + 1], 5); // Line 5: Compare
+        await updateState(arr, [j, high, i + 1], { javascript: 6, python: 6, cpp: 5, java: 6 });
         if (arr[j].value < pivot) {
           i++;
           swap(arr, i, j);
+          await updateState(arr, [i, j], { javascript: 8, python: 8, cpp: 8, java: 11 }); // Actually Java swap lines vary, 11 is safe
         }
       }
       swap(arr, i + 1, high);
-      await updateState(arr, [i + 1, high], 9); // Line 9: Swap
+      await updateState(arr, [i + 1, high], { javascript: 11, python: 9, cpp: 10, java: 13 });
       return i + 1;
     };
     const sort = async (low, high) => {
@@ -1002,19 +1007,19 @@ const AlgorithmVisualizer = () => {
       if (l < n && arr[l].value > arr[largest].value) largest = l;
       if (r < n && arr[r].value > arr[largest].value) largest = r;
       if (largest !== i) {
-        await updateState(arr, [i, largest], 5); // Line 5: heapify
+        await updateState(arr, [i, largest], { javascript: 10, python: 10, cpp: 9, java: 10 });
         swap(arr, i, largest);
         await heapify(n, largest);
       }
     };
     for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-      await updateState(arr, [i], 4); // Line 4: build max heap
+      await updateState(arr, [i], { javascript: 5, python: 5, cpp: 4, java: 5 });
       await heapify(n, i);
     }
     for (let i = n - 1; i > 0; i--) {
-      await updateState(arr, [0, i], 8); // Line 8: extract
+      await updateState(arr, [0, i], { javascript: 8, python: 8, cpp: 7, java: 8 });
       swap(arr, 0, i);
-      await heapify(i, 0); // Line 9: heapify
+      await heapify(i, 0);
     }
   };
 
@@ -1024,7 +1029,7 @@ const AlgorithmVisualizer = () => {
       let item = arr[cycleStart];
       let pos = cycleStart;
       for (let i = cycleStart + 1; i < n; i++) {
-        await updateState(arr, [i, pos], 6); // Line 6: Compare
+        await updateState(arr, [i, pos], { javascript: 6, python: 6, cpp: 5, java: 5 });
         if (arr[i].value < item.value) pos++;
       }
       if (pos === cycleStart) continue;
@@ -1034,12 +1039,12 @@ const AlgorithmVisualizer = () => {
         item = arr[pos];
         arr[pos] = temp;
         arr[pos].idx = pos;
-        await updateState(arr, [pos], 9); // Line 9: Place
+        await updateState(arr, [pos], { javascript: 9, python: 9, cpp: 7, java: 7 });
       }
       while (pos !== cycleStart) {
         pos = cycleStart;
         for (let i = cycleStart + 1; i < n; i++) {
-          await updateState(arr, [i, pos], 6); // Line 6: Compare
+          await updateState(arr, [i, pos], { javascript: 6, python: 6, cpp: 5, java: 5 });
           if (arr[i].value < item.value) pos += 1;
         }
         while (pos < n && item.value === arr[pos].value) pos += 1;
@@ -1048,7 +1053,7 @@ const AlgorithmVisualizer = () => {
           item = arr[pos];
           arr[pos] = temp;
           arr[pos].idx = pos;
-          await updateState(arr, [pos], 9); // Line 9: Place
+          await updateState(arr, [pos], { javascript: 9, python: 9, cpp: 7, java: 7 });
         }
       }
     }
@@ -1058,7 +1063,7 @@ const AlgorithmVisualizer = () => {
     const flip = async (i) => {
       let temp, start = 0;
       while (start < i) {
-        await updateState(arr, [start, i], 8); // Line 8: flip
+        await updateState(arr, [start, i], { javascript: 8, python: 6, cpp: 6, java: 7 });
         swap(arr, start, i);
         start++;
         i--;
@@ -1067,7 +1072,7 @@ const AlgorithmVisualizer = () => {
     const findMax = async (n) => {
       let mi = 0;
       for (let i = 0; i < n; ++i) {
-        await updateState(arr, [i, mi], 6); // Line 6: Compare
+        await updateState(arr, [i, mi], { javascript: 6, python: 4, cpp: 4, java: 4 });
         if (arr[i].value > arr[mi].value) mi = i;
       }
       return mi;
@@ -1093,14 +1098,14 @@ const AlgorithmVisualizer = () => {
       for (i = 0; i < arr.length; i++) count[Math.floor(arr[i].value / exp) % 10]++;
       for (i = 1; i < 10; i++) count[i] += count[i - 1];
       for (i = arr.length - 1; i >= 0; i--) {
-        await updateState(arr, [i], 5); // Line 5: Sort by digit
+        await updateState(arr, [i], { javascript: 5, python: 6, cpp: 5, java: 5 });
         output[count[Math.floor(arr[i].value / exp) % 10] - 1] = arr[i];
         count[Math.floor(arr[i].value / exp) % 10]--;
       }
       for (i = 0; i < arr.length; i++) {
         arr[i] = output[i];
         arr[i].idx = i;
-        await updateState(arr, [i], 5); // Line 5: Update
+        await updateState(arr, [i]);
       }
     };
     let m = getMax();
@@ -1117,7 +1122,7 @@ const AlgorithmVisualizer = () => {
     let count = new Array(max + 1).fill(0);
     let output = new Array(arr.length);
     for (let i = 0; i < arr.length; i++) {
-      await updateState(arr, [i], 5); // Line 5: count occurrences
+      await updateState(arr, [i], { javascript: 5, python: 5, cpp: 5, java: 5 });
       count[arr[i].value]++;
     }
     for (let i = 1; i <= max; i++) {
@@ -1130,7 +1135,7 @@ const AlgorithmVisualizer = () => {
     for (let i = 0; i < arr.length; i++) {
       arr[i] = output[i];
       arr[i].idx = i;
-      await updateState(arr, [i], 9); // Line 9: rebuild
+      await updateState(arr, [i], { javascript: 9, python: 9, cpp: 9, java: 9 });
     }
   };
 
@@ -1140,19 +1145,19 @@ const AlgorithmVisualizer = () => {
     while (!isSorted) {
       isSorted = true;
       for (let i = 1; i <= n - 2; i += 2) {
-        await updateState(arr, [i, i + 1], 6); // Line 6: Odd indexed
+        await updateState(arr, [i, i + 1], { javascript: 6, python: 6, cpp: 6, java: 6 });
         if (arr[i].value > arr[i + 1].value) {
           swap(arr, i, i + 1);
           isSorted = false;
-          await updateState(arr, [i, i + 1], 7); // Line 7: Swap
+          await updateState(arr, [i, i + 1], { javascript: 7, python: 7, cpp: 7, java: 7 });
         }
       }
       for (let i = 0; i <= n - 2; i += 2) {
-        await updateState(arr, [i, i + 1], 9); // Line 9: Even indexed
+        await updateState(arr, [i, i + 1], { javascript: 9, python: 11, cpp: 8, java: 8 });
         if (arr[i].value > arr[i + 1].value) {
           swap(arr, i, i + 1);
           isSorted = false;
-          await updateState(arr, [i, i + 1], 10); // Line 10: Swap
+          await updateState(arr, [i, i + 1], { javascript: 10, python: 12, cpp: 9, java: 9 });
         }
       }
     }
