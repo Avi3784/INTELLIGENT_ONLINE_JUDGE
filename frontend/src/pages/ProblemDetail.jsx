@@ -371,19 +371,24 @@ function ProblemDetail() {
             </>
             ) : leftTab === 'official' && problem.officialSolution ? (
               <div className="problem-section" style={{ padding: 'var(--space-lg)' }}>
-                <h2 className="section-title text-xl font-bold mb-4" style={{ color: 'var(--color-easy)' }}>Official Solution</h2>
-                <div className="mb-6 p-4 rounded-xl" style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', border: '1px solid var(--color-easy)' }}>
-                  <h3 className="font-semibold mb-2">Explanation</h3>
-                  <p style={{ color: 'var(--text-secondary)' }}>{problem.officialSolution.explanation}</p>
+                <h2 className="section-title" style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '16px', color: 'var(--color-easy)' }}>Official Solution</h2>
+                
+                <div style={{ marginBottom: '24px', padding: '16px', borderRadius: 'var(--radius-md)', backgroundColor: 'rgba(16, 185, 129, 0.1)', border: '1px solid var(--color-easy)' }}>
+                  <h3 style={{ fontWeight: '600', marginBottom: '8px' }}>Explanation</h3>
+                  <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', wordBreak: 'break-word' }}>{problem.officialSolution.explanation}</p>
                 </div>
                 
-                <h3 className="font-semibold mb-3">Solution Code ({language})</h3>
+                <h3 style={{ fontWeight: '600', marginBottom: '12px' }}>Solution Code ({language})</h3>
                 {problem.officialSolution.code && problem.officialSolution.code[language] ? (
-                  <pre className="p-4 rounded-xl overflow-x-auto" style={{ backgroundColor: '#000', border: '1px solid var(--border-color)', fontFamily: 'monospace' }}>
-                    <code>{problem.officialSolution.code[language]}</code>
-                  </pre>
+                  <div style={{ borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', overflow: 'hidden', maxWidth: '100%' }}>
+                    <pre style={{ margin: 0, padding: '16px', backgroundColor: '#0B0E14', overflowX: 'auto', fontFamily: "'JetBrains Mono', monospace", fontSize: '14px', lineHeight: '1.5', color: 'var(--text-primary)' }}>
+                      <code style={{ whiteSpace: 'pre' }}>{problem.officialSolution.code[language]}</code>
+                    </pre>
+                  </div>
                 ) : (
-                  <div className="p-4 text-center text-gray-500 italic">No official code available for {language}.</div>
+                  <div style={{ padding: '16px', textAlign: 'center', color: 'var(--text-muted)', fontStyle: 'italic', backgroundColor: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)' }}>
+                    No official code available for {language}.
+                  </div>
                 )}
               </div>
             ) : (

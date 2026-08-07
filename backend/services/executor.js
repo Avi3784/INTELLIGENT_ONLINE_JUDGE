@@ -123,7 +123,8 @@ const fs = require('fs');
 const input = fs.readFileSync(0, 'utf-8').trim().split(/\\r?\\n/);
 if (input.length > 0 && input[0] !== '') {
   const parsedInput = input.map(line => JSON.parse(line));
-  const res = ${methodName}(...parsedInput);
+  const sol = new Solution();
+  const res = sol.${methodName}(...parsedInput);
   console.log(JSON.stringify(res));
 }
 `;

@@ -1,0 +1,62 @@
+[
+  {
+    "title": "Two Sum",
+    "driver": "\nint main() {\n    Solution sol;\n    vector<int> arg0;\n    string s0; getline(cin >> ws, s0);\n    string temp0 = \"\";\n    for(char c : s0) {\n        if(c == '[' || c == ']') continue;\n        if(c == ',') { if(temp0!=\"\") { arg0.push_back(stoi(temp0)); temp0=\"\"; } }\n        else temp0 += c;\n    }\n    if(temp0!=\"\") arg0.push_back(stoi(temp0));\n    int arg1; cin >> arg1;\n    auto res = sol.method(arg0, arg1);\n    cout << \"[\";\n    for(int i=0; i<res.size(); i++) {\n        cout << res[i] << (i==res.size()-1 ? \"\" : \",\");\n    }\n    cout << \"]\" << endl;\n    return 0;\n}\n"
+  },
+  {
+    "title": "Valid Parentheses",
+    "driver": "\nint main() {\n    Solution sol;\n    string arg0;\n    string line; getline(cin >> ws, line);\n    // Remove quotes\n    if(line.size()>=2 && line[0]=='\"' && line.back()=='\"') arg0 = line.substr(1, line.size()-2);\n    else arg0 = line;\n    auto res = sol.method(arg0);\n    if (typeid(res) == typeid(bool)) cout << (res ? \"true\" : \"false\") << endl; else cout << res << endl;\n    return 0;\n}\n"
+  },
+  {
+    "title": "Best Time to Buy and Sell Stock",
+    "driver": "\nint main() {\n    Solution sol;\n    vector<int> arg0;\n    string s0; getline(cin >> ws, s0);\n    string temp0 = \"\";\n    for(char c : s0) {\n        if(c == '[' || c == ']') continue;\n        if(c == ',') { if(temp0!=\"\") { arg0.push_back(stoi(temp0)); temp0=\"\"; } }\n        else temp0 += c;\n    }\n    if(temp0!=\"\") arg0.push_back(stoi(temp0));\n    auto res = sol.method(arg0);\n    if (typeid(res) == typeid(bool)) cout << (res ? \"true\" : \"false\") << endl; else cout << res << endl;\n    return 0;\n}\n"
+  },
+  {
+    "title": "Contains Duplicate",
+    "driver": "\nint main() {\n    Solution sol;\n    vector<int> arg0;\n    string s0; getline(cin >> ws, s0);\n    string temp0 = \"\";\n    for(char c : s0) {\n        if(c == '[' || c == ']') continue;\n        if(c == ',') { if(temp0!=\"\") { arg0.push_back(stoi(temp0)); temp0=\"\"; } }\n        else temp0 += c;\n    }\n    if(temp0!=\"\") arg0.push_back(stoi(temp0));\n    auto res = sol.method(arg0);\n    if (typeid(res) == typeid(bool)) cout << (res ? \"true\" : \"false\") << endl; else cout << res << endl;\n    return 0;\n}\n"
+  },
+  {
+    "title": "Product of Array Except Self",
+    "driver": "\nint main() {\n    Solution sol;\n    vector<int> arg0;\n    string s0; getline(cin >> ws, s0);\n    string temp0 = \"\";\n    for(char c : s0) {\n        if(c == '[' || c == ']') continue;\n        if(c == ',') { if(temp0!=\"\") { arg0.push_back(stoi(temp0)); temp0=\"\"; } }\n        else temp0 += c;\n    }\n    if(temp0!=\"\") arg0.push_back(stoi(temp0));\n    auto res = sol.method(arg0);\n    cout << \"[\";\n    for(int i=0; i<res.size(); i++) {\n        cout << res[i] << (i==res.size()-1 ? \"\" : \",\");\n    }\n    cout << \"]\" << endl;\n    return 0;\n}\n"
+  },
+  {
+    "title": "Maximum Subarray",
+    "driver": "\nint main() {\n    Solution sol;\n    vector<int> arg0;\n    string s0; getline(cin >> ws, s0);\n    string temp0 = \"\";\n    for(char c : s0) {\n        if(c == '[' || c == ']') continue;\n        if(c == ',') { if(temp0!=\"\") { arg0.push_back(stoi(temp0)); temp0=\"\"; } }\n        else temp0 += c;\n    }\n    if(temp0!=\"\") arg0.push_back(stoi(temp0));\n    auto res = sol.method(arg0);\n    if (typeid(res) == typeid(bool)) cout << (res ? \"true\" : \"false\") << endl; else cout << res << endl;\n    return 0;\n}\n"
+  },
+  {
+    "title": "Missing Number",
+    "driver": "\nint main() {\n    Solution sol;\n    vector<int> arg0;\n    string s0; getline(cin >> ws, s0);\n    string temp0 = \"\";\n    for(char c : s0) {\n        if(c == '[' || c == ']') continue;\n        if(c == ',') { if(temp0!=\"\") { arg0.push_back(stoi(temp0)); temp0=\"\"; } }\n        else temp0 += c;\n    }\n    if(temp0!=\"\") arg0.push_back(stoi(temp0));\n    auto res = sol.method(arg0);\n    if (typeid(res) == typeid(bool)) cout << (res ? \"true\" : \"false\") << endl; else cout << res << endl;\n    return 0;\n}\n"
+  },
+  {
+    "title": "Valid Anagram",
+    "driver": "\nint main() {\n    Solution sol;\n    string arg0;\n    string line; getline(cin >> ws, line);\n    // Remove quotes\n    if(line.size()>=2 && line[0]=='\"' && line.back()=='\"') arg0 = line.substr(1, line.size()-2);\n    else arg0 = line;\n    string arg1;\n    string line; getline(cin >> ws, line);\n    // Remove quotes\n    if(line.size()>=2 && line[0]=='\"' && line.back()=='\"') arg1 = line.substr(1, line.size()-2);\n    else arg1 = line;\n    auto res = sol.method(arg0, arg1);\n    if (typeid(res) == typeid(bool)) cout << (res ? \"true\" : \"false\") << endl; else cout << res << endl;\n    return 0;\n}\n"
+  },
+  {
+    "title": "Container With Most Water",
+    "driver": "\nint main() {\n    Solution sol;\n    vector<int> arg0;\n    string s0; getline(cin >> ws, s0);\n    string temp0 = \"\";\n    for(char c : s0) {\n        if(c == '[' || c == ']') continue;\n        if(c == ',') { if(temp0!=\"\") { arg0.push_back(stoi(temp0)); temp0=\"\"; } }\n        else temp0 += c;\n    }\n    if(temp0!=\"\") arg0.push_back(stoi(temp0));\n    auto res = sol.method(arg0);\n    if (typeid(res) == typeid(bool)) cout << (res ? \"true\" : \"false\") << endl; else cout << res << endl;\n    return 0;\n}\n"
+  },
+  {
+    "title": "Find Minimum in Rotated Sorted Array",
+    "driver": "\nint main() {\n    Solution sol;\n    vector<int> arg0;\n    string s0; getline(cin >> ws, s0);\n    string temp0 = \"\";\n    for(char c : s0) {\n        if(c == '[' || c == ']') continue;\n        if(c == ',') { if(temp0!=\"\") { arg0.push_back(stoi(temp0)); temp0=\"\"; } }\n        else temp0 += c;\n    }\n    if(temp0!=\"\") arg0.push_back(stoi(temp0));\n    auto res = sol.method(arg0);\n    if (typeid(res) == typeid(bool)) cout << (res ? \"true\" : \"false\") << endl; else cout << res << endl;\n    return 0;\n}\n"
+  },
+  {
+    "title": "Search in Rotated Sorted Array",
+    "driver": "\nint main() {\n    Solution sol;\n    vector<int> arg0;\n    string s0; getline(cin >> ws, s0);\n    string temp0 = \"\";\n    for(char c : s0) {\n        if(c == '[' || c == ']') continue;\n        if(c == ',') { if(temp0!=\"\") { arg0.push_back(stoi(temp0)); temp0=\"\"; } }\n        else temp0 += c;\n    }\n    if(temp0!=\"\") arg0.push_back(stoi(temp0));\n    int arg1; cin >> arg1;\n    auto res = sol.method(arg0, arg1);\n    if (typeid(res) == typeid(bool)) cout << (res ? \"true\" : \"false\") << endl; else cout << res << endl;\n    return 0;\n}\n"
+  },
+  {
+    "title": "Climbing Stairs",
+    "driver": "\nint main() {\n    Solution sol;\n    int arg0; cin >> arg0;\n    auto res = sol.method(arg0);\n    if (typeid(res) == typeid(bool)) cout << (res ? \"true\" : \"false\") << endl; else cout << res << endl;\n    return 0;\n}\n"
+  },
+  {
+    "title": "Merge Intervals",
+    "driver": "\nint main() {\n    Solution sol;\n    vector<vector<int>> arg0;\n    string s0; getline(cin >> ws, s0);\n    // Simplified parser for [[1,3],[2,6]]\n    vector<int> curr0;\n    string temp0 = \"\";\n    bool in_array = false;\n    for(int i = 1; i < s0.size()-1; i++) {\n        char c = s0[i];\n        if (c == '[') { in_array = true; }\n        else if (c == ']') {\n            if(temp0!=\"\") { curr0.push_back(stoi(temp0)); temp0=\"\"; }\n            arg0.push_back(curr0);\n            curr0.clear();\n            in_array = false;\n        }\n        else if (c == ',') {\n            if(in_array && temp0!=\"\") { curr0.push_back(stoi(temp0)); temp0=\"\"; }\n        } else { temp0 += c; }\n    }\n    auto res = sol.method(arg0);\n    cout << \"[\";\n    for(int i=0; i<res.size(); i++) {\n        cout << \"[\";\n        for(int j=0; j<res[i].size(); j++) {\n            cout << res[i][j] << (j==res[i].size()-1 ? \"\" : \",\");\n        }\n        cout << \"]\" << (i==res.size()-1 ? \"\" : \",\");\n    }\n    cout << \"]\" << endl;\n    return 0;\n}\n"
+  },
+  {
+    "title": "Longest Substring Without Repeating Characters",
+    "driver": "\nint main() {\n    Solution sol;\n    string arg0;\n    string line; getline(cin >> ws, line);\n    // Remove quotes\n    if(line.size()>=2 && line[0]=='\"' && line.back()=='\"') arg0 = line.substr(1, line.size()-2);\n    else arg0 = line;\n    auto res = sol.method(arg0);\n    if (typeid(res) == typeid(bool)) cout << (res ? \"true\" : \"false\") << endl; else cout << res << endl;\n    return 0;\n}\n"
+  },
+  {
+    "title": "Fibonacci Number",
+    "driver": "\nint main() {\n    Solution sol;\n    int arg0; cin >> arg0;\n    auto res = sol.method(arg0);\n    if (typeid(res) == typeid(bool)) cout << (res ? \"true\" : \"false\") << endl; else cout << res << endl;\n    return 0;\n}\n"
+  }
+]
