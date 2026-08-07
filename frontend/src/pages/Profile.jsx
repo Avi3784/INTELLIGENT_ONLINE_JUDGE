@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getUserProfile } from '../services/api'
-import { AlertTriangle, Calendar, FileText } from 'lucide-react'
+import { AlertTriangle, Calendar, FileText, ChevronDown, ChevronUp } from 'lucide-react'
 
 function Profile() {
   const navigate = useNavigate()
+  const [expandedSub, setExpandedSub] = useState(null)
 
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -168,22 +169,40 @@ function Profile() {
           </div>
         ) : (
           recentSubmissions.slice(0, 10).map((sub, index) => (
-            <div key={sub._id || index} className="submission-item slideUp" style={{ animationDelay: `${index * 0.05}s` }}>
-              <div className="submission-info">
-                <span
-                  className="submission-problem"
-                  onClick={() => navigate(`/problems/${sub.problemId?._id || sub.problemId || sub.problem?._id || (typeof sub.problem === 'string' ? sub.problem : '')}`)}
-                >
-                  {sub.problemTitle || sub.problem?.title || 'Problem'}
-                </span>
-                <span className="lang-badge">{sub.language || 'python'}</span>
+            <div key={sub._id || index} className="submission-card slideUp" style={{ animationDelay: `${index * 0.05}s`, marginBottom: '1rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+              <div 
+                className="submission-item" 
+                style={{ cursor: 'pointer', border: 'none', marginBottom: 0 }}
+                onClick={() => setExpandedSub(expandedSub === (sub._id || index) ? null : (sub._id || index))}
+              >
+                <div className="submission-info">
+                  <span
+                    className="submission-problem"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/problems/${sub.problemId?._id || sub.problemId || sub.problem?._id || (typeof sub.problem === 'string' ? sub.problem : '')}`)
+                    }}
+                    style={{ textDecoration: 'underline' }}
+                  >
+                    {sub.problemTitle || sub.problem?.title || 'Problem'}
+                  </span>
+                  <span className="lang-badge">{sub.language || 'python'}</span>
+                </div>
+                <div className="submission-meta" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <span className={`verdict-badge ${getVerdictClass(sub.verdict || sub.status)}`}>
+                    {getVerdictLabel(sub.verdict || sub.status)}
+                  </span>
+                  <span>{timeAgo(sub.createdAt || sub.submittedAt)}</span>
+                  {expandedSub === (sub._id || index) ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </div>
               </div>
-              <div className="submission-meta">
-                <span className={`verdict-badge ${getVerdictClass(sub.verdict || sub.status)}`}>
-                  {getVerdictLabel(sub.verdict || sub.status)}
-                </span>
-                <span>{timeAgo(sub.createdAt || sub.submittedAt)}</span>
-              </div>
+              {expandedSub === (sub._id || index) && sub.code && (
+                <div style={{ padding: '1rem', backgroundColor: 'var(--bg-secondary)', borderTop: '1px solid var(--border-color)' }}>
+                  <pre style={{ margin: 0, padding: '1rem', backgroundColor: 'var(--bg-dark)', borderRadius: 'var(--radius-sm)', overflowX: 'auto', fontSize: '14px', fontFamily: "'JetBrains Mono', monospace" }}>
+                    <code>{sub.code}</code>
+                  </pre>
+                </div>
+              )}
             </div>
           ))
         )}
