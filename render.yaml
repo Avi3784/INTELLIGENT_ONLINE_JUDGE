@@ -1,0 +1,62 @@
+services:
+  # The Node.js Express Backend
+  - type: web
+    name: oj-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 18.x
+      - key: PORT
+        value: 5000
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: oj-redis
+          property: connectionString
+      # These must be filled in via the Render Dashboard manually
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: BACKEND_URL
+        sync: false
+      - key: GITHUB_CLIENT_ID
+        sync: false
+      - key: GITHUB_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+
+  # The Worker for Code Execution (BullMQ)
+  - type: worker
+    name: oj-worker
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm run worker
+    envVars:
+      - key: NODE_VERSION
+        value: 18.x
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: oj-redis
+          property: connectionString
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+
+  # Managed Redis Instance for the Queue
+  - type: redis
+    name: oj-redis
+    plan: free

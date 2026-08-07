@@ -102,7 +102,10 @@ function runProcess(cmd, args, input, timeLimit) {
     proc.on('error', (err) => {
       clearTimeout(timer);
       const executionTime = Date.now() - startTime;
-      resolve({ stdout: '', stderr: err.message, code: 1, timedOut: false, executionTime });
+      const errorMessage = err.code === 'ENOENT'
+        ? `Command '${cmd}' not found. Please ensure the ${cmd} runtime/compiler is installed and added to PATH.`
+        : err.message;
+      resolve({ stdout: '', stderr: errorMessage, code: 1, timedOut: false, executionTime });
     });
   });
 }
