@@ -159,7 +159,7 @@ function ProblemDetail() {
       const finalVerdict = data.verdict || data.status || null
       setVerdict(finalVerdict)
       hasSubmitted.current = true
-      if (finalVerdict === 'ACCEPTED' && refreshSession) {
+      if ((finalVerdict === 'ACCEPTED' || finalVerdict === 'AC') && refreshSession) {
         refreshSession()
       }
     } catch (err) {
@@ -564,23 +564,21 @@ function ProblemDetail() {
                   ))}
 
                   {/* AI Feedback Box inside Results */}
-                  {hasSubmitted.current && (
-                    <div className="ai-feedback-section" style={{ marginTop: '24px' }}>
-                      <button className="btn btn-ai" onClick={handleAIFeedback} disabled={aiLoading}>
-                        {aiLoading ? 'Analyzing...' : <><Bot size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> Get AI Feedback</>}
-                      </button>
-                      
-                      {aiFeedback && (
-                        <div className="ai-feedback-card" style={{ marginTop: '16px' }}>
-                          <div className="ai-feedback-header" style={{ fontWeight: 'bold', marginBottom: '8px' }}><Bot size={20} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> AI Analysis</div>
-                          <div
-                            className="ai-feedback-content"
-                            dangerouslySetInnerHTML={{ __html: renderMarkdown(typeof aiFeedback === 'string' ? aiFeedback : JSON.stringify(aiFeedback)) }}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  )}
+                  <div className="ai-feedback-section" style={{ marginTop: '24px' }}>
+                    <button className="btn btn-ai" onClick={handleAIFeedback} disabled={aiLoading}>
+                      {aiLoading ? 'Analyzing...' : <><Bot size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> Get AI Feedback</>}
+                    </button>
+                    
+                    {aiFeedback && (
+                      <div className="ai-feedback-card" style={{ marginTop: '16px' }}>
+                        <div className="ai-feedback-header" style={{ fontWeight: 'bold', marginBottom: '8px' }}><Bot size={20} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> AI Analysis</div>
+                        <div
+                          className="ai-feedback-content"
+                          dangerouslySetInnerHTML={{ __html: renderMarkdown(typeof aiFeedback === 'string' ? aiFeedback : JSON.stringify(aiFeedback)) }}
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
