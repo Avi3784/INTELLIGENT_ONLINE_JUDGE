@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { getProblemById, runCode, submitCode, getAIFeedback } from '../services/api'
 import Editor from '@monaco-editor/react'
 import { CheckCircle, XCircle, Clock, Database, Search, Play, Send, Zap, Bot, ArrowLeft, MessageSquare, BookOpen, Lightbulb } from 'lucide-react'
-import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
+import { Panel, Group as PanelGroup, Separator as PanelResizeHandle } from 'react-resizable-panels'
 import SolutionsTab from '../components/SolutionsTab'
 import { useAuth } from '../context/AuthContext'
 
