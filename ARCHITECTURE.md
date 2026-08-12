@@ -1,6 +1,6 @@
 # SYSTEM ARCHITECTURE DESIGN SPECIFICATION
 
-**Project Name:** The Intelligent Visual Judge  
+**Project Name:** IntelliJudge  
 **Document Target:** Core Infrastructure Blueprint (Monolithic MERN)  
 **Version:** 1.1  
 
@@ -264,7 +264,7 @@ adds `createdAt` and `updatedAt` fields.
 
 ```
 PORT=5000
-MONGO_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/visual-judge
+MONGO_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/intellijudge
 JWT_SECRET=<strong-random-string-min-32-chars>
 GEMINI_API_KEY=<google-ai-api-key>
 NODE_ENV=production

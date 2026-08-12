@@ -3,6 +3,72 @@ const mongoose = require('mongoose');
 const Problem = mongoose.models.Problem || mongoose.model('Problem', new mongoose.Schema({}, { strict: false }));
 
 const problems = [
+
+  {
+    title: "Find Closest Number to Zero",
+    description: `Given an integer array nums of size n, return the number with the value closest to 0 in nums. If there are multiple answers, return the number with the largest value.
+
+Example 1:
+
+Input: nums = [-4,-2,1,4,8]
+Output: 1
+Explanation:
+The distance from -4 to 0 is |-4| = 4.
+The distance from -2 to 0 is |-2| = 2.
+The distance from 1 to 0 is |1| = 1.
+The distance from 4 to 0 is |4| = 4.
+The distance from 8 to 0 is |8| = 8.
+Thus, the closest number to 0 in the array is 1.
+
+Example 2:
+
+Input: nums = [2,-1,1]
+Output: 1
+Explanation: 1 and -1 are both the closest numbers to 0, so 1 being larger is returned.
+
+Constraints:
+
+1 <= n <= 1000
+-105 <= nums[i] <= 105`,
+    difficulty: "EASY",
+    tags: ["arrays"],
+    timeLimit: 2000,
+    memoryLimit: 256,
+    hints: [
+      "Keep track of the closest number seen so far.",
+      "If you find a number with the same absolute value as the current closest, update it if the new number is larger."
+    ],
+    methodName: "findClosestNumber",
+    defaultCode: {
+      python: "class Solution:\n    def findClosestNumber(self, nums):\n        pass",
+      javascript: "class Solution {\n  findClosestNumber(nums) {\n    \n  }\n}",
+      cpp: "#include <iostream>\n#include <vector>\nusing namespace std;\n\nclass Solution {\npublic:\n    int findClosestNumber(vector<int>& nums) {\n        \n    }\n};",
+      java: "class Solution {\n    public int findClosestNumber(int[] nums) {\n        \n    }\n}"
+    },
+    driverCode: {
+      cpp: "\nint main() {\n    Solution sol;\n    // ... Driver code for vector ... \n    return 0;\n}\n",
+      java: "\nclass Main {\n    public static void main(String[] args) {\n        // ... Driver code for array ...\n    }\n}\n"
+    },
+    officialSolution: {
+      explanation: "Iterate through the array and find the closest to 0. If abs(x) == abs(closest), pick the max.",
+      code: {
+        python: "class Solution:\n    def findClosestNumber(self, nums):\n        ans = nums[0]\n        for x in nums:\n            if abs(x) < abs(ans):\n                ans = x\n            elif abs(x) == abs(ans) and x > ans:\n                ans = x\n        return ans"
+      }
+    },
+    sampleTestCases: [
+      {
+        input: "[-4,-2,1,4,8]",
+        expectedOutput: "1"
+      }
+    ],
+    hiddenTestCases: [
+      {
+        input: "[2,-1,1]",
+        expectedOutput: "1"
+      }
+    ]
+  },
+
   {
     title: "Palindrome Number",
     description: "Given an integer x, return true if x is a palindrome, and false otherwise.",

@@ -8,62 +8,61 @@ dotenv.config({ path: path.join(__dirname, '..', '.env') });
 const Problem = require('../models/Problem');
 
 const problems = [
+
   {
-    title: 'Two Sum',
-    description: `## Two Sum
+    title: 'Find Closest Number to Zero',
+    description: `Given an integer array nums of size n, return the number with the value closest to 0 in nums. If there are multiple answers, return the number with the largest value.
 
-Given an array of integers \`nums\` and an integer \`target\`, return the **indices** of the two numbers such that they add up to \`target\`.
+Example 1:
 
-You may assume that each input would have **exactly one solution**, and you may not use the same element twice.
+Input: nums = [-4,-2,1,4,8]
+Output: 1
+Explanation:
+The distance from -4 to 0 is |-4| = 4.
+The distance from -2 to 0 is |-2| = 2.
+The distance from 1 to 0 is |1| = 1.
+The distance from 4 to 0 is |4| = 4.
+The distance from 8 to 0 is |8| = 8.
+Thus, the closest number to 0 in the array is 1.
 
-You can return the answer in any order.
+Example 2:
 
-### Example
-\`\`\`
-Input:  nums = [2, 7, 11, 15], target = 9
-Output: [0, 1]
-Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].
-\`\`\`
+Input: nums = [2,-1,1]
+Output: 1
+Explanation: 1 and -1 are both the closest numbers to 0, so 1 being larger is returned.
 
-### Constraints
-- 2 ≤ nums.length ≤ 10⁴
-- -10⁹ ≤ nums[i] ≤ 10⁹
-- Only one valid answer exists.`,
+Constraints:
+
+1 <= n <= 1000
+-105 <= nums[i] <= 105`,
     difficulty: 'EASY',
-    tags: ['arrays', 'hash-map'],
+    tags: ['arrays'],
     timeLimit: 2000,
     memoryLimit: 256,
     hints: [
-      "A really brute force way would be to search for all possible pairs of numbers but that would be too slow.",
-      "Can we use additional space somehow? Like maybe a hash map to speed up the search?",
-      "If we fix one of the numbers, say `x`, we have to scan the entire array to find the next number `y` which is `target - x`."
+      "Keep track of the closest number seen so far.",
+      "If you find a number with the same absolute value as the current closest, update it if the new number is larger."
     ],
     sampleTestCases: [
-      { input: '[2,7,11,15]\n9', expectedOutput: '[0,1]' },
-      { input: '[3,2,4]\n6', expectedOutput: '[1,2]' },
+      { input: '[-4,-2,1,4,8]', expectedOutput: '1' }
     ],
     hiddenTestCases: [
-      { input: '[1,5,3,7]\n8', expectedOutput: '[1,2]' },
-      { input: '[-1,-2,-3,-4,-5]\n-8', expectedOutput: '[2,4]' },
-      { input: '[0,4,3,0]\n0', expectedOutput: '[0,3]' },
+      { input: '[2,-1,1]', expectedOutput: '1' }
     ],
   },
 
   {
     title: 'Reverse String',
-    description: `## Reverse String
-
-Write a function that reverses a string. The input string is given as an array of characters \`s\`.
+    description: `Write a function that reverses a string. The input string is given as an array of characters \`s\`.
 
 You must do this by modifying the input array **in-place** with O(1) extra memory.
 
-### Example
-\`\`\`
+Example 1:
+
 Input:  s = ["h","e","l","l","o"]
 Output: ["o","l","l","e","h"]
-\`\`\`
 
-### Constraints
+Constraints:
 - 1 ≤ s.length ≤ 10⁵
 - \`s[i]\` is a printable ASCII character.`,
     difficulty: 'EASY',
@@ -88,22 +87,19 @@ Output: ["o","l","l","e","h"]
 
   {
     title: 'FizzBuzz',
-    description: `## FizzBuzz
-
-Given an integer \`n\`, return a string array \`answer\` (1-indexed) where:
+    description: `Given an integer \`n\`, return a string array \`answer\` (1-indexed) where:
 
 - \`answer[i] == "FizzBuzz"\` if \`i\` is divisible by 3 **and** 5.
 - \`answer[i] == "Fizz"\` if \`i\` is divisible by 3.
 - \`answer[i] == "Buzz"\` if \`i\` is divisible by 5.
 - \`answer[i] == i\` (as a string) if none of the above conditions are true.
 
-### Example
-\`\`\`
+Example 1:
+
 Input:  n = 15
 Output: ["1","2","Fizz","4","Buzz","Fizz","7","8","Fizz","Buzz","11","Fizz","13","14","FizzBuzz"]
-\`\`\`
 
-### Constraints
+Constraints:
 - 1 ≤ n ≤ 10⁴`,
     difficulty: 'EASY',
     tags: ['math', 'simulation'],
@@ -127,20 +123,17 @@ Output: ["1","2","Fizz","4","Buzz","Fizz","7","8","Fizz","Buzz","11","Fizz","13"
 
   {
     title: 'Palindrome Check',
-    description: `## Valid Palindrome
-
-A phrase is a **palindrome** if, after converting all uppercase letters into lowercase and removing all non-alphanumeric characters, it reads the same forward and backward.
+    description: `A phrase is a **palindrome** if, after converting all uppercase letters into lowercase and removing all non-alphanumeric characters, it reads the same forward and backward.
 
 Given a string \`s\`, return \`true\` if it is a palindrome, or \`false\` otherwise.
 
-### Example
-\`\`\`
+Example 1:
+
 Input:  s = "A man, a plan, a canal: Panama"
 Output: true
 Explanation: "amanaplanacanalpanama" is a palindrome.
-\`\`\`
 
-### Constraints
+Constraints:
 - 1 ≤ s.length ≤ 2 × 10⁵
 - \`s\` consists only of printable ASCII characters.`,
     difficulty: 'EASY',
@@ -167,24 +160,21 @@ Explanation: "amanaplanacanalpanama" is a palindrome.
 
   {
     title: 'Maximum Subarray Sum',
-    description: `## Maximum Subarray
-
-Given an integer array \`nums\`, find the subarray with the largest sum, and return its **sum**.
+    description: `Given an integer array \`nums\`, find the subarray with the largest sum, and return its **sum**.
 
 A **subarray** is a contiguous non-empty sequence of elements within an array.
 
-### Example
-\`\`\`
+Example 1:
+
 Input:  nums = [-2,1,-3,4,-1,2,1,-5,4]
 Output: 6
 Explanation: The subarray [4,-1,2,1] has the largest sum = 6.
-\`\`\`
 
-### Constraints
+Constraints:
 - 1 ≤ nums.length ≤ 10⁵
 - -10⁴ ≤ nums[i] ≤ 10⁴
 
-### Follow-up
+Follow-up:
 If you have figured out the O(n) solution (Kadane's algorithm), try coding it with the divide-and-conquer approach, which is more subtle.`,
     difficulty: 'MEDIUM',
     tags: ['arrays', 'dynamic-programming', 'divide-and-conquer'],
@@ -210,22 +200,19 @@ If you have figured out the O(n) solution (Kadane's algorithm), try coding it wi
   
   {
     title: 'Valid Parentheses',
-    description: `## Valid Parentheses
-
-Given a string \`s\` containing just the characters \`'('\`, \`')'\`, \`'{'\`, \`'}'\`, \`'['\` and \`']'\`, determine if the input string is valid.
+    description: `Given a string \`s\` containing just the characters \`'('\`, \`')'\`, \`'{'\`, \`'}'\`, \`'['\` and \`']'\`, determine if the input string is valid.
 
 An input string is valid if:
 1. Open brackets must be closed by the same type of brackets.
 2. Open brackets must be closed in the correct order.
 3. Every close bracket has a corresponding open bracket of the same type.
 
-### Example
-\`\`\`
+Example 1:
+
 Input: s = "()[]{}"
 Output: true
-\`\`\`
 
-### Constraints
+Constraints:
 - 1 ≤ s.length ≤ 10⁴
 - \`s\` consists of parentheses only \`'()[]{}'\`.`,
     difficulty: 'EASY',
@@ -252,18 +239,15 @@ Output: true
   
   {
     title: 'Merge Intervals',
-    description: `## Merge Intervals
+    description: `Given an array of \`intervals\` where \`intervals[i] = [starti, endi]\`, merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.
 
-Given an array of \`intervals\` where \`intervals[i] = [starti, endi]\`, merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.
+Example 1:
 
-### Example
-\`\`\`
 Input: intervals = [[1,3],[2,6],[8,10],[15,18]]
 Output: [[1,6],[8,10],[15,18]]
 Explanation: Since intervals [1,3] and [2,6] overlap, merge them into [1,6].
-\`\`\`
 
-### Constraints
+Constraints:
 - 1 ≤ intervals.length ≤ 10⁴
 - intervals[i].length == 2
 - 0 ≤ starti ≤ endi ≤ 10⁴`,
@@ -289,20 +273,17 @@ Explanation: Since intervals [1,3] and [2,6] overlap, merge them into [1,6].
   
   {
     title: 'Lowest Common Ancestor of a Binary Search Tree',
-    description: `## Lowest Common Ancestor of a Binary Search Tree
-
-Given a binary search tree (BST), find the lowest common ancestor (LCA) node of two given nodes in the BST.
+    description: `Given a binary search tree (BST), find the lowest common ancestor (LCA) node of two given nodes in the BST.
 
 According to the definition of LCA on Wikipedia: "The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants (where we allow a node to be a descendant of itself)."
 
-### Example
-\`\`\`
+Example 1:
+
 Input: root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 8
 Output: 6
 Explanation: The LCA of nodes 2 and 8 is 6.
-\`\`\`
 
-### Constraints
+Constraints:
 - The number of nodes in the tree is in the range [2, 10⁵].
 - -10⁹ ≤ Node.val ≤ 10⁹
 - All Node.val are unique.
@@ -329,22 +310,19 @@ Explanation: The LCA of nodes 2 and 8 is 6.
   
   {
     title: 'Climbing Stairs',
-    description: `## Climbing Stairs
-
-You are climbing a staircase. It takes \`n\` steps to reach the top.
+    description: `You are climbing a staircase. It takes \`n\` steps to reach the top.
 
 Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?
 
-### Example
-\`\`\`
+Example 1:
+
 Input: n = 2
 Output: 2
 Explanation: There are two ways to climb to the top.
 1. 1 step + 1 step
 2. 2 steps
-\`\`\`
 
-### Constraints
+Constraints:
 - 1 ≤ n ≤ 45`,
     difficulty: 'EASY',
     tags: ['math', 'dynamic-programming', 'memoization'],
@@ -368,22 +346,19 @@ Explanation: There are two ways to climb to the top.
   
   {
     title: 'Coin Change',
-    description: `## Coin Change
-
-You are given an integer array \`coins\` representing coins of different denominations and an integer \`amount\` representing a total amount of money.
+    description: `You are given an integer array \`coins\` representing coins of different denominations and an integer \`amount\` representing a total amount of money.
 
 Return the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination of the coins, return \`-1\`.
 
 You may assume that you have an infinite number of each kind of coin.
 
-### Example
-\`\`\`
+Example 1:
+
 Input: coins = [1,2,5], amount = 11
 Output: 3
 Explanation: 11 = 5 + 5 + 1
-\`\`\`
 
-### Constraints
+Constraints:
 - 1 ≤ coins.length ≤ 12
 - 1 ≤ coins[i] ≤ 2³¹ - 1
 - 0 ≤ amount ≤ 10⁴`,
@@ -409,18 +384,15 @@ Explanation: 11 = 5 + 5 + 1
   
   {
     title: 'Longest Substring Without Repeating Characters',
-    description: `## Longest Substring Without Repeating Characters
+    description: `Given a string \`s\`, find the length of the longest substring without repeating characters.
 
-Given a string \`s\`, find the length of the longest substring without repeating characters.
+Example 1:
 
-### Example
-\`\`\`
 Input: s = "abcabcbb"
 Output: 3
 Explanation: The answer is "abc", with the length of 3.
-\`\`\`
 
-### Constraints
+Constraints:
 - 0 ≤ s.length ≤ 5 * 10⁴
 - \`s\` consists of English letters, digits, symbols and spaces.`,
     difficulty: 'MEDIUM',
@@ -447,20 +419,17 @@ Explanation: The answer is "abc", with the length of 3.
   
   {
     title: 'Word Break',
-    description: `## Word Break
-
-Given a string \`s\` and a dictionary of strings \`wordDict\`, return \`true\` if \`s\` can be segmented into a space-separated sequence of one or more dictionary words.
+    description: `Given a string \`s\` and a dictionary of strings \`wordDict\`, return \`true\` if \`s\` can be segmented into a space-separated sequence of one or more dictionary words.
 
 Note that the same word in the dictionary may be reused multiple times in the segmentation.
 
-### Example
-\`\`\`
+Example 1:
+
 Input: s = "leetcode", wordDict = ["leet","code"]
 Output: true
 Explanation: Return true because "leetcode" can be segmented as "leet code".
-\`\`\`
 
-### Constraints
+Constraints:
 - 1 ≤ s.length ≤ 300
 - 1 ≤ wordDict.length ≤ 1000
 - 1 ≤ wordDict[i].length ≤ 20
@@ -489,14 +458,12 @@ Explanation: Return true because "leetcode" can be segmented as "leet code".
   
   {
     title: 'Number of Islands',
-    description: `## Number of Islands
-
-Given an \`m x n\` 2D binary grid \`grid\` which represents a map of \`'1'\`s (land) and \`'0'\`s (water), return the number of islands.
+    description: `Given an \`m x n\` 2D binary grid \`grid\` which represents a map of \`'1'\`s (land) and \`'0'\`s (water), return the number of islands.
 
 An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
 
-### Example
-\`\`\`
+Example 1:
+
 Input: grid = [
   ["1","1","1","1","0"],
   ["1","1","0","1","0"],
@@ -504,9 +471,8 @@ Input: grid = [
   ["0","0","0","0","0"]
 ]
 Output: 1
-\`\`\`
 
-### Constraints
+Constraints:
 - m == grid.length
 - n == grid[i].length
 - 1 ≤ m, n ≤ 300
@@ -533,9 +499,7 @@ Output: 1
   
   {
     title: 'LRU Cache',
-    description: `## LRU Cache
-
-Design a data structure that follows the constraints of a Least Recently Used (LRU) cache.
+    description: `Design a data structure that follows the constraints of a Least Recently Used (LRU) cache.
 
 Implement the \`LRUCache\` class:
 - \`LRUCache(int capacity)\` Initialize the LRU cache with positive size capacity.
@@ -544,16 +508,15 @@ Implement the \`LRUCache\` class:
 
 The functions \`get\` and \`put\` must each run in O(1) average time complexity.
 
-### Example
-\`\`\`
+Example 1:
+
 Input
 ["LRUCache", "put", "put", "get", "put", "get", "put", "get", "get", "get"]
 [[2], [1, 1], [2, 2], [1], [3, 3], [2], [4, 4], [1], [3], [4]]
 Output
 [null, null, null, 1, null, -1, null, -1, 3, 4]
-\`\`\`
 
-### Constraints
+Constraints:
 - 1 ≤ capacity ≤ 3000
 - 0 ≤ key ≤ 10⁴
 - 0 ≤ value ≤ 10⁵
@@ -577,18 +540,15 @@ Output
   
   {
     title: 'Trapping Rain Water',
-    description: `## Trapping Rain Water
+    description: `Given \`n\` non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.
 
-Given \`n\` non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.
+Example 1:
 
-### Example
-\`\`\`
 Input: height = [0,1,0,2,1,0,1,3,2,1,2,1]
 Output: 6
 Explanation: The above elevation map (black section) is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water (blue section) are being trapped.
-\`\`\`
 
-### Constraints
+Constraints:
 - \`n == height.length\`
 - 1 ≤ n ≤ 2 * 10⁴
 - 0 ≤ height[i] ≤ 10⁵`,

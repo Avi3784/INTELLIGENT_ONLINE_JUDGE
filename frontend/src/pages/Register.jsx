@@ -77,7 +77,7 @@ function Register() {
         <div className="form-header">
           <div className="form-icon"><Rocket size={32} /></div>
           <h1 className="form-title">Create Account</h1>
-          <p className="form-subtitle">Join the Visual Judge community</p>
+          <p className="form-subtitle">Join the IntelliJudge community</p>
         </div>
 
         {error && (

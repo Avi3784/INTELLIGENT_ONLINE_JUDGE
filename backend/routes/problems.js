@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
 
     const problems = await Problem.find(filter)
       .select('-hiddenTestCases')
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1, _id: 1 })
       .skip((pageNum - 1) * limitNum)
       .limit(limitNum);
 

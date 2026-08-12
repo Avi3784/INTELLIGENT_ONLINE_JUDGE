@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { getProblemById, runCode, submitCode, getAIFeedback } from '../services/api'
 import Editor from '@monaco-editor/react'
 import { CheckCircle, XCircle, Clock, Database, Search, Play, Send, Zap, Bot, ArrowLeft, MessageSquare, BookOpen, Lightbulb } from 'lucide-react'
-import { Panel, Group as PanelGroup, Separator as PanelResizeHandle } from 'react-resizable-panels'
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import SolutionsTab from '../components/SolutionsTab'
 import { useAuth } from '../context/AuthContext'
 
@@ -45,6 +45,14 @@ function renderMarkdown(text) {
   html = html.replace(/(<\/pre>)<\/p>/g, '$1')
   html = html.replace(/<p>(<ul>)/g, '$1')
   html = html.replace(/(<\/ul>)<\/p>/g, '$1')
+  
+  // Auto-format LeetCode style blocks if they lack markdown
+  html = html.replace(/Example (\d+):/g, '<strong>Example $1:</strong>');
+  html = html.replace(/Constraints:/g, '<strong>Constraints:</strong>');
+  html = html.replace(/Input:/g, '<strong>Input:</strong>');
+  html = html.replace(/Output:/g, '<strong>Output:</strong>');
+  html = html.replace(/Explanation:/g, '<strong>Explanation:</strong>');
+
   return html
 }
 
@@ -260,7 +268,7 @@ function ProblemDetail() {
         </button>
       </div>
 
-      <PanelGroup direction="horizontal" className="leetcode-workspace" style={{ display: 'flex', height: 'calc(100vh - var(--navbar-height) - 50px)' }}>
+      <PanelGroup autoSaveId="main-layout" direction="horizontal" className="leetcode-workspace" style={{ display: 'flex', height: 'calc(100vh - var(--navbar-height) - 50px)' }}>
         {/* Left Pane: Problem Description */}
         <Panel defaultSize={50} minSize={30}>
           <div className="pane left-pane" style={{ height: '100%' }}>
@@ -326,11 +334,10 @@ function ProblemDetail() {
             {leftTab === 'description' ? (
               <>
                 <div className="problem-section">
-                  <div className="problem-description">
-                    {problem.description?.split('\n').map((paragraph, index) => (
-                      <p key={index}>{paragraph}</p>
-                    ))}
-                  </div>
+                  <div 
+                    className="problem-description"
+                    dangerouslySetInnerHTML={{ __html: renderMarkdown(problem.description) }}
+                  />
                 </div>
 
                 {problem.hints && problem.hints.length > 0 && (
@@ -410,8 +417,8 @@ function ProblemDetail() {
         <PanelResizeHandle className="resize-handle-x" />
 
         {/* Right Pane: Code Editor + Console */}
-        <Panel minSize={30}>
-          <PanelGroup direction="vertical">
+        <Panel defaultSize={50} minSize={30}>
+          <PanelGroup autoSaveId="editor-layout" direction="vertical">
             {/* Top Half: Editor */}
             <Panel defaultSize={70} minSize={30}>
               <div className="editor-container" style={{ height: '100%' }}>
@@ -574,8 +581,23 @@ function ProblemDetail() {
                         <div className="ai-feedback-header" style={{ fontWeight: 'bold', marginBottom: '8px' }}><Bot size={20} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> AI Analysis</div>
                         <div
                           className="ai-feedback-content"
-                          dangerouslySetInnerHTML={{ __html: renderMarkdown(typeof aiFeedback === 'string' ? aiFeedback : JSON.stringify(aiFeedback)) }}
-                        />
+                        >
+                          {Array.isArray(aiFeedback) ? (
+                            <div className="hints-list" style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                              {aiFeedback.map((hint, idx) => (
+                                <details key={idx} style={{ padding: '12px', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-sm)', borderLeft: '3px solid var(--primary)' }}>
+                                  <summary style={{ cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <Bot size={16} color="var(--primary)"/> 
+                                    AI Hint {idx + 1}
+                                  </summary>
+                                  <div style={{ marginTop: '12px', color: 'var(--text-secondary)', lineHeight: '1.5' }} dangerouslySetInnerHTML={{ __html: renderMarkdown(hint) }} />
+                                </details>
+                              ))}
+                            </div>
+                          ) : (
+                            <div dangerouslySetInnerHTML={{ __html: renderMarkdown(typeof aiFeedback === 'string' ? aiFeedback : JSON.stringify(aiFeedback)) }} />
+                          )}
+                        </div>
                       </div>
                     )}
                   </div>

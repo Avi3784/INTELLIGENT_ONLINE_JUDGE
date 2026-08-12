@@ -1,7 +1,7 @@
 /**
  * App.css — LeetCode-inspired DARK theme stylesheet
  * 
- * Design System for Visual Judge — Intelligent Online Judge
+ * Design System for IntelliJudge — Intelligent Online Judge
  * 
  * Color Palette (Colorful, No Purple):
  * - Background:  #0a0a0f, #1a1a1f (dark panels)
@@ -1810,12 +1810,10 @@ background: rgba(13, 13, 18, 0.9);
   overflow-y: auto;
 }
 .left-pane {
-  flex: 1;
   border-right: 1px solid var(--border-color);
   padding: 1rem;
 }
 .right-pane {
-  flex: 1;
   display: flex;
   flex-direction: column;
 }

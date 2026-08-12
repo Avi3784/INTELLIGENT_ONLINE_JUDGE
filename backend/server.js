@@ -88,7 +88,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to The Intelligent Visual Judge API 🧑‍⚖️' });
+  res.json({ message: 'Welcome to IntelliJudge API 🧑‍⚖️' });
 });
 
 app.use('/api/auth', authRoutes);

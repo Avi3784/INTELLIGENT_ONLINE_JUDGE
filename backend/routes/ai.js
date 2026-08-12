@@ -31,24 +31,35 @@ Code:
 ${code}
 \`\`\`
 
-Provide:
-1. Code Review: Identify bugs, logic errors, or edge cases. Use precise software engineering terminology.
-2. Optimization: Suggest improvements for time/space complexity using Big O notation strictly.
-3. Complexity Analysis: State the time and space complexity with rigorous academic justification.
-4. Professional Tips: Give 2-3 actionable tips based on industry best practices (e.g., Clean Code, SOLID principles, design patterns).
+Provide exactly 3 progressive hints in a strict JSON array format.
+Hint 1: A subtle nudge pointing out a potential flaw, inefficiency, or edge case.
+Hint 2: A deeper hint suggesting a specific data structure, logic correction, or complexity target.
+Hint 3: A clear structural or pseudo-code hint (but NOT the actual code).
 
 Strict Guidelines:
-- You must use easy, simple, formal, and professional language. No informal words needed. DO NOT use the word 'layman'.
-- Use professional, rigorous academic and software engineering terminology.
-- Keep the response concise, highly technical, and strictly focused on the algorithm and code quality.
-- Use markdown formatting.`;
+- DO NOT WRITE OR REVEAL THE CORRECT CODE SOLUTION.
+- The output MUST be a valid JSON array of 3 strings.
+- Do not include markdown formatting like \`\`\`json. Just output the raw JSON array.
+- Example format: ["hint 1", "hint 2", "hint 3"]`;
 
     const chatCompletion = await groq.chat.completions.create({
       messages: [{ role: 'user', content: prompt }],
       model: 'llama-3.3-70b-versatile',
     });
     
-    const feedback = chatCompletion.choices[0]?.message?.content || "";
+    let feedbackStr = chatCompletion.choices[0]?.message?.content || "[]";
+    
+    // Strip markdown code blocks if the model still includes them
+    feedbackStr = feedbackStr.replace(/^```json/im, '').replace(/^```/im, '').replace(/```$/im, '').trim();
+    
+    let feedback = [];
+    try {
+      feedback = JSON.parse(feedbackStr);
+      if (!Array.isArray(feedback)) throw new Error("Not an array");
+    } catch (e) {
+      // Fallback if parsing fails
+      feedback = ["Could not parse AI response into hints. Raw output:", feedbackStr];
+    }
 
     res.json({ feedback });
   } catch (err) {

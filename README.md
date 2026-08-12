@@ -1,4 +1,4 @@
-# The Intelligent Visual Judge
+# IntelliJudge
 
 A modern, full-stack online judge platform for competitive programming — featuring an integrated code editor, real-time algorithm visualizer, AI-powered code analysis, community solutions, and live global chat.
 
@@ -14,7 +14,7 @@ An interactive histogram-based visualization of **15 sorting algorithms** — Bu
 Share solutions with explanations, browse other users' approaches, and upvote the most elegant implementations. Solutions are organized by problem and include syntax-highlighted code previews.
 
 ### AI-Powered Feedback
-Receive automated code review powered by **Google Gemini 2.0 Flash**. The AI identifies bugs, suggests optimizations, analyzes time and space complexity, and provides actionable improvement tips.
+Receive automated code review powered by **Groq**. The AI identifies bugs, suggests optimizations, analyzes time and space complexity, and provides actionable improvement tips.
 
 ### Live Global Chat
 A real-time WebSocket chat lobby where all users can communicate instantly. Messages are persisted in MongoDB, typing indicators show active participants, and the online user count updates in real time.
@@ -35,7 +35,7 @@ A global leaderboard ranks users by problems solved. User profiles display solve
 | Frontend     | React 18, Vite, Monaco Editor, Framer Motion, Recharts   |
 | Backend      | Node.js, Express.js, Socket.io, Passport.js              |
 | Database     | MongoDB Atlas (Mongoose ODM)                              |
-| AI           | Google Generative AI (Gemini 2.0 Flash)                   |
+| AI           | Groq API                                                  |
 | Auth         | JWT, bcrypt, OAuth 2.0 (GitHub, Google)                   |
 | Testing      | Jest, Supertest, mongodb-memory-server, Vitest, React Testing Library |
 
@@ -74,7 +74,7 @@ Create `backend/.env`:
 PORT=5000
 MONGO_URI=mongodb_connection_string
 JWT_SECRET=jwt_secret
-GEMINI_API_KEY=gemini_api_key
+GROQ_API_KEY=groq_api_key
 GITHUB_CLIENT_ID=github_client_id
 GITHUB_CLIENT_SECRET=github_client_secret
 GOOGLE_CLIENT_ID=google_client_id
@@ -165,7 +165,7 @@ VITE_API_BASE_URL=https://your-backend-domain.example/api
 VITE_BACKEND_URL=https://your-backend-domain.example
 VITE_SOCKET_URL=https://your-backend-domain.example
 VITE_OAUTH_URL=https://your-backend-domain.example
-GEMINI_API_KEY=your_gemini_key
+GROQ_API_KEY=your_groq_key
 ```
 
 ### Notes

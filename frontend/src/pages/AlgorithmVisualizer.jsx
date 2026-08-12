@@ -722,6 +722,9 @@ const AlgorithmVisualizer = () => {
   // Track which elements are being compared so we can highlight them
   const [activeIndices, setActiveIndices] = useState([]);
   const [activeLine, setActiveLine] = useState(null);
+  const [comparisons, setComparisons] = useState(0);
+  const [swapsCount, setSwapsCount] = useState(0);
+  const [swappingIndices, setSwappingIndices] = useState([]);
   
   // Used to stop the animation midway if the user clicks stop
   const abortControllerRef = useRef(null);
@@ -789,15 +792,27 @@ const AlgorithmVisualizer = () => {
   };
 
   // Updates the screen with the new array state and highlights active items
-  const updateState = async (newArr, active = [], line = null) => {
+  const updateState = async (newArr, active = [], line = null, isSwap = false) => {
     setArray([...newArr]);
-    setActiveIndices(active);
+    
+    if (isSwap) {
+      setSwappingIndices(active);
+      setActiveIndices([]);
+      setSwapsCount(prev => prev + 1);
+    } else {
+      setActiveIndices(active);
+      setSwappingIndices([]);
+      if (active.length >= 2) {
+        setComparisons(prev => prev + 1);
+      }
+    }
+    
     if (line !== null && typeof line === 'object') {
       setActiveLine(line[codeLang] || line.javascript || null);
     } else {
       setActiveLine(line);
     }
-    await sleep(210 - speedRef.current); // Use ref to get live speed updates
+    await sleep(210 - speedRef.current);
   };
 
   // --- Sorting Algorithms ---
@@ -1256,6 +1271,16 @@ const AlgorithmVisualizer = () => {
           </div>
         </div>
 
+        <div className="vis-metrics" style={{ display: 'flex', gap: '16px', marginRight: 'auto', padding: '0 16px' }}>
+          <div style={{ background: 'rgba(255, 171, 0, 0.1)', padding: '8px 16px', borderRadius: '8px', border: '1px solid rgba(255, 171, 0, 0.3)', color: '#FFAB00' }}>
+            <span style={{ fontSize: '12px', textTransform: 'uppercase', fontWeight: 'bold' }}>Comparisons</span>
+            <div style={{ fontSize: '20px', fontWeight: 'bold', fontFamily: 'monospace' }}>{comparisons}</div>
+          </div>
+          <div style={{ background: 'rgba(239, 68, 68, 0.1)', padding: '8px 16px', borderRadius: '8px', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#ef4444' }}>
+            <span style={{ fontSize: '12px', textTransform: 'uppercase', fontWeight: 'bold' }}>Swaps</span>
+            <div style={{ fontSize: '20px', fontWeight: 'bold', fontFamily: 'monospace' }}>{swapsCount}</div>
+          </div>
+        </div>
         <div className="vis-actions">
           <button 
             onClick={isSorting ? stopSorting : resetArray} 
@@ -1282,6 +1307,7 @@ const AlgorithmVisualizer = () => {
         <div className="vis-stage" style={{ padding: 0 }}>
           {array.map((item, index) => {
             const isActive = activeIndices.includes(index);
+            const isSwapping = swappingIndices.includes(index);
             // Width and left position calculated based on array size
             const widthPercent = 100 / array.length;
             const leftPercent = index * widthPercent;
@@ -1307,9 +1333,9 @@ const AlgorithmVisualizer = () => {
                   style={{
                     width: '100%',
                     height: '100%',
-                    backgroundColor: isActive ? (isSorting ? '#ef4444' : '#10b981') : 'var(--primary-light)',
+                    backgroundColor: isSwapping ? '#ef4444' : isActive ? '#FFAB00' : 'var(--primary-light)',
                     borderRadius: '4px 4px 0 0',
-                    boxShadow: isActive ? (isSorting ? '0 0 12px rgba(239, 68, 68, 0.8)' : '0 0 12px rgba(16, 185, 129, 0.8)') : 'none',
+                    boxShadow: isSwapping ? '0 0 12px rgba(239, 68, 68, 0.8)' : isActive ? '0 0 12px rgba(255, 171, 0, 0.8)' : 'none',
                     transition: 'background-color 0.15s ease'
                   }}
                 />

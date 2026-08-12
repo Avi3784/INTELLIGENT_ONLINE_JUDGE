@@ -16,7 +16,7 @@ function Navbar() {
       <div className="navbar-left">
         <Link to="/dashboard" className="navbar-brand">
           <span className="navbar-icon"><Scale size={24} /></span>
-          <span className="navbar-title">Visual Judge</span>
+          <span className="navbar-title">IntelliJudge</span>
         </Link>
         <div className="navbar-links">
           <Link to="/dashboard" className="navbar-link">

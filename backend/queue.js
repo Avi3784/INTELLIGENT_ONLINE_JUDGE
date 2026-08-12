@@ -27,7 +27,17 @@ const submissionQueue = {
     if (!process.env.REDIS_URL) {
       return Promise.reject(new Error('No REDIS_URL provided. Fallback to inline execution.'));
     }
-    return getSubmissionQueue().add(...args);
+    // Add default job options with retry logic
+    const jobName = args[0];
+    const jobData = args[1];
+    const jobOpts = {
+      attempts: 3,
+      backoff: { type: 'exponential', delay: 2000 },
+      removeOnComplete: 100,
+      removeOnFail: 50,
+      ...(args[2] || {}),
+    };
+    return getSubmissionQueue().add(jobName, jobData, jobOpts);
   },
 };
 
@@ -68,14 +78,33 @@ function createWorker() {
     } catch (err) {
       console.error('Job error', err);
       await Submission.findByIdAndUpdate(submissionId, { verdict: 'RTE' });
+      // Re-throw so BullMQ can handle retries
+      throw err;
     }
   }, { connection, concurrency: 5 });
 
-  worker.on('failed', (job, err) => {
-    console.error(`Job ${job.id} failed:`, err);
+  // When a job permanently fails after all retry attempts, mark submission as error
+  worker.on('failed', async (job, err) => {
+    console.error(`Job ${job.id} failed after ${job.attemptsMade} attempts:`, err);
+    try {
+      if (job.data && job.data.submissionId) {
+        await Submission.findByIdAndUpdate(job.data.submissionId, {
+          verdict: 'RTE',
+          testResults: [{ passed: false, error: 'Execution failed after retries: ' + err.message }],
+        });
+      }
+    } catch (updateErr) {
+      console.error('Failed to update submission after job failure:', updateErr);
+    }
+  });
+
+  // Handle stalled jobs (container crash / worker disconnect mid-execution)
+  worker.on('stalled', (jobId) => {
+    console.warn(`Job ${jobId} stalled — will be retried automatically by BullMQ`);
   });
 
   return worker;
 }
 
 module.exports = { submissionQueue, createWorker };
+

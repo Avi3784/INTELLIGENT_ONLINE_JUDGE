@@ -163,8 +163,13 @@ ${driverCode[language]}
         continue;
       }
 
-      const actualOutput = details.stdout ? details.stdout.trim() : '';
-      const expectedOutput = testCase.expectedOutput.trim();
+      // Normalize output by replacing all contiguous whitespace (spaces, tabs, newlines) 
+      // with a single space and trimming. This ensures structural data matching 
+      // rather than strict string matching.
+      const normalizeOutput = (s) => s.replace(/\s+/g, ' ').trim();
+
+      const actualOutput = details.stdout ? normalizeOutput(details.stdout) : '';
+      const expectedOutput = normalizeOutput(testCase.expectedOutput);
 
       results.push({
         passed: actualOutput === expectedOutput,
