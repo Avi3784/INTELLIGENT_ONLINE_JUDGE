@@ -82,7 +82,7 @@ function ProblemDetail() {
   const [leftTab, setLeftTab] = useState('description') // 'description' or 'solutions'
   const [showHints, setShowHints] = useState(false)
 
-  const hasSubmitted = useRef(false)
+  const [hasSubmitted, setHasSubmitted] = useState(false)
 
   useEffect(() => {
     const fetchProblem = async () => {
@@ -166,7 +166,7 @@ function ProblemDetail() {
       setResults(data.testResults || data.results || [])
       const finalVerdict = data.verdict || data.status || null
       setVerdict(finalVerdict)
-      hasSubmitted.current = true
+      setHasSubmitted(true)
       if ((finalVerdict === 'ACCEPTED' || finalVerdict === 'AC') && refreshSession) {
         refreshSession()
       }
@@ -435,8 +435,8 @@ function ProblemDetail() {
               </select>
               
               <div className="editor-actions-top">
-                <button className="btn btn-outline btn-sm" onClick={handleRun} disabled={isRunning || isSubmitting}>
-                  {isRunning ? 'Running...' : <><Play size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }}/> Run</>}
+                <button className="btn btn-outline btn-sm" onClick={handleRun} disabled={isRunning || isSubmitting || !hasSubmitted} title={!hasSubmitted ? "Submit your code first to unlock" : ""}>
+                  {isRunning ? 'Running...' : <><Play size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }}/> Run {!hasSubmitted && '🔒'}</>}
                 </button>
                 <button className="btn btn-primary btn-sm" onClick={handleSubmit} disabled={isRunning || isSubmitting}>
                   {isSubmitting ? 'Submitting...' : <><Send size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }}/> Submit</>}
@@ -482,9 +482,13 @@ function ProblemDetail() {
               </button>
               <button 
                 className={`console-tab ${consoleTab === 'result' ? 'active' : ''}`}
-                onClick={() => setConsoleTab('result')}
+                onClick={() => {
+                  if (hasSubmitted) setConsoleTab('result')
+                }}
+                style={{ cursor: hasSubmitted ? 'pointer' : 'not-allowed', opacity: hasSubmitted ? 1 : 0.5 }}
+                title={hasSubmitted ? '' : 'Submit your code first to unlock test results'}
               >
-                Test Result
+                Test Result {!hasSubmitted && '🔒'}
               </button>
             </div>
             
@@ -503,11 +507,18 @@ function ProblemDetail() {
 
               {consoleTab === 'result' && (
                 <div className="console-result">
-                  {!results && !verdict && (
-                    <div className="console-empty">
-                      Run your code or submit to see results.
+                  {!hasSubmitted ? (
+                    <div className="console-empty" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', color: 'var(--text-muted)' }}>
+                      <div style={{ fontSize: '32px' }}>🔒</div>
+                      <p>Submit your code to unlock Test Results and AI Feedback.</p>
                     </div>
-                  )}
+                  ) : (
+                    <>
+                      {!results && !verdict && (
+                        <div className="console-empty">
+                          Run your code or submit to see results.
+                        </div>
+                      )}
 
                   {verdict && (
                     <div className="verdict-banner">
@@ -571,10 +582,11 @@ function ProblemDetail() {
                   ))}
 
                   {/* AI Feedback Box inside Results */}
-                  <div className="ai-feedback-section" style={{ marginTop: '24px' }}>
-                    <button className="btn btn-ai" onClick={handleAIFeedback} disabled={aiLoading}>
-                      {aiLoading ? 'Analyzing...' : <><Bot size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> Get AI Feedback</>}
-                    </button>
+                  {hasSubmitted && (
+                    <div className="ai-feedback-section" style={{ marginTop: '24px' }}>
+                      <button className="btn btn-ai" onClick={handleAIFeedback} disabled={aiLoading}>
+                        {aiLoading ? 'Analyzing...' : <><Bot size={16} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} /> Get AI Feedback</>}
+                      </button>
                     
                     {aiFeedback && (
                       <div className="ai-feedback-card" style={{ marginTop: '16px' }}>
@@ -601,8 +613,11 @@ function ProblemDetail() {
                       </div>
                     )}
                   </div>
-                </div>
+                  )}
+                </>
               )}
+            </div>
+          )}
             </div>
           </div>
         </Panel>
